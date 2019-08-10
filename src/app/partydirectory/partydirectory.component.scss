@@ -1,0 +1,71 @@
+@import "/../app.component";
+
+.spinner{
+  text-align: center;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5px;
+  background-color: transparent;
+}
+
+div {
+  outline: none;
+}
+
+.party-card {
+  outline: 1px solid $brdclr;
+}
+
+.progress-notifications {
+  margin-top: 20px;
+  background-color: transparent;
+}
+
+mat-paginator {
+  margin-top: 10px;
+}
+
+.mat-paginator-outer-container {
+  background-color: black;
+}
+
+.mat-paginator-container {
+  background-color: black;
+}
+
+.partycard-instance-background {
+  img {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.partycard-purpose-icon {
+  position: absolute;
+  top: 10px;
+  left: 0px;
+}
+
+.partycard-sync-icon {
+  position: absolute;
+  top: 10px;
+  left: 64px;
+}
+
+.partycard-verf-icon {
+  position: absolute;
+  top: 10px;
+  left: 128px;
+}
+
+.partycard-priv-icon {
+  position: absolute;
+  left: 0px;
+  top: 74px;
+}
+
+.party-description {
+  max-width: 600px;
+}

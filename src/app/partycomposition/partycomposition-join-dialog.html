@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>Joining {{ this.joinHeaderPartyString(data.slotNum) }}<br> 
+    {{ data.instanceName }} <br>
+  {{ data.owner }} @ {{ data.ownerServer }}<br>
+  </h1>
+<div mat-dialog-content *ngIf="data.isAuth" [formGroup]="form">
+  <mat-form-field>
+    <mat-label>Character</mat-label>
+    <select matNativeControl formControlName="charSelected" [(ngModel)]="selectedCharacter" (change)="selectCharacter()" required>
+      <option *ngFor="let character of data.characters; let i = index" [ngValue]="character">{{ character.name }} @ {{ character.server }}</option>
+    </select>
+  </mat-form-field><br>
+  <mat-form-field>
+    <mat-label>Job Class</mat-label>
+    <select formControlName="jobSelected" (change)="selectJob()" matNativeControl required>
+      <option *ngFor="let job of jobList" [value]="job">{{ job.name }}</option>
+    </select>
+  </mat-form-field>
+</div>
+<div *ngIf="!data.isAuth">
+  Please log in by clicking the account icon at the top right.
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
+  <button mat-stroked-button *ngIf="data.isAuth" [disabled]="!characterIsSelected || !jobIsSelected" (click)="onJoin()">Join</button>
+</div>

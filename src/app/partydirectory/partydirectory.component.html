@@ -1,0 +1,11 @@
+<div class="spinner" *ngIf="isLoading">
+    <mat-progress-spinner class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
+    <div class="progress-notifications">
+      <span style="text-align:center" *ngIf="isLoading && timeLeft > 0">Fetching Parties...</span>
+      <br *ngIf="isLoading && timeLeft == 0"><span *ngIf="isLoading && timeLeft == 0">Failed to Retrieve Data.<br><br> <button mat-raised-button (click)="retryFetchData()">Try Again</button></span>
+    </div>
+  </div>
+<div class="parties-container" *ngIf="!isLoading">
+  <app-partycard [partyDetails]="party" *ngFor="let party of parties"></app-partycard>
+</div>
+<mat-paginator *ngIf="!isLoading" [length]="totalPartyCount"></mat-paginator>

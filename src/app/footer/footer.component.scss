@@ -1,0 +1,14 @@
+@import "../app.component";
+
+.footer {
+  text-align: center;
+  outline: 1px solid $brdclr;
+  margin: 10px 0px 1px 0px;
+  padding: 4px;
+  color: $fontwt;
+
+  a {
+    text-decoration: none;
+    color: $brdclr;
+  }
+}

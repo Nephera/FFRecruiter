@@ -1,0 +1,103 @@
+<h1 mat-dialog-title>Creating New Party</h1>
+<div>
+  <mat-dialog-content [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Character</mat-label>
+      <select formControlName="character" [(ngModel)]="selectedCharacter" matNativeControl required>
+        <option *ngFor="let character of data.characters" [ngValue]="character">{{ character.name }} @ {{ character.server }}</option>
+      </select>
+    </mat-form-field>
+    <div *ngIf="submitted && f.character.errors && f.character.errors.required" class="invalid-form-entry">
+      Character selection is required.
+    </div> 
+    <br>
+    <mat-form-field>
+      <mat-label>Instance</mat-label>
+      <select formControlName="instance" [(ngModel)]="selectedInstance" (change)="selectInstance()" matNativeControl required>
+        <option *ngFor="let instance of data.instances" [ngValue]="instance">{{ instance.name }}</option>
+      </select>
+    </mat-form-field>
+    <div *ngIf="submitted && f.instance.errors && f.instance.errors.required" class="invalid-form-entry">
+        Instance selection is required.
+    </div>
+    <br>
+    <mat-form-field>
+      <mat-label>Purpose</mat-label>
+      <select formControlName="purpose" matNativeControl required>
+        <option *ngFor="let purpose of data.purposes" [value]="purpose">{{ purpose }}</option>
+      </select>
+    </mat-form-field>
+    <div *ngIf="submitted && f.purpose.errors && f.purpose.errors.required" class="invalid-form-entry">
+        Purpose selection is required.
+    </div>
+    <br>
+    <span style="width:100%">
+      <mat-radio-group formControlName="sync"> 
+        <mat-radio-button value="Unsyced" style="padding-right:10px">Unsynced</mat-radio-button>
+        <mat-radio-button value="Level" style="padding-right:10px">Level Sync</mat-radio-button>
+        <mat-radio-button value="Item" style="padding-right:10px">Item Sync</mat-radio-button>
+        <mat-radio-button value="Full">Full Sync</mat-radio-button>
+      </mat-radio-group>
+    </span>
+    <div *ngIf="submitted && f.sync.errors && f.sync.errors.required" class="invalid-form-entry">
+        <br>
+        Sync selection is required.
+    </div>
+    <br>
+    <br>
+    <mat-grid-list cols="8" rowHeight="2:1">
+      <ng-container *ngFor="let slot of data.slots; let i = index">
+        <mat-grid-tile *ngIf="selectedInstance && i < selectedInstance.playerCount">
+          <mat-form-field class="job-selector">
+            <mat-label>{{ i+1 }}</mat-label> 
+            <select formControlName="slot{{ i }}" matNativeControl required>
+              <option *ngFor="let job of data.jobs" [value]="job">{{ job }}</option>
+            </select>
+          </mat-form-field>
+        </mat-grid-tile>
+      </ng-container>
+    </mat-grid-list>
+    <!-- Need error checking for all slots -->
+    <div *ngIf="submitted && f.slot1.errors && f.slot1.errors.required" class="invalid-form-entry">
+        Job selection is required for all slots.
+    </div>
+    <br>
+    <mat-form-field>
+      <mat-label>Preferred Job</mat-label>
+      <select formControlName="prefj" matNativeControl required>
+        <option *ngFor="let job of data.jobs" [value]="job">{{ job }}</option>
+      </select>
+    </mat-form-field>
+    <div *ngIf="submitted && f.prefj.errors && f.prefj.errors.required" class="invalid-form-entry">
+        Job selection is required.
+    </div>
+    <br>
+    <mat-form-field>
+      <mat-label>Alternate Jobs</mat-label>
+      <mat-select formControlName="altj" multiple>
+        <mat-option *ngFor="let job of data.jobs" [value]="job">{{ job }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <br>
+    <mat-checkbox formControlName="verf"> Verified Users Only </mat-checkbox>
+    <br>
+    <mat-form-field>
+      <textarea formControlName="pw" matInput placeholder="Password" matTextareaAutosize matAutosizeMinRows=1
+        matAutosizeMaxRows=1></textarea>
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <textarea formControlName="description" matInput placeholder="Description"></textarea>
+    </mat-form-field>
+    <br>
+  </mat-dialog-content>
+</div>
+
+<div align="start" class="partycount">
+  <p>Party ({{ data.currentPartyCount }} / {{ data.maximumPartyCount }})</p>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
+  <button mat-stroked-button color="accent" (click)="onCreate()">Create</button>
+</div>

@@ -1,0 +1,30 @@
+<div *ngIf="!isHidden">
+  <form (submit)="onRegister(registerForm)" #registerForm="ngForm" fxLayout="column" fxLayoutAlign="center center">
+    <mat-form-field>
+      <input type="text" name="username" ngModel matInput placeholder="Username" #username="ngModel" required>
+      <mat-error *ngIf="username.invalid">Please enter another Username.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="email" name="email" ngModel matInput placeholder="Email" #email="ngModel" required email>
+      <mat-error *ngIf="email.invalid">Please enter a valid email.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="email" name="emailv" ngModel matInput placeholder="Verify Email" #emailv="ngModel" required email>
+      <mat-error *ngIf="emailv.invalid">Email fields must match.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="password" name="password" ngModel matInput placeholder="Password" #password="ngModel" required password>
+      <mat-error *ngIf="password.invalid">Please enter a valid password.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="password" name="passwordv" ngModel matInput placeholder="Verify Password" #passwordv="ngModel" required password>
+      <mat-error *ngIf="passwordv.invalid">Password fields must match.</mat-error>
+    </mat-form-field><br>
+    <section class="button-container">
+      <button type="submit" mat-raised-button color="primary">Submit</button>
+    </section>
+    <section>
+      <mat-error> {{ errorMsg }} </mat-error>
+    </section>
+  </form>
+</div>

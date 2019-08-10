@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Player Details for {{ this.descriptionHeaderPartyString(data.slotNum) }}<br>
+  {{ data.instanceName }} <br>
+  {{ data.owner }} @ {{ data.ownerServer }} </h1>
+<div mat-dialog-content>
+  <p>
+    <img src="{{ data.slotAvatar }}"><br>
+    User: {{ data.slotUsername }}<br>
+    Character: {{ data.slotCharacterName }} @ {{ data.slotServerName }} ({{ data.slotDatacenterName }})<br>
+    Current Job: <br>
+    Other Jobs (Willing to Play): <br>
+  </p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="onOk()">OK</button>
+</div> 

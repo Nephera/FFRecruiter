@@ -1,0 +1,183 @@
+@import "/../app.component";
+
+div {
+  margin-bottom: 1px;
+  outline: none;
+}
+
+.center {
+  text-align: center;
+}
+
+.party-card {
+  margin: 10px 10px 0px 10px;
+  background: $dgrybg;
+  outline: 1px solid $brdclr;
+  color: $fontwt;
+  object-fit: scale-down;
+
+  img.mat-card-image {
+    object-fit: scale-down;
+  }
+
+  .mat-card-title {
+    vertical-align: text-top;
+  }
+}
+
+.partycard-id {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+
+  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
+}
+
+.partycard-instance-background {
+  img {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    min-width: 300px;
+  }
+}
+
+.outline {
+  background-color: $brdclr;
+}
+
+.partycard-purpose-icon {
+  position: absolute;
+  top: 10px;
+  left: 0px;
+
+  img {
+    position: absolute;
+    vertical-align: middle;
+    z-index: 6 !important;
+    left: 10px;
+    max-width: 40px;
+    max-height: 40px;
+  }
+}
+
+.partycard-sync-icon {
+  z-index: 6 !important;
+  position: absolute;
+  vertical-align: middle;
+  top: 10px;
+  left: 64px;
+}
+
+.partycard-verf-icon {
+  z-index: 6 !important;
+  position: absolute;
+  vertical-align: middle;
+  top: 10px;
+  left: 128px;
+}
+
+.partycard-priv-icon {
+  z-index: 6 !important;
+  position: absolute;
+  vertical-align: middle;
+  left: 0px;
+  top: 74px;
+}
+
+.partycard-priv-icon-img {
+  z-index: 6 !important;
+  position: absolute;
+  vertical-align: middle;
+  left: 288px;
+  height: 32px;
+}
+
+.party-description {
+  max-width: 200px;
+}
+
+.description-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.schedule-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.join-button {
+  color: green;
+
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.hide-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.chat-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.link-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.dismiss-button {
+  color: red;
+
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.party-subdetails-container {
+  width: 300px; 
+}
+
+.partycard-icon-bg {
+  position: absolute;
+  left: 17px;
+  top: 17px;
+  z-index: 5 !important;
+  mix-blend-mode: hard-light;
+
+  img{
+    height: 35px;
+    width: 170px;
+    background-image: linear-gradient(to right, rgba(0,0,0,0), gray);
+  }
+}
+
+app-partycomposition {
+  position: relative;
+  top: 64px;
+}
+
+mat-card-actions {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+mat-card-content {
+  margin-bottom: 0px;
+}

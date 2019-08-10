@@ -1,1 +1,85 @@
-/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/purple-green.css";
+
+$bluebg: #001020;
+$crdclr: #002030;
+$dgrybg: #0b0b0b;
+$lgrybg: #141414;
+$brdclr: #555555;
+$fontwt: #e1f2f5;
+$fontbl: #46c5ff;
+$fontg1: #808073;
+$fontg2: #aebcc0;
+$tfldbg: #404040;
+
+html {
+	background-color: $bluebg;
+	color: $fontwt;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.mat-stepper-vertical {
+  background-color: transparent;
+}
+
+.mat-card-subtitle {
+	color: $fontwt;
+}
+
+// Make sure dialogs are on top and in blue
+.mat-dialog-container {
+	background-color: $bluebg;
+  z-index: 10 !important;
+  
+  a:link, a:visited {
+    color: $fontbl;
+    font-family: 'Roboto', sans-serif;
+  }
+}
+
+.job-selector {
+	width: 100%;
+  //max-width: 80px;
+  //padding-left: 100px;
+}
+
+.invalid-form-entry {
+  font-family: 'Roboto', sans-serif;
+  color: red;
+}
+
+.partycount {
+	position: relative; 
+	top: 25px; 
+	height: 0px;
+
+	p {
+		font-family: 'Roboto', sans-serif;
+	}
+}
+
+mat-sidenav-container {
+  background-color: black;
+}
+
+// Change backdrop color to black when sidenav is out
+.mat-drawer-shown {
+    background-color: rgba(0,0,0,0.7) !important;
+}
+
+// Make sure header is on top of content, but behind dialogs
+.header-container {
+	z-index: 5 !important;
+}
+
+.mat-paginator-outer-container {
+	background-color: $dgrybg;
+}
+
+mat-form-field {
+	width: 70vw;
+	max-width: 300px;
+}

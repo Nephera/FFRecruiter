@@ -1,0 +1,59 @@
+@import "/../../styles";
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translate(-100%); /* layer under text */
+  }
+  100% {
+    transform: translate(20%); /* layer under text */
+  }
+}
+
+@keyframes fadeInText {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.img-div {
+  margin-top: 10px;
+  background-color: black;
+  outline: 1px solid $brdclr;
+  text-align: center;
+  overflow: hidden;
+  height: 150px;
+
+  * {
+    margin: 0px;
+    padding: 0px;
+  }
+
+  .banner-text {
+    max-width: 100%;
+    max-height: 100vh;
+    opacity: 0;
+    margin: auto;
+    animation-name: fadeInText;
+    animation-duration: 2s;
+    animation-delay: 0.8s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+    transform: translate(0%, -154px); /* Move up, put over image */
+    z-index: 1003 !important;
+  }
+
+  .banner-img {
+    float: right;
+    animation-name: slideInFromLeft;
+    animation-duration: 1s;
+    animation-delay: 0s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+    transform: translate(20%);
+    background: transparent;
+    z-index: 1002 !important;
+  }
+}

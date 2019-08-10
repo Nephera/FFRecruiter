@@ -1,0 +1,97 @@
+<h1 mat-dialog-title>Adding New Character</h1>
+<div>
+  <mat-vertical-stepper linear="true" #stepper>
+    <mat-step [stepControl]="firstFormGroup">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Enter Character Information</ng-template>
+        <mat-form-field>
+          <input matInput placeholder="First Name" formControlName="firstname" required>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Last Name" formControlName="lastname" required>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput placeholder="Server" formControlName="server" required>
+        </mat-form-field>
+        <div align="end">
+          <button mat-button (click)="getChar()" matStepperNext>Next</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Verify Character Lodestone</ng-template>
+        <ng-container *ngIf="!isLoading && characterValid">
+          <div>
+            <br>Please verify that this is your account before we generate a token for you.
+            If this is not your character, please press back and edit your details.
+          </div>
+          <br>
+          <div>
+            <table>
+              <tr style="height:100px">
+                <td>
+                  <img src="{{ charAvatar }}">
+                </td> 
+                <td>
+                  <a href="{{ lodestoneLink }}" target="_blank">{{ charFName }} {{ charLName }} ({{ charServer }})</a>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <mat-checkbox (click)="isCharacter = !isCharacter" required>This is my character</mat-checkbox> 
+                </td>
+              </tr>
+            </table>
+            <br>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isLoading && !characterValid">
+          <div>
+            <br>That character does not exist, please press back and re-enter your information.  If you have recently created this character or changed worlds, please allow 24 hours for SquareEnix's servers to update.
+          </div>
+        </ng-container>
+        <ng-container>
+          <mat-progress-spinner *ngIf="isLoading" class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
+        </ng-container>
+        <div align="end">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-button matStepperNext [disabled]="isLoading || !isCharacter" (click)="getToken()">Next</button>
+        </div>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Place Token in Character Profile</ng-template>
+        <ng-container *ngIf="!isLoading">
+        <div>
+          <br>Here is your token, it expires in one hour:<br><br>
+          <mat-form-field>
+            <mat-label>Token</mat-label>
+            <input matInput value="{{ verfToken }}" #verfTokenText>
+          </mat-form-field><mat-icon (click)="copyToken(verfTokenText)" style="margin-left: 10px">file_copy</mat-icon>
+          <br>
+          Copy this and paste it into your <a href="{{ lodestoneLink }}" target="_blank">Character Profile</a> located toward the bottom of your character's info, then press verify.  Do not close this dialog box or you will need to generate another token.
+          <br><br>
+          <button mat-raised-button color="primary" (click)="verifyToken()">Verify</button><br>
+          <mat-error *ngIf="errorMsg != ''">{{ errorMsg }}</mat-error>
+        </div>
+      </ng-container>
+      <ng-container>
+        <mat-progress-spinner *ngIf="isLoading" class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
+      </ng-container>
+      <div align="end">
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext [disabled]="isLoading || !isVerified">Next</button><br>
+      </div>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Done</ng-template>
+      <br>You have successfully added your character to your account.<br><br>
+      <div align="end">
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button (click)="stepper.reset(); resetForm()">Add Another</button>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
+</div>

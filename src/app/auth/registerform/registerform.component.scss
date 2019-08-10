@@ -1,0 +1,20 @@
+@import "/../../../styles";
+
+div {
+  padding: 10px;
+  outline: 1px solid $brdclr;
+}
+
+.mat-form-field {
+  width: 90%;
+  padding-bottom: 5px;
+}
+
+.button-container {
+  display: flex;
+  align-items: flex-end;
+}
+
+button {
+  margin: 10px;
+}

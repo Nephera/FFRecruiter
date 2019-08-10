@@ -1,0 +1,13 @@
+@import "/../app.component";
+
+p,
+li {
+  padding: 20px;
+}
+
+.welcome-container {
+  min-height: 400px;
+  height: 100%;
+  max-height: 500px;
+  margin: 10px;
+}

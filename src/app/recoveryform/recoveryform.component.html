@@ -1,0 +1,19 @@
+<div>
+  <mat-spinner *ngIf="isLoading"></mat-spinner>
+  <form (submit)="onRecovery(recoveryForm)" #registerForm="ngForm" *ngIf="!isLoading" fxLayout="column"
+    fxLayoutAlign="center center">
+    <mat-form-field>
+      <input type="text" ngModel matInput placeholder="Recover Password" #usernameInput="ngModel" value="Username"
+        required>
+      <mat-error *ngIf="usernameInput.invalid">Please enter another Username.</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <input type="email" ngModel matInput placeholder="Recover Username" #emailInput="ngModel" value="Email" required
+        email>
+      <mat-error *ngIf="emailInput.invalid">Please enter a valid email.</mat-error>
+    </mat-form-field><br>
+    <section class="button-container">
+      <button type="submit" mat-raised-button color="primary">Submit</button>
+    </section>
+  </form>
+</div>

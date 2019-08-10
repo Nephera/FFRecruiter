@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{ data.owner }} @ {{ data.ownerServer }} <br>
+  {{ data.instanceName }} </h1>
+<div mat-dialog-content>
+  <p>
+    This is a work in progress for static recruitment.
+    {{ data.scheduling }}
+  </p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="onOk()">OK</button>
+</div>

@@ -1,0 +1,147 @@
+@import "/../styles";
+
+html {
+  background-color: $bluebg;
+  height: 100%;
+}
+
+*.unselectable {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+mat-sidenav-content,
+body {
+  background-color: $bluebg;
+  margin: 0;
+  padding: 0;
+}
+
+#rightSideNav {
+  color: $fontwt;
+  background-color: $dgrybg;
+  outline: 2px solid $brdclr;
+  width: 300px;
+  max-width: 90%;
+
+  .mat-list-option,
+  .mat-nav-list .mat-list-item,
+  .mat-action-list .mat-list-item {
+    &:hover,
+    &:focus {
+      background: $bluebg;
+    }
+  }
+
+  .sidenav-caption {
+    color: $fontwt;
+  }
+
+  .login-form,
+  .register-form {
+    background: $bluebg;
+  }
+}
+
+.navItems {
+  outline: none;
+  padding: 0;
+  margin: 0;
+
+  ul,
+  li {
+    margin: auto;
+    list-style: none;
+  }
+}
+
+div {
+  background-color: $dgrybg;
+  color: $fontwt;
+  outline: 1px solid $brdclr;
+
+  #parties-container {
+    outline: none;
+  }
+}
+
+.header-container {
+  background-color: $dgrybg;
+  position: sticky;
+  top: 0px;
+}
+
+.filters-container {
+  background-color: $dgrybg;
+  outline: 1px solid $brdclr;
+}
+
+.parties-container {
+  background-color: $bluebg;
+  outline: none;
+}
+
+.nav-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.gold {
+  color: gold;
+}
+
+input {
+  background-color: $tfldbg;
+  border: 1px solid $brdclr;
+  color: white;
+  height: 21px;
+  width: 100%;
+
+  &.search-button {
+    background: url("/assets/img/search.png") no-repeat 4px 4px;
+    background-size: 16px 16px;
+    width: 24px;
+    height: 24px;
+    margin: 0px;
+  }
+
+  &.help-button {
+    background: url("/assets/img/help.png") no-repeat;
+    background-size: 22px 22px;
+    width: 24px;
+    height: 24px;
+    margin: 0px;
+  }
+}
+
+textarea {
+  height: 20px;
+  background-color: $tfldbg;
+}
+
+.search-button-container {
+  position: relative;
+  left: -5px;
+  background-color: $bluebg;
+}
+
+.help-button-container {
+  position: relative;
+  left: -10px;
+  background-color: $bluebg;
+}
+
+.primary-nav {
+  text-align: center;
+  height: 54px;
+  width: 100%;
+
+  .mat-nav-list {
+    width: 100%;
+  }
+}

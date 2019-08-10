@@ -1,0 +1,27 @@
+@import "/../../../styles";
+
+div {
+  padding: 10px;
+  outline: 1px solid $brdclr;
+}
+
+.mat-form-field {
+  width: 90%;
+}
+
+.button-container {
+  display: flex;
+  align-items: flex-end;
+}
+
+button {
+  margin: 10px;
+}
+
+.auth-status {
+  // TODO
+}
+
+.auth-status-spinner {
+  // TODO
+}

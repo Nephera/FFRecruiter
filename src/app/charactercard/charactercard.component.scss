@@ -1,0 +1,66 @@
+@import "/../app.component";
+
+.character-card {
+  margin: 10px 10px 0px 10px;
+  background: $dgrybg;
+  outline: 1px solid $brdclr;
+  color: $fontwt;
+  object-fit: scale-down;
+
+  img.mat-card-image {
+    object-fit: scale-down;
+  }
+
+  .mat-card-title {
+    vertical-align: text-top;
+  }
+}
+
+table tr td table tr td img {
+  width: 20px;
+  height: 20px;
+}
+
+table tr td table {
+  text-align: center;
+  font-size: 12px;
+}
+
+table tr td {
+  text-align: center;
+}
+
+table tr td img {
+  width: 64px; 
+  height: 64px;
+}
+
+.goldParse {
+  color: gold;
+}
+
+.orangeParse{
+  color: rgb(255,128,0);
+}
+
+.purpleParse{
+  color: rgb(163,53,238);
+}
+
+.blueParse{
+  color: rgb(0,112,255);
+}
+
+.greenParse{
+  color: rgb(30,255,0);
+}
+
+.grayParse{
+  color: #666;
+}
+
+button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
