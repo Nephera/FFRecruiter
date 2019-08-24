@@ -6,6 +6,7 @@
     </div>
   </div>
 <div class="parties-container" *ngIf="!isLoading">
+  <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
   <app-partycard [partyDetails]="party" *ngFor="let party of parties"></app-partycard>
+  <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
 </div>
-<mat-paginator *ngIf="!isLoading" [length]="totalPartyCount"></mat-paginator>

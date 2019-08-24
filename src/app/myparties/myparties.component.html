@@ -16,8 +16,9 @@
       New Party
     </button>
   </div>
+  <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onChangePage($event)"></mat-paginator>
   <app-partycard [partyDetails]="party" [characters]="characters" *ngFor="let party of parties"></app-partycard>
   <div class="empty-party-list" *ngIf="parties.length <= 0 && !isLoading && hasFetchedParties">You aren't currently in any parties, select "New Party"
     above or visit the Directory to get started.</div>
-  <mat-paginator *ngIf="!isLoading" [length]="totalPartyCount"></mat-paginator>
+  <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onChangePage($event)"></mat-paginator>
 </div>
