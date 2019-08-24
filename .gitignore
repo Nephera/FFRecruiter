@@ -49,3 +49,4 @@ src/backend/routes/instances.js
 src/backend/routes/parties.js
 src/backend/routes/search.js
 src/backend/routes/user.js
+src/app/ref/str/apiref.ts
