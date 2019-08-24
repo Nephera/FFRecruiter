@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, PageEvent } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { apiref } from '../ref/str/apiref';
@@ -36,6 +36,23 @@ export class MypartiesComponent implements OnInit {
   timeLeft: number = 10;
   interval;
 
+  // MatPaginator Inputs
+  length: number;
+  pageSize: number;
+  pageSizeOptions: number[] = [1, 2, 5, 10, 20];
+  currentPage: number;
+
+  setPageSizeOptions(setPageSizeOptionsInput: string) {
+    this.pageSizeOptions = setPageSizeOptionsInput.split(',').map(str => +str);
+  }
+
+  onChangePage(pageData: PageEvent){
+    this.isLoading = true;
+    this.currentPage = pageData.pageIndex + 1;
+    this.pageSize = pageData.pageSize;
+    this.getMyParties(this.pageSize, this.currentPage);
+  }
+
   startTimer() {
     this.interval = setInterval(() => {
       if(this.timeLeft > 0) {
@@ -46,23 +63,27 @@ export class MypartiesComponent implements OnInit {
 
   retryFetchData() {
     this.timeLeft = 10;
-    this.getMyParties();
+    this.getMyParties(this.pageSize, this.currentPage);
     this.getCharacterList();
     this.getInstanceList();
     this.getJobList();
     this.getPurposeList();
   }
 
-  getMyParties(): any {
+  getMyParties(partiesPerPage: number, currentPage: number): any {
     this.isLoading = true;
-    this.http.get<{ message: string, parties: any[] }>("http://" + this.apiurl.hostname() + "/api/parties/hosted").subscribe((partyData) => {
+
+    const queryParams = `?pagesize=${partiesPerPage}&page=${currentPage}`;
+
+    this.http.get<{ message: string, parties: any[], totalParties: number }>("http://" + this.apiurl.hostname() + "/api/parties/hosted" + queryParams).subscribe((partyData) => {
       this.parties = partyData.parties;
       this.isLoading = false;
+      this.length = partyData.totalParties;
       this.hasFetchedParties = true;
     });
 
-    this.http.get<{ message: string, parties: any[] }>("http://" + this.apiurl.hostname() + "/api/parties/joined").subscribe((partyData) => {
-    });
+    // this.http.get<{ message: string, parties: any[] }>("http://" + this.apiurl.hostname() + "/api/parties/joined" + queryParams).subscribe((partyData) => {
+    // });
   }
 
   getInstanceList() {
@@ -127,10 +148,14 @@ export class MypartiesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.length = 100;
+    this.pageSize = 1;
+    this.currentPage = 1
+
     this.startTimer();
     this.getJobList();
     this.getPurposeList();
-    this.getMyParties();
+    this.getMyParties(this.pageSize, this.currentPage);
     this.getCharacterList();
     this.getInstanceList();
   }
