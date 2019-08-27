@@ -16,9 +16,6 @@
     </select>
   </mat-form-field>
 </div>
-<div *ngIf="!data.isAuth">
-  Please log in by clicking the account icon at the top right.
-</div>
 <div mat-dialog-actions align="end">
   <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
   <button mat-stroked-button *ngIf="data.isAuth" [disabled]="!characterIsSelected || !jobIsSelected" (click)="onJoin()">Join</button>

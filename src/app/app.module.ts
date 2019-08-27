@@ -90,6 +90,8 @@ import { datacenters } from './ref/str/datacenters';
 import { CharactercardComponent } from './charactercard/charactercard.component';
 import { ErrorInterceptor } from './error-interceptor';
 
+import { ErrorDialog } from './dialog/error-dialog';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -120,7 +122,8 @@ import { ErrorInterceptor } from './error-interceptor';
     PartycompositionJoinDialog,
     PartycompositionPlayerDetailsDialog,
     MycharactersAddcharacterDialog,
-    CharactercardComponent
+    CharactercardComponent,
+    ErrorDialog
   ],
   imports: [
     BrowserModule,
@@ -168,6 +171,8 @@ import { ErrorInterceptor } from './error-interceptor';
     HeaderHelpDialog,
     PrimarynavMessagesDialog,
     PartycompositionJoinDialog,
-    PartycompositionPlayerDetailsDialog]
+    PartycompositionPlayerDetailsDialog,
+    ErrorDialog
+  ]
 })
 export class AppModule { }
