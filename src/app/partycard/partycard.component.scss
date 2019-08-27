@@ -46,7 +46,9 @@ div {
   background-color: $brdclr;
 }
 
-.partycard-purpose-icon {
+.partycard-purpose-icon,
+.partycard-sync-icon,
+.partycard-verf-icon {
   position: absolute;
   top: 10px;
   left: 0px;
@@ -113,6 +115,15 @@ div {
 
 .join-button {
   color: green;
+
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.leave-button {
+  color: red;
 
   &:hover,
   &:focus {

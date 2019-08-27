@@ -6,17 +6,18 @@ import { apiref } from '../ref/str/apiref';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { ErrorDialog } from '../dialog/error-dialog';
 
 export interface JoinDialogData {
-  instance: string;
-  owner: string;
-  ownerServer: string;
-  slotNum: number;
-  partyID: string;
-  characters: any[];
-  isAuth: boolean;
-  jobsWanted: string[];
-  levelReq: number;
+  instance: string,
+  owner: string,
+  ownerServer: string,
+  slotNum: number,
+  partyID: string,
+  characters: any[],
+  isAuth: boolean,
+  jobsWanted: string[],
+  levelReq: number
 }
 
 export interface DetailsDialogData {
@@ -31,6 +32,8 @@ export interface DetailsDialogData {
   slotCharacterName: string,
   slotServerName: string,
   slotDatacenterName: string,
+  slotJob: string,
+  slotAltJobs: string[],
   slotNum: number
 }
 
@@ -79,49 +82,94 @@ export class PartycompositionComponent implements OnInit {
 
   onClick(index: number){
     if(this.isPopulated(index)) {
-      // Get Details for Player
-      const dialogRef = this.dialog.open(PartycompositionPlayerDetailsDialog,
-        {
-          autoFocus: false,
-          width: '90vw',
-          maxWidth: '600px',
-          maxHeight: '90%',
-          data: {
-            instanceName: this.partyDetails.instanceName,
-            owner: this.partyDetails.ownerCharName,
-            ownerServer: this.partyDetails.ownerServer,
-            slotAvatar: "https://img2.finalfantasyxiv.com/f/b093cbb13882f8f1f638f9d751ec084e_96ab1df8877c1f8ba6a89a39cccfd437fc0_96x96.jpg",
-            slotFFLogs: "FFLogs",
-            slotLodestone: "Lodestone",
-            slotProfile: "Profile",
-            slotUsername: this.partyDetails.composition[index].userOccupying.cName,
-            slotCharacterName: this.partyDetails.composition[index].userOccupying.cName,
-            slotServerName: this.partyDetails.composition[index].userOccupying.cServer,
-            slotDatacenterName: this.partyDetails.composition[index].userOccupying.cDC,
-            slotNum: index,
-          }
-        });
+      // Get Details for Player using Name/Server
+      this.http.get<{ message: string, character: any}>("http://" + this.apiurl.hostname() + 
+        "/api/characters/get/" + 
+        this.partyDetails.composition[index].userOccupying.cServer + "/" + 
+        this.partyDetails.composition[index].userOccupying.cName).subscribe((characterData) => {
+
+          // Display Details
+          const dialogRef = this.dialog.open(PartycompositionPlayerDetailsDialog,
+            {
+              autoFocus: false,
+              width: '90vw',
+              maxWidth: '600px',
+              maxHeight: '90%',
+              data: {
+                instanceName: this.partyDetails.instanceName,
+                owner: this.partyDetails.ownerCharName,
+                ownerServer: this.partyDetails.ownerServer,
+                slotAvatar: characterData.character.avatar,
+                slotFFLogs: "https://www.fflogs.com/character/na/" + characterData.character.server + "/" + characterData.character.name,
+                slotLodestone: "https://na.finalfantasyxiv.com/lodestone/character/" + characterData.character.lodestoneID,
+                slotProfile: "Profile",
+                slotUsername: this.partyDetails.composition[index].userOccupying.cName,
+                slotCharacterName: this.partyDetails.composition[index].userOccupying.cName,
+                slotServerName: this.partyDetails.composition[index].userOccupying.cServer,
+                slotDatacenterName: this.partyDetails.composition[index].userOccupying.cDC,
+                slotJob: this.partyDetails.composition[index].userOccupying.cJob,
+                slotAltJobs: this.partyDetails.composition[index].userOccupying.cBUJobs,
+                slotNum: index,
+              }
+            });
+      });
     }
     else {
-      // Attempt to Join
-      const dialogRef = this.dialog.open(PartycompositionJoinDialog,
-        {
-          autoFocus: false,
-          width: '90vw',
-          maxWidth: '600px',
-          maxHeight: '90%',
-          data: {
-            partyID: this.partyDetails._id,
-            instanceName: this.partyDetails.instanceName,
-            owner: this.partyDetails.ownerCharName,
-            ownerServer: this.partyDetails.ownerServer,
-            slotNum: index,
-            characters: this.characters,
-            isAuth: this.isAuth,
-            jobsWanted: [this.getSlotTitle(index)],
-            levelReq: 1 // TODO: Should get levelReq from partyDetails.instanceLevel
+      if(!this.isAuth) {
+        const dialogRef = this.dialog.open(ErrorDialog,
+          {
+            autoFocus: false,
+            width: '90vw',
+            maxWidth: '600px',
+            maxHeight: '90%',
+            data: {
+              title: "Unable to Join: Authenticate",
+              text: "You must first log into FF Recruiter"
+            }
+          })
+      }
+      else { // User is logged in
+        // Make sure not already part of this party
+        this.http.get<{ message: string, parties: any}>("http://" + this.apiurl.hostname() + 
+        "/api/user/get/parties/" + 
+        localStorage.getItem("username")).subscribe((partiesData) => {
+          // If the ID is contained in the parties already joined, throw error
+          if(partiesData.parties.indexOf(this.partyDetails._id) > -1)
+          {
+            const dialogRef = this.dialog.open(ErrorDialog,
+              {
+                autoFocus: false,
+                width: '90vw',
+                maxWidth: '600px',
+                maxHeight: '90%',
+                data: {
+                  title: "Unable to Join: Already Joined",
+                  text: "You are already part of this party, you cannot fill more than one slot."
+                }
+              })
           }
-        });
+          else { // Otherwise pull up dialog for user to enter character info to join
+            const dialogRef = this.dialog.open(PartycompositionJoinDialog,
+              {
+                autoFocus: false,
+                width: '90vw',
+                maxWidth: '600px',
+                maxHeight: '90%',
+                data: {
+                  partyID: this.partyDetails._id,
+                  instanceName: this.partyDetails.instanceName,
+                  owner: this.partyDetails.ownerCharName,
+                  ownerServer: this.partyDetails.ownerServer,
+                  slotNum: index,
+                  characters: this.characters,
+                  isAuth: this.isAuth,
+                  jobsWanted: [this.getSlotTitle(index)]
+                  //levelReq: 1 // TODO: Should get levelReq from partyDetails.instanceLevel
+                }
+              });
+          }
+        })
+      }
     }
   }
 
@@ -348,6 +396,8 @@ export class PartycompositionJoinDialog {
       // If successful, close
       this.dialogRef.close();
     });
+
+    this.dialogRef.close();
   }
 
 }

@@ -8,10 +8,10 @@
         <img title="{{ purposeTitle }}" class="partycard-purpose-icon-img" src="{{ purposeIcon }}">
       </td>
       <td class="partycard-sync-icon center">
-        <img title="Sync" mat-card-avatar src="{{ syncIcon }}">
+        <img title="{{ syncTitle }}" class="partycard-sync-icon-img" src="{{ syncIcon }}">
       </td>
       <td class="partycard-verf-icon center">
-        <img title="Verified users Only" mat-card-avatar src="{{ verifiedIcon }}">
+        <img title="Verified users Only" class="partycard-verf-icon-img" src="{{ verifiedIcon }}">
       </td>
       <td class="partycard-priv-icon center">
         <img *ngIf="hasPassword()" title="Private Party" class="partycard-priv-icon-img" src="{{ privatePartyIcon }}">
@@ -52,10 +52,15 @@
             schedule</mat-icon>
         </button>
       </div>
-      <div style="float:right;">
+      <div *ngIf="isAuth" style="float:right">
         <button mat-icon-button style="display:none">
           <mat-icon class="join-button" (click)="confirmJoin()" title="Join Party">
             done
+          </mat-icon>
+        </button>
+        <button mat-icon-button>
+          <mat-icon class="leave-button" (click)="confirmLeave()" title="Leave Party">
+            eject
           </mat-icon>
         </button>
         <button mat-icon-button style="display:none">
@@ -79,6 +84,28 @@
           </mat-icon>
         </button>
       </div>
+      <div *ngIf="!isAuth" style="float:right">
+          <button mat-icon-button style="display:none">
+            <mat-icon class="link-button" (click)="confirmLink()" title="Copy Link">
+              link
+            </mat-icon>
+          </button>
+          <button mat-icon-button style="display:none">
+            <mat-icon class="chat-button" (click)="confirmMessage()" title="Send Message">
+              chat
+            </mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon class="hide-button" (click)="toggleHidden()" title="Hide Party">
+              visibility_off
+            </mat-icon>
+          </button>
+          <button mat-icon-button style="display:none">
+            <mat-icon class="dismiss-button" (click)="confirmDismiss()" title="Dismiss">
+              not_interested
+            </mat-icon>
+          </button>
+        </div>
     </mat-card-actions>
   </div>
 </mat-card>
