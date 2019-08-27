@@ -38,8 +38,14 @@ export class PartydirectoryComponent implements OnInit {
 
   getParties(): any {
     this.isLoading = true;
+<<<<<<< Updated upstream
     // TODO: Filtering should be done here
     this.http.get<{ message: string, parties: any[] }>("http://" + this.apiurl.hostname() + "/api/parties/all").subscribe((partyData) => {
+=======
+
+    const queryParams = `?pagesize=${partiesPerPage}&page=${currentPage}`;
+    this.http.get<{ message: string, parties: any[], totalParties: number }>("http://" + this.apiurl.hostname() + "/api/parties/all" + queryParams).subscribe((partyData) => {
+>>>>>>> Stashed changes
       this.parties = partyData.parties;
       this.isLoading = false;
     });

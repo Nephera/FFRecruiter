@@ -1,7 +1,11 @@
 import { Component, OnInit, Input, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { HttpClient } from '@angular/common/http';
 import { partyIcons } from '../ref/img/partyIcons';
 import { PartyPurpose } from '../../backend/models/partypurpose';
+import { apiref } from '../ref/str/apiref';
+import { AuthService } from '../auth/auth.service';
+import { Subscription } from 'rxjs';
 
 export interface DescriptionDialogData {
   instance: string;
@@ -39,6 +43,9 @@ export class PartycardComponent implements OnInit {
   @Input() public partyDetails: any;
   @Input() public characters: any;
 
+  private authListenerSub: Subscription;
+  isAuth = false;
+  
   hidden: boolean = false;
 
   id: string;
@@ -58,6 +65,7 @@ export class PartycardComponent implements OnInit {
   privatePartyIcon: string;
   purposeIcon: string;
   syncIcon: string;
+  syncTitle: string;
   verifiedIcon: string;
   purposeTitle: string;
   purposeIconObj: PartyPurpose;
@@ -122,6 +130,18 @@ export class PartycardComponent implements OnInit {
       });
   }
 
+  confirmLeave() {
+    console.log("Confirm Leave");
+    const postData = { message: "None" };
+    console.log("http://" + this.apiurl.hostname() + "/api/user/parties/leave");
+    this.http.post<{ message: string }>("http://" + this.apiurl.hostname() + "/api/user/parties/leave", postData)
+    .subscribe(response => {
+      console.log("success");
+    }, error => {
+      console.log("error" + error.error.message);
+    });
+  }
+
   confirmLink(): void {
     return; // TODO: Temporary, need to implement functionality.
   }
@@ -150,10 +170,16 @@ export class PartycardComponent implements OnInit {
       });
   }
 
-  constructor(public dialog: MatDialog, private icons: partyIcons) {
+  constructor(public dialog: MatDialog, private icons: partyIcons, private http: HttpClient, private apiurl: apiref, private as: AuthService) {
   }
 
   ngOnInit() {
+    this.as.autoAuthUser();
+    this.isAuth = this.as.getIsAuth();
+    this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
+      this.isAuth = isAuthenticated;
+    });
+
     this.id = this.partyDetails.id;
     this.instance = this.partyDetails.instance;
     this.instanceName = this.partyDetails.instanceName;
@@ -172,15 +198,13 @@ export class PartycardComponent implements OnInit {
     this.purposeIconObj = this.icons.get(this.purpose);
     this.purposeIcon = this.purposeIconObj.icon;
     this.purposeTitle = this.purposeIconObj.title;
+    this.syncTitle = "Sync"; // TODO: Temporary, should be dynamic
 
     this.syncIcon = "https://imagizer.imageshack.com/img924/3685/sQUzot.png"; // TODO: Temporary, should be dynamic
     this.verifiedIcon = "https://imagizer.imageshack.com/img924/3685/sQUzot.png"; // TODO: Temporary, should be dynamic
 
     this.instanceIconGradient = this.icons.get("instanceIconGradient").icon;
-    // console.log("Party Details");
-    // console.log(this.partyDetails);
   }
-
 }
 
 @Component({
