@@ -22,5 +22,6 @@ export class ConfirmDialog {
 
   onOk() {
     // Send confirmation
+    this.dialogRef.close();
   }
 }

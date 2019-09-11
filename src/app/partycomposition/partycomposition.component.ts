@@ -244,6 +244,7 @@ export class PartycompositionJoinDialog {
   jobIsSelected = false;
 
   selectedCharacter: any;
+  //jobSelected: string;
 
   jobList = ['PLD', 'GLA', 'WAR', 'MRD', 'DRK', 'GNB', 'WHM', 'CNJ', 'SCH', 'ACN', 'AST', 'MNK', 'PGL', 'DRG', 'LNC',
       'NIN', 'ROG', 'SAM', 'BRD', 'ARC', 'MCH', 'DNC', 'BLM', 'THM', 'SMN', 'ACN', 'RDM', 'BLU'];
@@ -268,14 +269,18 @@ export class PartycompositionJoinDialog {
 
     if(this.jobList.length > 0) {
       this.form.get("jobSelected").setValue(this.jobList[0]);
-      this.jobIsSelected = true;
-    }
-    else {
-      this.jobIsSelected = false;
     }
   }
 
   selectJob(){
+    // //this.form.get("jobSelected").
+    // console.log("Job Selected");
+    // console.log(this.form.get(["jobSelected", "name"]));
+    // console.log("Job Selected Value");
+    // console.log(this.form.get("jobSelected").value);
+    // console.log("Job Selected Value Name");
+    // // console.log(this.form.get('jobSelected').value.name);
+    // this.jobSelected = this.form.get("jobSelected").value.name;
     this.jobIsSelected = true;
   }
 
@@ -364,10 +369,12 @@ export class PartycompositionJoinDialog {
     let ret = [];
     for(var i = 0; i < filteredJobs.length; i++){
       if(filteredJobs[i].lvl > 0){
-        ret.push(filteredJobs[i]);
+        ret.push(filteredJobs[i].name);
       }
     }
 
+    console.log("ret");
+    console.log(ret);
     return ret;
   }
 
@@ -384,9 +391,7 @@ export class PartycompositionJoinDialog {
 
   onJoin() {
     this.form.addControl('party', new FormControl(this.data.partyID));
-    this.form.addControl('charSelect', new FormControl(this.form.get('charSelected').value));
     this.form.addControl('slotNum', new FormControl(this.data.slotNum));
-    this.form.addControl('jobSelect', new FormControl(this.form.get('jobSelected').value.name));
     // this.form.addControl('altJobs', new FormControl(this.form.get('altJobs').value));
 
     this.http.post<{}>("http://" + this.apiurl.hostname() + "/api/parties/join", this.form.value)

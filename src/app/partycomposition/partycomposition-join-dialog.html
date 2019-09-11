@@ -12,7 +12,7 @@
   <mat-form-field>
     <mat-label>Job Class</mat-label>
     <select formControlName="jobSelected" (change)="selectJob()" matNativeControl required>
-      <option *ngFor="let job of jobList" [value]="job">{{ job.name }}</option>
+      <option *ngFor="let job of jobList" [ngValue]="job">{{ job }}</option>
     </select>
   </mat-form-field>
 </div>

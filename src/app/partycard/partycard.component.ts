@@ -6,6 +6,8 @@ import { PartyPurpose } from '../../backend/models/partypurpose';
 import { apiref } from '../ref/str/apiref';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
+import { ConfirmDialog } from '../dialog/confirm-dialog';
+import { ErrorDialog } from '../dialog/error-dialog';
 
 export interface DescriptionDialogData {
   instance: string;
@@ -131,14 +133,31 @@ export class PartycardComponent implements OnInit {
   }
 
   confirmLeave() {
-    console.log("Confirm Leave");
-    const postData = { message: "None" };
-    console.log("http://" + this.apiurl.hostname() + "/api/user/parties/leave");
-    this.http.post<{ message: string }>("http://" + this.apiurl.hostname() + "/api/user/parties/leave", postData)
+    this.http.post<{ message: string }>("http://" + this.apiurl.hostname() + "/api/user/parties/leave", { id: this.id, username: localStorage.getItem("username") })
     .subscribe(response => {
-      console.log("success");
+      const dialogRef = this.dialog.open(ConfirmDialog,
+        {
+          autoFocus: false,
+          width: '90vw',
+          maxWidth: '600px',
+          maxHeight: '90%',
+          data: {
+            title: "Left Party",
+            text: response.message
+          }
+        });
     }, error => {
-      console.log("error" + error.error.message);
+      const dialogRef = this.dialog.open(ErrorDialog,
+        {
+          autoFocus: false,
+          width: '90vw',
+          maxWidth: '600px',
+          maxHeight: '90%',
+          data: {
+            title: error.error.title,
+            text: error.error.message
+          }
+        });
     });
   }
 
@@ -180,7 +199,7 @@ export class PartycardComponent implements OnInit {
       this.isAuth = isAuthenticated;
     });
 
-    this.id = this.partyDetails.id;
+    this.id = this.partyDetails._id;
     this.instance = this.partyDetails.instance;
     this.instanceName = this.partyDetails.instanceName;
     this.instanceimg = this.partyDetails.instanceimg;

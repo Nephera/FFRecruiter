@@ -91,6 +91,7 @@ import { CharactercardComponent } from './charactercard/charactercard.component'
 import { ErrorInterceptor } from './error-interceptor';
 
 import { ErrorDialog } from './dialog/error-dialog';
+import { ConfirmDialog } from './dialog/confirm-dialog';
 
 @NgModule({
   declarations: [
@@ -123,7 +124,8 @@ import { ErrorDialog } from './dialog/error-dialog';
     PartycompositionPlayerDetailsDialog,
     MycharactersAddcharacterDialog,
     CharactercardComponent,
-    ErrorDialog
+    ErrorDialog,
+    ConfirmDialog
   ],
   imports: [
     BrowserModule,
@@ -172,7 +174,8 @@ import { ErrorDialog } from './dialog/error-dialog';
     PrimarynavMessagesDialog,
     PartycompositionJoinDialog,
     PartycompositionPlayerDetailsDialog,
-    ErrorDialog
+    ErrorDialog,
+    ConfirmDialog
   ]
 })
 export class AppModule { }
