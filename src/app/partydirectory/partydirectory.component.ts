@@ -54,8 +54,6 @@ export class PartydirectoryComponent implements OnInit {
     this.isLoading = true;
 
     const queryParams = `?pagesize=${partiesPerPage}&page=${currentPage}`;
-    
-    console.log(queryParams);
     this.http.get<{ message: string, parties: any[], totalParties: number }>("http://" + this.apiurl.hostname() + "/api/parties/all" + queryParams).subscribe((partyData) => {
       this.parties = partyData.parties;
       this.length = partyData.totalParties;

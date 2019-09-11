@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
-const PartySlot = require('./partyslot')
+// const PartySlot = require('./partyslot');
 
 var partySlotSchema = mongoose.Schema({
   userOccupying: {
+    name: { type: String, required: true },
     cName: { type: String, required: true }, 
     cServer: { type: String, required: true },  
     cDC: { type: String, required: true },  
