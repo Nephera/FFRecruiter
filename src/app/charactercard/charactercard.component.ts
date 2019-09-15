@@ -30,9 +30,8 @@ export class CharactercardComponent implements OnInit {
   jobLevels = [];
   parses = [];
 
-  refreshCharacter()
-  {
-    this.http.get<{Results: [any]}>("http://" + this.apiurl.hostname() + "/api/characters/refresh/" + this.characterDetails.lodestoneID)
+  refreshCharacter() { 
+    this.http.patch<{Results: [any]}>("http://" + this.apiurl.hostname() + "/api/characters/refresh/", {id: this.characterDetails.lodestoneID})
       .subscribe((refreshData) => {});
   }
 

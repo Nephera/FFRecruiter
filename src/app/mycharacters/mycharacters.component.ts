@@ -59,7 +59,7 @@ export class MycharactersComponent implements OnInit {
 
   getCharacterList() {
     this.isLoading = true;
-    this.http.post<{ message: string, characters: any }>("http://" + this.apiurl.hostname() + "/api/characters/get", {owner: localStorage.username, token: localStorage.token}).subscribe((characterData) => {
+    this.http.get<{ message: string, characters: any }>("http://" + this.apiurl.hostname() + "/api/characters/get/" + localStorage.username).subscribe((characterData) => {
       this.characters = characterData.characters;
       this.isLoading = false;
       this.hasFetchedCharacters = true;
@@ -174,7 +174,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
       server: this.charServer
     };
 
-    this.http.post<{token: string, expiresIn: string}>("http://" + this.apiurl.hostname() + "/api/characters/get_token", data)
+    this.http.post<{token: string, expiresIn: string}>("http://" + this.apiurl.hostname() + "/api/characters/generate_token", data)
     .subscribe((tokenData) => {
       this.verfToken = tokenData.token,
       this.isLoading = false;
@@ -197,7 +197,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
 
           const data = {
             owner: localStorage.username,
-            token: localStorage.token,
+            //token: localStorage.token,
             avatar: this.charAvatar,
             ID: this.charID,
             first: this.charFName,
@@ -206,8 +206,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
             datacenter: this.DCs.getDatacenter(this.charServer)
           }
 
-          // TODO: Needs protection on the backend
-          this.http.post<{response: any}>("http://" + this.apiurl.hostname() + "/api/characters/add", data)
+          this.http.put<{response: any}>("http://" + this.apiurl.hostname() + "/api/characters/add", data)
             .subscribe((responseData) => {})
         }
         else{

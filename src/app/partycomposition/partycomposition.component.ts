@@ -7,6 +7,7 @@ import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ErrorDialog } from '../dialog/error-dialog';
+import { ConfirmDialog } from '../dialog/confirm-dialog';
 
 export interface JoinDialogData {
   instance: string,
@@ -244,7 +245,6 @@ export class PartycompositionJoinDialog {
   jobIsSelected = false;
 
   selectedCharacter: any;
-  //jobSelected: string;
 
   jobList = ['PLD', 'GLA', 'WAR', 'MRD', 'DRK', 'GNB', 'WHM', 'CNJ', 'SCH', 'ACN', 'AST', 'MNK', 'PGL', 'DRG', 'LNC',
       'NIN', 'ROG', 'SAM', 'BRD', 'ARC', 'MCH', 'DNC', 'BLM', 'THM', 'SMN', 'ACN', 'RDM', 'BLU'];
@@ -273,14 +273,6 @@ export class PartycompositionJoinDialog {
   }
 
   selectJob(){
-    // //this.form.get("jobSelected").
-    // console.log("Job Selected");
-    // console.log(this.form.get(["jobSelected", "name"]));
-    // console.log("Job Selected Value");
-    // console.log(this.form.get("jobSelected").value);
-    // console.log("Job Selected Value Name");
-    // // console.log(this.form.get('jobSelected').value.name);
-    // this.jobSelected = this.form.get("jobSelected").value.name;
     this.jobIsSelected = true;
   }
 
@@ -369,12 +361,10 @@ export class PartycompositionJoinDialog {
     let ret = [];
     for(var i = 0; i < filteredJobs.length; i++){
       if(filteredJobs[i].lvl > 0){
-        ret.push(filteredJobs[i].name);
+        ret.push(filteredJobs[i].name); // May want to pass objects back at some point instead of just the name
       }
     }
 
-    console.log("ret");
-    console.log(ret);
     return ret;
   }
 
@@ -394,15 +384,21 @@ export class PartycompositionJoinDialog {
     this.form.addControl('slotNum', new FormControl(this.data.slotNum));
     // this.form.addControl('altJobs', new FormControl(this.form.get('altJobs').value));
 
+    console.log(this.form.value);
+
     this.http.post<{}>("http://" + this.apiurl.hostname() + "/api/parties/join", this.form.value)
       .subscribe((responseData) => {
-      // If error, display
+        this.dialogRef.close();
 
-      // If successful, close
-      this.dialogRef.close();
+        // TODO: Update local display for composition
+        // this.http.get<{ composition: any }>("http://" + this.apiurl.hostname() + "/api/parties/composition/" + this.form.value.party )
+        //   .subscribe(response => {
+        //   });
     });
 
-    this.dialogRef.close();
+    // Get new composition and display it for user
+    // location.reload();
+    // this.dialogRef.close();
   }
 
 }
