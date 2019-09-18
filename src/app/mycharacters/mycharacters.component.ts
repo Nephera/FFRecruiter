@@ -146,16 +146,13 @@ export class MycharactersAddcharacterDialog implements OnInit {
 
       if(this.stringIsSafe(this.charFName + this.charLName + this.charServer))
       {
-        this.http.get<{Results: [any]}>("https://xivapi.com/character/search?name=" +
-        this.charFName + "+" +
-        this.charLName + "&server=" +
-        this.charServer)
+        this.http.get<{character: {ID: string, Avatar: string}}>("http://" + this.apiurl.hostname() + "/api/characters/get/" + this.charFName + "/" + this.charLName + "/" + this.charServer)
         .subscribe((characterData) => {
           this.isLoading = false;
 
-          if(characterData.Results[0]) {      
-            this.charID = characterData.Results[0].ID;
-            this.charAvatar = characterData.Results[0].Avatar;
+          if(characterData) {      
+            this.charID = characterData.character.ID;
+            this.charAvatar = characterData.character.Avatar;
             this.lodestoneLink = "https://na.finalfantasyxiv.com/lodestone/character/" + this.charID + "/";
             this.characterValid = true;
           }
