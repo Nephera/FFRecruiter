@@ -11,17 +11,3 @@ table.header-container {
   border-bottom: solid 1px $brdclr;
   z-index: 1003;
 }
-
-.search-field {
-  outline: none;
-}
-
-.search-button-container,
-.help-button-container {
-  outline: none;
-  background-color: transparent;
-}
-
-.search-button-container {
-  margin-left: 10px;
-}
