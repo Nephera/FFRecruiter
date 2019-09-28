@@ -26,7 +26,9 @@ import {
   MatRadioModule,
   MatProgressSpinnerModule,
   MatPaginatorModule,
-  MatGridListModule
+  MatGridListModule,
+  MatSliderModule,
+  MatSlideToggleModule
 } from '@angular/material';
 
 import { Routes, RouterModule } from '@angular/router';
@@ -35,8 +37,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import {
-  HeaderComponent,
-  HeaderHelpDialog
+  HeaderComponent
 } from './header/header.component';
 import { ControlpanelComponent } from './header/controlpanel/controlpanel.component';
 
@@ -50,7 +51,7 @@ import {
 } from './partycard/partycard.component';
 
 import { BannerComponent } from './banner/banner.component';
-import { PartydirectoryComponent } from './partydirectory/partydirectory.component';
+import { PartydirectoryComponent, PartyDirectoryCreatepartyDialog } from './partydirectory/partydirectory.component';
 
 import {
   PrimarynavComponent,
@@ -62,10 +63,6 @@ import { RegisterformComponent } from './auth/registerform/registerform.componen
 
 import { ControlpanelService } from './header/controlpanel/controlpanel.service';
 import { WelcomeComponent } from './welcome/welcome.component';
-import {
-  MypartiesComponent,
-  MypartiesCreatepartyDialog
-} from './myparties/myparties.component';
 
 import { MycharactersComponent, 
   MycharactersAddcharacterDialog
@@ -92,6 +89,7 @@ import { ErrorInterceptor } from './error-interceptor';
 
 import { ErrorDialog } from './dialog/error-dialog';
 import { ConfirmDialog } from './dialog/confirm-dialog';
+import { PartyfilterComponent } from './primarynav/partyfilter/partyfilter.component';
 
 @NgModule({
   declarations: [
@@ -105,7 +103,6 @@ import { ConfirmDialog } from './dialog/confirm-dialog';
     LoginformComponent,
     RegisterformComponent,
     WelcomeComponent,
-    MypartiesComponent,
     MycharactersComponent,
     PartycompositionComponent,
     PartyscheduleComponent,
@@ -116,8 +113,6 @@ import { ConfirmDialog } from './dialog/confirm-dialog';
     PartycardJoinDialog,
     PartycardMessageDialog,
     PartycardDismissDialog,
-    MypartiesCreatepartyDialog,
-    HeaderHelpDialog,
     PrimarynavMessagesDialog,
     RecoveryformComponent,
     PartycompositionJoinDialog,
@@ -125,7 +120,9 @@ import { ConfirmDialog } from './dialog/confirm-dialog';
     MycharactersAddcharacterDialog,
     CharactercardComponent,
     ErrorDialog,
-    ConfirmDialog
+    ConfirmDialog,
+    PartyfilterComponent,
+    PartyDirectoryCreatepartyDialog
   ],
   imports: [
     BrowserModule,
@@ -151,7 +148,9 @@ import { ConfirmDialog } from './dialog/confirm-dialog';
     MatPaginatorModule,
     ReactiveFormsModule,
     MatGridListModule,
-    MatStepperModule
+    MatStepperModule,
+    MatSliderModule,
+    MatSlideToggleModule
   ],
   providers: [
     ControlpanelService,
@@ -164,18 +163,17 @@ import { ConfirmDialog } from './dialog/confirm-dialog';
   bootstrap: [AppComponent],
   entryComponents: [MycharactersAddcharacterDialog,
     PartycardComponent,
-    MypartiesCreatepartyDialog,
     PartycardDescriptionDialog,
     PartycardScheduleDialog,
     PartycardJoinDialog,
     PartycardMessageDialog,
     PartycardDismissDialog,
-    HeaderHelpDialog,
     PrimarynavMessagesDialog,
     PartycompositionJoinDialog,
     PartycompositionPlayerDetailsDialog,
     ErrorDialog,
-    ConfirmDialog
+    ConfirmDialog,
+    PartyDirectoryCreatepartyDialog
   ]
 })
 export class AppModule { }
