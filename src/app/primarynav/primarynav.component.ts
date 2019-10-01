@@ -2,9 +2,11 @@ import { Component, OnInit, Input, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
 
-export interface MessagesDialogData {}
+export interface MessagesDialogData {
+  //instance: string;
+
+}
 
 @Component({
   selector: 'app-primarynav',
@@ -27,10 +29,12 @@ export class PrimarynavComponent implements OnInit {
         width: '90vw',
         maxWidth: '600px',
         maxHeight: '90%',
+        data: {
+        }
       });
   }
 
-  constructor(public dialog: MatDialog, private as: AuthService) {}
+  constructor(public dialog: MatDialog, private as: AuthService) { }
 
   ngOnInit()
   {
