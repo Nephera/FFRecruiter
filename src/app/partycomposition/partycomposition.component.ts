@@ -104,7 +104,7 @@ export class PartycompositionComponent implements OnInit {
                 slotFFLogs: "https://www.fflogs.com/character/na/" + characterData.character.server + "/" + characterData.character.name,
                 slotLodestone: "https://na.finalfantasyxiv.com/lodestone/character/" + characterData.character.lodestoneID,
                 slotProfile: "Profile",
-                slotUsername: this.partyDetails.composition[index].userOccupying.name,
+                slotUsername: this.partyDetails.composition[index].userOccupying.cName,
                 slotCharacterName: this.partyDetails.composition[index].userOccupying.cName,
                 slotServerName: this.partyDetails.composition[index].userOccupying.cServer,
                 slotDatacenterName: this.partyDetails.composition[index].userOccupying.cDC,

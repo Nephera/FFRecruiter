@@ -99,7 +99,7 @@ export class AuthService {
           this.saveAuthData(response.token, expirationDate, response.username);
           this.cps.setSNO(false);
           this.logging = false;
-          this.router.navigate(['/partydirectory']);
+          this.router.navigate(['/myparties']);
         }
       }, error => {
         this.authMsgListener.next(error.error.message);

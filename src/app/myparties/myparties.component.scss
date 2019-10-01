@@ -1,0 +1,134 @@
+@import "/../app.component";
+
+.myparties-container {
+  background-color: $bluebg;
+}
+
+.spinner {
+  margin: 30px auto;
+}
+
+.empty-party-list {
+  outline: 1px solid $brdclr;
+  text-align: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 1px;
+}
+
+mat-icon {
+  padding-right: 5px;
+  margin: none;
+}
+
+.secondary-nav {
+  text-align: center;
+  background-color: transparent;
+}
+
+.progress-notifications {
+  background-color: transparent;
+}
+
+div {
+  outline: none;
+  margin-top: 10px;
+}
+
+.party-card {
+  outline: 1px solid $brdclr;
+}
+
+.partycard-instance-background {
+  img {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+  }
+}
+
+mat-paginator {
+  margin-top: 10px;
+}
+
+.mat-paginator-outer-container {
+  background-color: black;
+}
+
+.mat-paginator-container {
+  background-color: black;
+}
+
+.partycard-purpose-icon {
+  position: absolute;
+  top: 10px;
+  left: 0px;
+}
+
+.partycard-sync-icon {
+  position: absolute;
+  top: 10px;
+  left: 64px;
+}
+
+.partycard-verf-icon {
+  position: absolute;
+  top: 10px;
+  left: 128px;
+}
+
+.partycard-priv-icon {
+  position: absolute;
+  left: 0px;
+  top: 74px;
+}
+
+.party-description {
+  max-width: 600px;
+}
+
+.description-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.schedule-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.join-button {
+  color: green;
+
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.hide-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.chat-button {
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
+
+.dismiss-button {
+  color: red;
+
+  &:hover,
+  &:focus {
+    color: gold;
+  }
+}
