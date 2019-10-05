@@ -68,7 +68,7 @@ export class PartyfilterService {
     if(t === "No Filter")
       this.filter.itype = null;
     else
-      this.filter.itype = t;
+      this.filter.itype = t; 
   }
 
   update(){
