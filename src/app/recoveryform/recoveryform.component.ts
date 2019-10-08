@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RecoveryformComponent implements OnInit {
 
+  isLoading: boolean = false;
+  
   constructor() { }
 
   ngOnInit() {

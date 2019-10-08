@@ -14,6 +14,8 @@ export interface CreateDialogData {
   instances: [any]; // should be object array
   purposes: [string];
   characters: [string]; // should be object array
+  currentPartyCount: number;
+  maximumPartyCount: number;
 }
 
 @Component({
@@ -321,7 +323,8 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
       verf: false,
       pw: "",
       description: "",
-      maximumPartyCount: 8
+      currentPartyCount: 0,
+      maximumPartyCount: 5
     }); }
 
   ngOnInit(){

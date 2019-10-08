@@ -12,8 +12,10 @@ import { Subscription } from 'rxjs';
 export class ControlpanelComponent implements OnInit {
 
   name = 'Login';
+  avatar = "";
   authUserListenerSub: Subscription;
   authListenerSub: Subscription;
+  authAvatarListenerSub: Subscription;
   userIsAuthenticated = false;
 
   constructor(private cps: ControlpanelService, private as: AuthService) {}
@@ -26,6 +28,7 @@ export class ControlpanelComponent implements OnInit {
     });
 
     const n = localStorage.getItem('username');
+    const a = localStorage.getItem('avatar');
 
     if(n && this.userIsAuthenticated){
       this.name = n;
@@ -34,8 +37,19 @@ export class ControlpanelComponent implements OnInit {
       this.name = "Login";
     }
 
+    if(a && this.userIsAuthenticated){
+      this.avatar = a;
+    }
+    else{
+      this.avatar = "";
+    }
+
     this.authUserListenerSub = this.as.getAuthUserListener().subscribe(username => {
       this.name = username; });
+
+    this.authAvatarListenerSub = this.as.getAuthAvatarListener().subscribe(avatar => {
+      this.avatar = avatar;
+    })
   }
 
   ngOnDestroy()

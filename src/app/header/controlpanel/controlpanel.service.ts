@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ControlpanelComponent } from './controlpanel.component';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,5 +20,5 @@ export class ControlpanelService {
     this.SNOUpdated.next();
   }
 
-  constructor() { }
+  constructor() {}
 }

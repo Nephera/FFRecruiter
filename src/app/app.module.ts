@@ -90,6 +90,8 @@ import { ErrorInterceptor } from './error-interceptor';
 import { ErrorDialog } from './dialog/error-dialog';
 import { ConfirmDialog } from './dialog/confirm-dialog';
 import { PartyfilterComponent } from './primarynav/partyfilter/partyfilter.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -150,7 +152,8 @@ import { PartyfilterComponent } from './primarynav/partyfilter/partyfilter.compo
     MatGridListModule,
     MatStepperModule,
     MatSliderModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     ControlpanelService,
