@@ -55,7 +55,7 @@
         </ng-container>
         <div align="end">
           <button mat-button matStepperPrevious>Back</button>
-          <button mat-button matStepperNext [disabled]="isLoading || !isCharacter" (click)="getToken()">Next</button>
+          <button mat-button matStepperNext [disabled]="isLoading" (click)="getToken()">Next</button>
         </div>
       </mat-step>
       <mat-step>

@@ -9,11 +9,13 @@ import { apiref } from '../ref/str/apiref';
 @Injectable({ providedIn: "root"})
 export class AuthService {
   private token: string;
-  private username: string; 
+  private username: string;
+  private avatar: string;
   private tokenTimer: any;
   private authStatusListener = new Subject<boolean>();
   private authUserListener = new Subject<string>();
   private authMsgListener = new Subject<string>();
+  private authAvatarListener = new Subject<string>();
   private isAuthenticated = false;
   private logging = false;
 
@@ -29,6 +31,10 @@ export class AuthService {
 
   getUsername() {
     return this.username;
+  }
+
+  getAvatar() {
+    return this.avatar;
   }
 
   getIsAuth() {
@@ -48,6 +54,11 @@ export class AuthService {
   getAuthMsgListener()
   {
     return this.authMsgListener.asObservable();
+  }
+
+  getAuthAvatarListener()
+  {
+    return this.authAvatarListener.asObservable();
   }
 
   createUser(username: string, email: string, password: string) {
@@ -84,22 +95,30 @@ export class AuthService {
     const authData: AuthData = {username: username, email: email, password: password};
     this.logging = true;
     this.http.post<{token: string, expiresIn: number, username: string}>("http://" + this.apiurl.hostname() + "/api/user/login", authData)
-      .subscribe(response => {
-        const token = response.token;
+      .subscribe(responseA => {
+        const token = responseA.token;
         this.token = token;
         if(token){
-          const expiresInDuration = response.expiresIn;
+          const expiresInDuration = responseA.expiresIn;
           this.setAuthTimer(expiresInDuration);
           this.authStatusListener.next(true);
-          this.authUserListener.next(response.username);
-          this.username = response.username;
+          this.authUserListener.next(responseA.username);
+          this.username = responseA.username;
           this.isAuthenticated = true;
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
-          this.saveAuthData(response.token, expirationDate, response.username);
           this.cps.setSNO(false);
           this.logging = false;
-          this.router.navigate(['/partydirectory']);
+          this.http.get<{characters: any}>("http://" + this.apiurl.hostname() + "/api/characters/get/" + this.username)
+          .subscribe(responseB => {
+            console.log(responseB);
+            if(responseB.characters.length > 0){
+              this.avatar = responseB.characters[0].avatar;
+              this.authAvatarListener.next(this.avatar)
+            }
+            this.saveAuthData(responseA.token, expirationDate, responseA.username, this.avatar);
+            this.router.navigate(['/partydirectory']);
+          })
         }
       }, error => {
         this.authMsgListener.next(error.error.message);
@@ -117,29 +136,33 @@ export class AuthService {
     this.cps.setSNO(false);
   }
   
-  private saveAuthData(token: string, expirationDate: Date, username: string){
+  private saveAuthData(token: string, expirationDate: Date, username: string, avatar: string){
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
     localStorage.setItem('username', username);
+    localStorage.setItem('avatar', avatar)
   }
 
   private clearAuthData() {
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
     localStorage.removeItem('username');
+    localStorage.removeItem('avatar');
   }
 
   private getAuthData(){
     const authToken = localStorage.getItem('token');
     const authExpiration = localStorage.getItem('expiration');
     const authUsername = localStorage.getItem('username');
-    if(!authToken || !authExpiration || !authUsername){
+    const authAvatar = localStorage.getItem('avatar');
+    if(!authToken || !authExpiration || !authUsername || !authAvatar){
       return;
     }
     return {
       token: authToken,
       username: authUsername,
-      expiration: new Date(authExpiration)
+      expiration: new Date(authExpiration),
+      avatar: authAvatar
     }
   }
 

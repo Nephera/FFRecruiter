@@ -88,7 +88,7 @@ export class PartycardComponent implements OnInit {
         maxWidth: '600px',
         maxHeight: '90%',
         data: {
-          instanceName: this.instanceName,
+          instance: this.instanceName,
           owner: this.owner,
           ownerServer: this.ownerServer,
           description: this.description
@@ -110,7 +110,7 @@ export class PartycardComponent implements OnInit {
         maxWidth: '600px',
         maxHeight: '90%',
         data: {
-          instanceName: this.instanceName,
+          instance: this.instanceName,
           owner: this.owner,
           ownerServer: this.ownerServer,
           schedule: this.schedule
@@ -219,7 +219,7 @@ export class PartycardComponent implements OnInit {
     this.purposeTitle = this.purposeIconObj.title;
     this.syncTitle = "Sync"; // TODO: Temporary, should be dynamic
 
-    this.syncIcon = "https://imagizer.imageshack.com/img924/3685/sQUzot.png"; // TODO: Temporary, should be dynamic
+    this.syncIcon = "https://imagizer.imageshack.com/img922/1995/VBd0hJ.png"; // TODO: Temporary, should be dynamic
     this.verifiedIcon = "https://imagizer.imageshack.com/img924/3685/sQUzot.png"; // TODO: Temporary, should be dynamic
 
     this.instanceIconGradient = this.icons.get("instanceIconGradient").icon;
