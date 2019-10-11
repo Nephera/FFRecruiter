@@ -22,7 +22,7 @@ export interface JoinDialogData {
 }
 
 export interface DetailsDialogData {
-  instanceName: string,
+  instance: string,
   owner: string,
   ownerServer: string,
   slotAvatar: string,
@@ -97,7 +97,7 @@ export class PartycompositionComponent implements OnInit {
               maxWidth: '600px',
               maxHeight: '90%',
               data: {
-                instanceName: this.partyDetails.instanceName,
+                instance: this.partyDetails.instanceName,
                 owner: this.partyDetails.ownerCharName,
                 ownerServer: this.partyDetails.ownerServer,
                 slotAvatar: characterData.character.avatar,
@@ -158,7 +158,7 @@ export class PartycompositionComponent implements OnInit {
                 maxHeight: '90%',
                 data: {
                   partyID: this.partyDetails._id,
-                  instanceName: this.partyDetails.instanceName,
+                  instance: this.partyDetails.instanceName,
                   owner: this.partyDetails.ownerCharName,
                   ownerServer: this.partyDetails.ownerServer,
                   slotNum: index,
