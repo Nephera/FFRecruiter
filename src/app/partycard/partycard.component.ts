@@ -121,15 +121,15 @@ export class PartycardComponent implements OnInit {
   confirmJoin(): void {
     return; // TODO: Temporary, need to implement functionality.
 
-    const dialogRef = this.dialog.open(PartycardJoinDialog,
-      {
-        autoFocus: false,
-        width: '250px',
-        data: {
-          characters: ['Char1', 'Char2'],
-          jobs: ['DRG', 'DRK']
-        }
-      });
+    // const dialogRef = this.dialog.open(PartycardJoinDialog,
+    //   {
+    //     autoFocus: false,
+    //     width: '250px',
+    //     data: {
+    //       characters: ['Char1', 'Char2'],
+    //       jobs: ['DRG', 'DRK']
+    //     }
+    //   });
   }
 
   confirmLeave() {
@@ -172,21 +172,21 @@ export class PartycardComponent implements OnInit {
   confirmMessage(): void {
     return; // TODO: Temporary, need to implement functionality.
 
-    const dialogRef = this.dialog.open(PartycardMessageDialog,
-      {
-        autoFocus: false,
-        width: '250px',
-      });
+    // const dialogRef = this.dialog.open(PartycardMessageDialog,
+    //   {
+    //     autoFocus: false,
+    //     width: '250px',
+    //   });
   }
 
   confirmDismiss(): void {
     return; // TODO: Temporary, need to implement functionality.
 
-    const dialogRef = this.dialog.open(PartycardDismissDialog,
-      {
-        autoFocus: false,
-        width: '250px',
-      });
+    // const dialogRef = this.dialog.open(PartycardDismissDialog,
+    //   {
+    //     autoFocus: false,
+    //     width: '250px',
+    //   });
   }
 
   constructor(public dialog: MatDialog, private icons: partyIcons, private http: HttpClient, private apiurl: apiref, private as: AuthService) {
