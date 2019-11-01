@@ -111,10 +111,12 @@ export class AuthService {
           this.logging = false;
           this.http.get<{characters: any}>("http://" + this.apiurl.hostname() + "/api/characters/get/" + this.username)
           .subscribe(responseB => {
-            console.log(responseB);
             if(responseB.characters.length > 0){
               this.avatar = responseB.characters[0].avatar;
               this.authAvatarListener.next(this.avatar)
+            }else{
+              this.avatar = "https://img2.finalfantasyxiv.com/f/b093cbb13882f8f1f638f9d751ec084e_96ab1df8877c1f8ba6a89a39cccfd437fc0_96x96.jpg?1567043077"; // TODO
+              this.authAvatarListener.next(this.avatar);
             }
             this.saveAuthData(responseA.token, expirationDate, responseA.username, this.avatar);
             this.router.navigate(['/partydirectory']);

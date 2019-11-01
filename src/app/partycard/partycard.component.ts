@@ -118,20 +118,6 @@ export class PartycardComponent implements OnInit {
       });
   }
 
-  confirmJoin(): void {
-    return; // TODO: Temporary, need to implement functionality.
-
-    // const dialogRef = this.dialog.open(PartycardJoinDialog,
-    //   {
-    //     autoFocus: false,
-    //     width: '250px',
-    //     data: {
-    //       characters: ['Char1', 'Char2'],
-    //       jobs: ['DRG', 'DRK']
-    //     }
-    //   });
-  }
-
   confirmLeave() {
     this.http.post<{ message: string }>("http://" + this.apiurl.hostname() + "/api/user/parties/leave", { id: this.id, username: localStorage.getItem("username") })
     .subscribe(response => {

@@ -92,6 +92,8 @@ import { ConfirmDialog } from './dialog/confirm-dialog';
 import { PartyfilterComponent } from './primarynav/partyfilter/partyfilter.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { PushNotificationService } from './push-notification.service';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -124,7 +126,8 @@ import { environment } from '../environments/environment';
     ErrorDialog,
     ConfirmDialog,
     PartyfilterComponent,
-    PartyDirectoryCreatepartyDialog
+    PartyDirectoryCreatepartyDialog,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -161,7 +164,8 @@ import { environment } from '../environments/environment';
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     apiref,
-    datacenters
+    datacenters,
+    PushNotificationService
   ],
   bootstrap: [AppComponent],
   entryComponents: [MycharactersAddcharacterDialog,

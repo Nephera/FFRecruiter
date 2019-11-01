@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ControlpanelService } from './header/controlpanel/controlpanel.service';
 import { AuthService } from './auth/auth.service';
 import { Subscription } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -20,10 +21,17 @@ export class AppComponent implements OnInit, OnDestroy {
   userIsAuthenticated = false;
 
   // Initialize Service Providers
-  constructor(private cps: ControlpanelService, private as: AuthService) { }
+  constructor(
+    private cps: ControlpanelService, 
+    private as: AuthService) {}
 
   ngOnInit()
   {
+    if (environment.production) {
+      if (location.protocol === 'http:') {
+       window.location.href = location.href.replace('http', 'https');
+      }
+     }    
     this.as.autoAuthUser();
     this.userIsAuthenticated = this.as.getIsAuth();
     this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
@@ -36,7 +44,9 @@ export class AppComponent implements OnInit, OnDestroy {
     this.authListenerSub.unsubscribe();
   }
 
-  SNOpen() {
+  OnDestroy(){}
+
+  SNOpen() {    
     return this.cps.getSNO();
   }
 

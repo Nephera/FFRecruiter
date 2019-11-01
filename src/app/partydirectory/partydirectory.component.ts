@@ -6,6 +6,11 @@ import { PartyfilterService } from '../primarynav/partyfilter/partyfilter.servic
 import { Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
+import { ActivatedRoute, Params } from '@angular/router';
+import { SwPush } from '@angular/service-worker';
+import { PushNotificationService } from '../push-notification.service';
+
+const VAPID = "BK9LlsTb0lAU8VQDTXNuJgYzvLjjPWqwSJ5mz0bqJX1hiKXXr6KBwdkT2bPOUu1_m6Jkt9p2BMTPv1bqx_hp8cs";
 
 export interface CreateDialogData {
   slotCount: number; // can change depending on instance, should fetch from slots
@@ -24,6 +29,11 @@ export interface CreateDialogData {
   styleUrls: ['./partydirectory.component.scss']
 })
 export class PartydirectoryComponent implements OnInit {
+
+  // Dynamic parameters for this component's route: /partydirectory/:first/:second
+  routeParams: Params;
+  // Query parameters found in the URL: /partydirectory/firstParam/secondParam?query1=one&query2=two
+  queryParams: Params;
 
   hasFetchedCharacters: boolean = false;
   hasFetchedInstances: boolean = false;
@@ -56,13 +66,35 @@ export class PartydirectoryComponent implements OnInit {
 
   displayFilters: boolean = false;
 
-  constructor(private http: HttpClient, private apiurl: apiref, private pfs: PartyfilterService, public dialog: MatDialog, private as: AuthService) { 
+  constructor(private http: HttpClient, 
+    private apiurl: apiref, 
+    private pfs: PartyfilterService, 
+    public dialog: MatDialog, 
+    private as: AuthService,
+    private ar: ActivatedRoute) {
+     
+    this.getRouteParams();
+
     this.partyFilterSub = pfs.getFilterListener().subscribe(filterData => {
       this.getParties(this.pageSize, this.currentPage);
     });
     this.asSub = as.getAuthStatusListener().subscribe(authData => {
       this.isAuth = authData;
     })
+  }
+
+  // Store parameter values on URL changes
+  getRouteParams() {
+
+    // Route parameters
+    this.ar.params.subscribe( params => {
+        this.routeParams = params;
+    });
+
+    // URL query parameters
+    this.ar.queryParams.subscribe( params => {
+        this.queryParams = params;
+    });
   }
 
   setPageSizeOptions(setPageSizeOptionsInput: string) {
@@ -106,8 +138,9 @@ export class PartydirectoryComponent implements OnInit {
     const job = this.pfs.getJob();
     const itype = this.pfs.getIType();
     const purpose = this.pfs.getPurpose();
+    const id = this.routeParams.id;
 
-    const queryParams = `?pagesize=${partiesPerPage}&page=${currentPage}&instance=${instance}&difficulty=${difficulty}&job=${job}&itype=${itype}&purpose=${purpose}`;
+    const queryParams = `?id=${id}&pagesize=${partiesPerPage}&page=${currentPage}&instance=${instance}&difficulty=${difficulty}&job=${job}&itype=${itype}&purpose=${purpose}`;
     this.http.get<{ message: string, parties: any[], totalParties: number }>("http://" + this.apiurl.hostname() + "/api/parties/" + queryParams).subscribe((partyData) => {
       this.parties = partyData.parties;
       this.length = partyData.totalParties;
@@ -128,15 +161,11 @@ export class PartydirectoryComponent implements OnInit {
   getCharacterList() {
     this.isLoading = true;
 
-    if(this.isAuth) {
-      this.http.get<{ message: string, characters: any }>("http://" + this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
-        this.characters = characterData.characters;
-        this.isLoading = false;
-        this.hasFetchedCharacters = true;
-      });
-    }else{
+    this.http.get<{ message: string, characters: any }>("http://" + this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
+      this.characters = characterData.characters;
+      this.isLoading = false;
       this.hasFetchedCharacters = true;
-    }
+    });
   }
 
   getJobList() {
@@ -176,7 +205,9 @@ export class PartydirectoryComponent implements OnInit {
         }
       });
 
-    dialogRef.afterClosed().subscribe(data => {});
+    dialogRef.afterClosed().subscribe(data => {
+      console.log(data);
+    });
   }
 
   ngOnInit() {
@@ -190,6 +221,8 @@ export class PartydirectoryComponent implements OnInit {
     this.getPurposeList();
     this.getCharacterList();
     this.getInstanceList();
+
+    this.isAuth = this.as.getIsAuth();
   }
 
   ngOnDestroy(){
@@ -250,6 +283,7 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
   get f() { return this.form.controls; }
 
   constructor(
+    private swp: SwPush, private pns: PushNotificationService,
     private http: HttpClient,
     private fb: FormBuilder,
     private apiurl: apiref,
@@ -369,7 +403,18 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
     this.form.addControl('instanceimg', new FormControl(this.selectedInstance.img));
     this.form.addControl('instanceName', new FormControl(this.selectedInstance.name));
 
-    this.http.post<{message: string, parties: any}>("http://" + this.apiurl.hostname() + "/api/parties/add", this.form.value)
-      .subscribe((partyData) => { });
+    this.swp.requestSubscription({
+      serverPublicKey: VAPID
+    }) // Returns unique subscription for user
+    .then(pnsub => {
+
+      var postData = {
+        form: this.form.value,
+        sub: pnsub
+      }
+
+      this.http.post<{message: string, parties: any}>("http://" + this.apiurl.hostname() + "/api/parties/add", postData)
+        .subscribe((partyData) => { });
+    })
   }
 }

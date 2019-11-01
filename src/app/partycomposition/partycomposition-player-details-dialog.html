@@ -11,5 +11,6 @@
   </p>
 </div>
 <div mat-dialog-actions align="end">
+  <button *ngIf="userOwns(data.slotUsername)" mat-stroked-button color="warn" (click)="onLeave()">LEAVE</button>
   <button mat-stroked-button (click)="onOk()">OK</button>
 </div> 

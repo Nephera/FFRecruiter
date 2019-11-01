@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 export class datacenters {
   // Object Getter
   getDatacenter (str: string){
-    //console.log("Returning: " + str);
     switch(str)
     {
       // North America

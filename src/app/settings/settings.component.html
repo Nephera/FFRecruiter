@@ -1,0 +1,50 @@
+<div>
+  <mat-nav-list flex>
+    <a mat-list-item unselectable="on" (click)="toggleNotifications()">
+      <mat-icon (click)="toggleNotifications()" style="display:none;"></mat-icon>
+      <mat-icon class="unselectable">notifications</mat-icon><p class="unselectable">Notifications</p>
+    </a>
+    <div [ngClass]="{notificationsHide: notificationsSectionClosed(), notificationsShow: notificationsSectionOpen()}" [formGroup]="notificationForm">
+      <button mat-raised-button ([formControlName])="notificationFormGroup.get('fullPartyNotification')" 
+        (click)="toggleFullPartyNotification()" 
+        [ngClass]="{isClicked: getFullPartyNotification(), isNotClicked: !getFullPartyNotification()}">
+        Party Filled: {{ getFullPartyNotification() ? 'ON' : 'OFF' }}
+      </button><br>
+      <button mat-raised-button ([formControlName])="notificationFormGroup.get('playerJoinedNotification')"
+        (click)="togglePlayerJoinedNotification()" 
+        [ngClass]="{isClicked: getPlayerJoinedNotification(), isNotClicked: !getPlayerJoinedNotification()}">
+        Player Joined: {{ getPlayerJoinedNotification() ? 'ON' : 'OFF' }}
+      </button><br>
+      <button mat-raised-button ([formControlName])="notificationFormGroup.get('playerLeftNotification')" 
+        (click)="togglePlayerLeftNotification()" 
+        [ngClass]="{isClicked: getPlayerLeftNotification(), isNotClicked: !getPlayerLeftNotification()}">
+        Player Left: {{ getPlayerLeftNotification() ? 'ON' : 'OFF' }}
+      </button><br>
+      <button mat-raised-button ([formControlName])="notificationFormGroup.get('playerKickedNotification')" 
+        (click)="togglePlayerKickedNotification()" 
+        [ngClass]="{isClicked: getPlayerKickedNotification(), isNotClicked: !getPlayerKickedNotification()}">
+        Player Kicked: {{ getPlayerKickedNotification() ? 'ON' : 'OFF' }}
+      </button><br>
+      <button mat-raised-button ([formControlName])="notificationFormGroup.get('readyCheckNotification')" 
+        (click)="toggleReadyCheckNotification()" 
+        [ngClass]="{isClicked: getReadyCheckNotification(), isNotClicked: !getReadyCheckNotification()}">
+        Ready Check: {{ getReadyCheckNotification() ? 'ON' : 'OFF' }}
+      </button><br>
+      <button mat-raised-button ([formControlName])="notificationFormGroup.get('optionsChangedNotification')" 
+        (click)="toggleOptionsChangedNotification()" 
+        [ngClass]="{isClicked: getOptionsChangedNotification(), isNotClicked: !getOptionsChangedNotification()}">
+        Options Changed: {{ getOptionsChangedNotification() ? 'ON' : 'OFF' }}
+      </button><br>
+      <button mat-raised-button ([formControlName])="notificationFormGroup.get('reminderNotification')" 
+        (click)="toggleReminderNotification()" 
+        [ngClass]="{isClicked: getReminderNotification(), isNotClicked: !getReminderNotification()}">
+        Reminders: {{ getReminderNotification() ? 'ON' : 'OFF' }}
+      </button><br>
+    </div>
+    <div mat-dialog-actions class="save">
+      <button mat-stroked-button [disabled]="!dataIsDirty" 
+        (click)="saveSettings()"
+        [ngClass]="{canSave: dataIsDirty}">Save</button>
+    </div>
+  </mat-nav-list>
+</div>
