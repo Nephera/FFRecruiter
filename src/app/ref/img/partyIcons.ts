@@ -418,7 +418,6 @@ export class partyIcons {
 
   // Object Getter
   get (str: string){
-    //console.log("Returning: " + str);
     switch(str)
     {
       case "Speed Run": { return this.speedParty; }

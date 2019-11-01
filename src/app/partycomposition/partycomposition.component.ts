@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation, Inject} from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, Inject, Output, EventEmitter} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { partyIcons } from '../ref/img/partyIcons';
 import { HttpClient } from '@angular/common/http';
@@ -7,7 +7,10 @@ import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ErrorDialog } from '../dialog/error-dialog';
-import { ConfirmDialog } from '../dialog/confirm-dialog';
+import { SwPush } from '@angular/service-worker';
+import { PushNotificationService } from '../push-notification.service';
+
+const VAPID = "BK9LlsTb0lAU8VQDTXNuJgYzvLjjPWqwSJ5mz0bqJX1hiKXXr6KBwdkT2bPOUu1_m6Jkt9p2BMTPv1bqx_hp8cs";
 
 export interface JoinDialogData {
   instance: string,
@@ -22,6 +25,7 @@ export interface JoinDialogData {
 }
 
 export interface DetailsDialogData {
+  id: string,
   instance: string,
   owner: string,
   ownerServer: string,
@@ -81,6 +85,8 @@ export class PartycompositionComponent implements OnInit {
     return false;
   }
 
+
+
   onClick(index: number){
     if(this.isPopulated(index)) {
       // Get Details for Player using Name/Server
@@ -97,6 +103,7 @@ export class PartycompositionComponent implements OnInit {
               maxWidth: '600px',
               maxHeight: '90%',
               data: {
+                id: this.partyDetails._id,
                 instance: this.partyDetails.instanceName,
                 owner: this.partyDetails.ownerCharName,
                 ownerServer: this.partyDetails.ownerServer,
@@ -113,6 +120,15 @@ export class PartycompositionComponent implements OnInit {
                 slotNum: index,
               }
             });
+          dialogRef.afterClosed().subscribe(result => {
+            if(result.data.party.composition){
+              var newSlots = [];
+              result.data.party.composition.forEach(slot => {
+                newSlots.push(slot);
+              })
+              this.slots = newSlots;
+            }
+          })
       });
     }
     else {
@@ -167,7 +183,16 @@ export class PartycompositionComponent implements OnInit {
                   jobsWanted: [this.getSlotTitle(index)]
                   //levelReq: 1 // TODO: Should get levelReq from partyDetails.instanceLevel
                 }
-              });
+              })
+            dialogRef.afterClosed().subscribe(result => {
+              if(result.data.party.composition){
+                var newSlots = [];
+                result.data.party.composition.forEach(slot => {
+                  newSlots.push(slot);
+                })
+                this.slots = newSlots;
+              }
+            })
           }
         })
       }
@@ -248,8 +273,9 @@ export class PartycompositionJoinDialog {
 
   jobList = ['PLD', 'GLA', 'WAR', 'MRD', 'DRK', 'GNB', 'WHM', 'CNJ', 'SCH', 'ACN', 'AST', 'MNK', 'PGL', 'DRG', 'LNC',
       'NIN', 'ROG', 'SAM', 'BRD', 'ARC', 'MCH', 'DNC', 'BLM', 'THM', 'SMN', 'ACN', 'RDM', 'BLU'];
-
+  
   constructor(
+    private swp: SwPush, private pns: PushNotificationService,
     public dialogRef: MatDialogRef<PartycompositionJoinDialog>,
     @Inject(MAT_DIALOG_DATA) public data: JoinDialogData,
     private fb: FormBuilder,
@@ -260,6 +286,15 @@ export class PartycompositionJoinDialog {
         jobSelected: [String, Validators.required],
         altJobs: [[String]]
       });
+      if(swp.isEnabled) {
+        swp.requestSubscription({
+          serverPublicKey: VAPID
+        }) // Returns unique subscription for user
+        .then(sub => {
+          pns.sendSubToServer(sub).subscribe();
+        })
+        .catch(console.error)
+      }
     };
 
   selectCharacter(){
@@ -382,23 +417,25 @@ export class PartycompositionJoinDialog {
   onJoin() {
     this.form.addControl('party', new FormControl(this.data.partyID));
     this.form.addControl('slotNum', new FormControl(this.data.slotNum));
-    // this.form.addControl('altJobs', new FormControl(this.form.get('altJobs').value));
+    this.swp.requestSubscription({
+      serverPublicKey: VAPID
+    }) // Returns unique subscription for user
+    .then(pnsub => {
+      var postData = {
+        form: this.form.value,
+        sub: pnsub
+      }
 
-    console.log(this.form.value);
-
-    this.http.post<{}>("http://" + this.apiurl.hostname() + "/api/parties/join", this.form.value)
-      .subscribe((responseData) => {
-        this.dialogRef.close();
-
-        // TODO: Update local display for composition
-        // this.http.get<{ composition: any }>("http://" + this.apiurl.hostname() + "/api/parties/composition/" + this.form.value.party )
-        //   .subscribe(response => {
-        //   });
-    });
-
-    // Get new composition and display it for user
-    // location.reload();
-    // this.dialogRef.close();
+      this.http.post<{message: string, party: any}>("http://" + this.apiurl.hostname() + "/api/parties/join", postData)
+        .subscribe((responseData) => {
+          if(responseData.party){
+            this.dialogRef.close({data: responseData});
+          }
+          else{
+            this.dialogRef.close({});
+          }
+      });
+    })
   }
 
 }
@@ -410,8 +447,30 @@ export class PartycompositionJoinDialog {
 })
 export class PartycompositionPlayerDetailsDialog {
   constructor(
+    private http: HttpClient, private apiurl: apiref,
     public dialogRef: MatDialogRef<PartycompositionPlayerDetailsDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DetailsDialogData) { }
+
+  userOwns(n: string){
+    return (localStorage.getItem("username") == n);
+  }
+
+  onLeave(){
+    var postData = {
+      id: this.data.id,
+      username: this.data.slotUsername
+    }
+
+    this.http.post<{message: string, party: any}>("http://" + this.apiurl.hostname() + "/api/user/parties/leave", postData)
+      .subscribe((responseData) => {
+        if(responseData.party){
+          this.dialogRef.close({data: responseData});
+        }
+        else{
+          this.dialogRef.close({});
+        }
+    });
+  }
 
   descriptionHeaderPartyString(index: number)
   {

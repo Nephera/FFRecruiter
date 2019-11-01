@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const PartySlot = require('./partyslot');
 
 var partySlotSchema = mongoose.Schema({
   userOccupying: {
@@ -13,6 +12,24 @@ var partySlotSchema = mongoose.Schema({
   slotJobs: [ { type: String, required: true } ],
   slotLocked: { type: Boolean, required: true },
   slotOccupied: { type: Boolean, required: true }
+});
+
+var userNotificationSubscriptionSchema = mongoose.Schema({
+  username: { type: String, required: true },
+  sub: { 
+    endpoint: { type: String, required: true },
+    keys: { 
+      p256dh: { type: String, required: true },
+      auth: { type: String, required: true }
+    } 
+  },
+  partyFill: { type: Boolean, required: true },
+  partyJoin: { type: Boolean, required: true },
+  partyLeave: { type: Boolean, required: true },
+  partyKick: { type: Boolean, required: true },
+  partyReady: { type: Boolean, required: true },
+  partyOptions: { type: Boolean, required: true },
+  partyReminder: { type: Boolean, required: true }
 });
 
 const partySchema = mongoose.Schema({
@@ -39,6 +56,8 @@ const partySchema = mongoose.Schema({
   pw: { type: String },
   // Description
   description: { type: String, default: 'None' },
+  // Notifications
+  subscribers: [ userNotificationSubscriptionSchema ]
 });
 
 module.exports = mongoose.model('Party', partySchema);

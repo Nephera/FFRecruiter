@@ -1,0 +1,38 @@
+@import "../app.component";
+
+div {
+  background-color: $dgrybg;
+  color: $fontwt;
+  outline: 1px solid $brdclr;
+  margin-top: 10px;
+}
+
+.notificationsShow {
+  margin-top: 0px;
+  display: visible;
+}
+
+.notificationsHide {
+  margin-top: 0px;
+  display: none;
+}
+
+.isClicked {
+  background-color: #9c27b0;
+  color: #FFFFFF;
+}
+
+.isNotClicked {
+  background-color: #424242;
+  color: #AAAAAA;
+}
+
+.save {
+  position: relative;
+  outline: none;
+}
+
+.canSave {
+  background-color: #9c27b0;
+  color: #FFFFFF; 
+}
