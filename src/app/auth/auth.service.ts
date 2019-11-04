@@ -63,7 +63,7 @@ export class AuthService {
 
   createUser(username: string, email: string, password: string) {
     const authData: AuthData = {username: username, email: email, password: password};
-    this.http.post<{message: string, result: any}>("http://" + this.apiurl.hostname() + "/api/user/register", authData)
+    this.http.post<{message: string, result: any}>(this.apiurl.hostname() + "/api/user/register", authData)
       .subscribe(response => {
         this.login(username, email, password);
       }, error => {
@@ -94,7 +94,7 @@ export class AuthService {
   login(username: string, email: string, password: string) {
     const authData: AuthData = {username: username, email: email, password: password};
     this.logging = true;
-    this.http.post<{token: string, expiresIn: number, username: string}>("http://" + this.apiurl.hostname() + "/api/user/login", authData)
+    this.http.post<{token: string, expiresIn: number, username: string}>(this.apiurl.hostname() + "/api/user/login", authData)
       .subscribe(responseA => {
         const token = responseA.token;
         this.token = token;
@@ -109,7 +109,7 @@ export class AuthService {
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
           this.cps.setSNO(false);
           this.logging = false;
-          this.http.get<{characters: any}>("http://" + this.apiurl.hostname() + "/api/characters/get/" + this.username)
+          this.http.get<{characters: any}>(this.apiurl.hostname() + "/api/characters/get/" + this.username)
           .subscribe(responseB => {
             if(responseB.characters.length > 0){
               this.avatar = responseB.characters[0].avatar;

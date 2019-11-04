@@ -141,7 +141,7 @@ export class PartydirectoryComponent implements OnInit {
     const id = this.routeParams.id;
 
     const queryParams = `?id=${id}&pagesize=${partiesPerPage}&page=${currentPage}&instance=${instance}&difficulty=${difficulty}&job=${job}&itype=${itype}&purpose=${purpose}`;
-    this.http.get<{ message: string, parties: any[], totalParties: number }>("http://" + this.apiurl.hostname() + "/api/parties/" + queryParams).subscribe((partyData) => {
+    this.http.get<{ message: string, parties: any[], totalParties: number }>(this.apiurl.hostname() + "/api/parties/" + queryParams).subscribe((partyData) => {
       this.parties = partyData.parties;
       this.length = partyData.totalParties;
       this.isLoading = false;
@@ -151,7 +151,7 @@ export class PartydirectoryComponent implements OnInit {
 
   getInstanceList() {
     this.isLoading = true;
-    this.http.get<{ message: string, instances: any }>("http://" + this.apiurl.hostname() + "/api/instances").subscribe((instanceData) => {
+    this.http.get<{ message: string, instances: any }>(this.apiurl.hostname() + "/api/instances").subscribe((instanceData) => {
       this.instances = instanceData.instances;
       this.isLoading = false;
       this.hasFetchedInstances = true;
@@ -161,7 +161,7 @@ export class PartydirectoryComponent implements OnInit {
   getCharacterList() {
     this.isLoading = true;
 
-    this.http.get<{ message: string, characters: any }>("http://" + this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
+    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
       this.characters = characterData.characters;
       this.isLoading = false;
       this.hasFetchedCharacters = true;
@@ -413,7 +413,7 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
         sub: pnsub
       }
 
-      this.http.post<{message: string, parties: any}>("http://" + this.apiurl.hostname() + "/api/parties/add", postData)
+      this.http.post<{message: string, parties: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
         .subscribe((partyData) => { });
     })
   }

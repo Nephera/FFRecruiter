@@ -119,7 +119,7 @@ export class PartycardComponent implements OnInit {
   }
 
   confirmLeave() {
-    this.http.post<{ message: string }>("http://" + this.apiurl.hostname() + "/api/user/parties/leave", { id: this.id, username: localStorage.getItem("username") })
+    this.http.post<{ message: string }>(this.apiurl.hostname() + "/api/user/parties/leave", { id: this.id, username: localStorage.getItem("username") })
     .subscribe(response => {
       const dialogRef = this.dialog.open(ConfirmDialog,
         {

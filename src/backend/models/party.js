@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-var partySlotSchema = mongoose.Schema({
+var partyslotSchema = mongoose.Schema({
   userOccupying: {
     name: { type: String, required: true },
     cName: { type: String, required: true }, 
@@ -39,7 +39,7 @@ const partySchema = mongoose.Schema({
   ownerDC: {type: String, required: true},
 
   // list of all member's in the party, first index is always owner
-  composition: [ partySlotSchema ], 
+  composition: [ partyslotSchema ], 
   
   // Instance
   // Should wrap in an instance object (will break attached components)

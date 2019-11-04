@@ -31,7 +31,7 @@ export class CharactercardComponent implements OnInit {
   parses = [];
 
   refreshCharacter() { 
-    this.http.patch<{Results: [any]}>("http://" + this.apiurl.hostname() + "/api/characters/refresh/", {id: this.characterDetails.lodestoneID})
+    this.http.patch<{Results: [any]}>(this.apiurl.hostname() + "/api/characters/refresh/", {id: this.characterDetails.lodestoneID})
       .subscribe((refreshData) => {});
   }
 
