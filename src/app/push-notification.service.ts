@@ -10,11 +10,11 @@ export class PushNotificationService {
   constructor(private http: HttpClient, private apiurl: apiref) {}
 
   public sendSubToServer(subscription: PushSubscription ) {
-    return this.http.post("http://" + this.apiurl.hostname() + "/api/parties/pushsubscription", subscription);
+    return this.http.post(this.apiurl.hostname() + "/api/parties/pushsubscription", subscription);
   }
 
   public sendNotification() {
     const postbody = {partyID: "123456"};
-    return this.http.post("http://" + this.apiurl.hostname() + "/api/parties/pushnotification", postbody).subscribe(res => {});
+    return this.http.post(this.apiurl.hostname() + "/api/parties/pushnotification", postbody).subscribe(res => {});
   }
 }

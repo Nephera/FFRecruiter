@@ -68,7 +68,7 @@ export class PartycompositionComponent implements OnInit {
       return;
 
     this.isLoading = true;
-    this.http.get<{ message: string, characters: any }>("http://" + this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
+    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
       this.characters = characterData.characters;
       this.isLoading = false;
       this.hasFetchedCharacters = true;
@@ -90,7 +90,7 @@ export class PartycompositionComponent implements OnInit {
   onClick(index: number){
     if(this.isPopulated(index)) {
       // Get Details for Player using Name/Server
-      this.http.get<{ message: string, character: any}>("http://" + this.apiurl.hostname() + 
+      this.http.get<{ message: string, character: any}>(this.apiurl.hostname() + 
         "/api/characters/get/" + 
         this.partyDetails.composition[index].userOccupying.cServer + "/" + 
         this.partyDetails.composition[index].userOccupying.cName).subscribe((characterData) => {
@@ -147,7 +147,7 @@ export class PartycompositionComponent implements OnInit {
       }
       else { // User is logged in
         // Make sure not already part of this party
-        this.http.get<{ message: string, parties: any}>("http://" + this.apiurl.hostname() + 
+        this.http.get<{ message: string, parties: any}>(this.apiurl.hostname() + 
         "/api/user/get/parties/" + 
         localStorage.getItem("username")).subscribe((partiesData) => {
           // If the ID is contained in the parties already joined, throw error
@@ -426,7 +426,7 @@ export class PartycompositionJoinDialog {
         sub: pnsub
       }
 
-      this.http.post<{message: string, party: any}>("http://" + this.apiurl.hostname() + "/api/parties/join", postData)
+      this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
         .subscribe((responseData) => {
           if(responseData.party){
             this.dialogRef.close({data: responseData});
@@ -461,7 +461,7 @@ export class PartycompositionPlayerDetailsDialog {
       username: this.data.slotUsername
     }
 
-    this.http.post<{message: string, party: any}>("http://" + this.apiurl.hostname() + "/api/user/parties/leave", postData)
+    this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/user/parties/leave", postData)
       .subscribe((responseData) => {
         if(responseData.party){
           this.dialogRef.close({data: responseData});

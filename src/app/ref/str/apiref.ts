@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class apiref {
-  hostURL = "localhost:3000";
-
   hostname() {
-    return this.hostURL;
+    if(environment.production){
+      return "https://54.187.212.214:3000";
+    }
+    else{
+      return "http://localhost:3000";
+    }
   }
 }

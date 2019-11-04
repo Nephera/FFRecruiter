@@ -72,11 +72,11 @@ export class SettingsService {
       username: localStorage.getItem('username'),
       config: config
     } 
-    this.http.put<{message: string}>("http://" + this.apiurl.hostname() + "/api/user/settings/", putData).subscribe((settingsData) =>{})
+    this.http.put<{message: string}>(this.apiurl.hostname() + "/api/user/settings/", putData).subscribe((settingsData) =>{})
   }
 
   constructor(private as: AuthService, private http: HttpClient, private apiurl: apiref) {
-    http.get<{message: string, settings: any}>("http://" + apiurl.hostname() + "/api/user/settings/" + localStorage.getItem('username')).subscribe((settingsData) => {
+    http.get<{message: string, settings: any}>(apiurl.hostname() + "/api/user/settings/" + localStorage.getItem('username')).subscribe((settingsData) => {
       if(settingsData.settings){
         this.notifications.partyFill = settingsData.settings.notifications.partyFill;
         this.notifications.partyJoin = settingsData.settings.notifications.partyJoin;

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var partySlotSchema = mongoose.Schema({
+var partyslotSchema = mongoose.Schema({
   userOccupying: {
     name: { type: String, required: true },
     cName: { type: String, required: true }, 
@@ -14,4 +14,4 @@ var partySlotSchema = mongoose.Schema({
   slotOccupied: { type: Boolean, required: true }
 });
 
-module.exports = mongoose.model('PartySlot', partySlotSchema);
+module.exports = mongoose.model('PartySlot', partyslotSchema);

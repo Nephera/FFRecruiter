@@ -59,7 +59,7 @@ export class MycharactersComponent implements OnInit {
 
   getCharacterList() {
     this.isLoading = true;
-    this.http.get<{ message: string, characters: any }>("http://" + this.apiurl.hostname() + "/api/characters/get/" + localStorage.username).subscribe((characterData) => {
+    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/" + localStorage.username).subscribe((characterData) => {
       this.characters = characterData.characters;
       this.isLoading = false;
       this.hasFetchedCharacters = true;
@@ -146,7 +146,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
 
       if(this.stringIsSafe(this.charFName + this.charLName + this.charServer))
       {
-        this.http.get<{character: {ID: string, Avatar: string}}>("http://" + this.apiurl.hostname() + "/api/characters/get/" + this.charFName + "/" + this.charLName + "/" + this.charServer)
+        this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/" + this.charFName + "/" + this.charLName + "/" + this.charServer)
         .subscribe((characterData) => {
           this.isLoading = false;
 
@@ -171,7 +171,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
       server: this.charServer
     };
 
-    this.http.post<{token: string, expiresIn: string}>("http://" + this.apiurl.hostname() + "/api/characters/generate_token", data)
+    this.http.post<{token: string, expiresIn: string}>(this.apiurl.hostname() + "/api/characters/generate_token", data)
     .subscribe((tokenData) => {
       this.verfToken = tokenData.token,
       this.isLoading = false;
@@ -185,7 +185,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
   }
 
   verifyToken() {
-    this.http.get<{Pass: boolean, msg: string}>("http://" + this.apiurl.hostname() + "/api/characters/verify/" + this.charID + "/" + this.verfToken)
+    this.http.get<{Pass: boolean, msg: string}>(this.apiurl.hostname() + "/api/characters/verify/" + this.charID + "/" + this.verfToken)
       .subscribe((tokenData) => {
         this.mcService.updateVerfMsg(tokenData.msg);
         if(tokenData.Pass)
@@ -203,7 +203,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
             datacenter: this.DCs.getDatacenter(this.charServer)
           }
 
-          this.http.put<{response: any}>("http://" + this.apiurl.hostname() + "/api/characters/add", data)
+          this.http.put<{response: any}>(this.apiurl.hostname() + "/api/characters/add", data)
             .subscribe((responseData) => {})
         }
         else{
