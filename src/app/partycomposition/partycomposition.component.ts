@@ -76,7 +76,7 @@ export class PartycompositionComponent implements OnInit {
   }
 
   getTableHeight(){
-    return (34*(Math.floor(this.slots.length/8)) + 12);
+    return (34*(Math.ceil(this.slots.length/8)) + 12);
   }
 
   isPopulated(index: number){
@@ -417,6 +417,9 @@ export class PartycompositionJoinDialog {
   onJoin() {
     this.form.addControl('party', new FormControl(this.data.partyID));
     this.form.addControl('slotNum', new FormControl(this.data.slotNum));
+
+    // TODO: https://github.com/Nephera/FFRecruiter/issues/30
+    // User should be prompted with a dialog prior to being prompted to accept/block notifications    
     this.swp.requestSubscription({
       serverPublicKey: VAPID
     }) // Returns unique subscription for user

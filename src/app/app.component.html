@@ -8,10 +8,10 @@
         <p class="unselectable">Login</p>
       </a>
       <app-loginform *ngIf="LoginOpen"></app-loginform>
-      <!-- <a *ngIf="!userIsAuthenticated" mat-list-item unselectable="on" class="sidenav-caption" (click)="toggleRegister()">
+      <a *ngIf="!userIsAuthenticated" mat-list-item unselectable="on" class="sidenav-caption" (click)="toggleRegister()">
         <mat-icon (click)="toggleRegister()" style="display:none;"></mat-icon>
         <p class="unselectable">Register</p>
-      </a> -->
+      </a>
       <app-registerform *ngIf="RegisterOpen"></app-registerform>
       <a *ngIf="userIsAuthenticated" mat-list-item unselectable="on" class="sidenav-caption" routerLink="/settings" (click)="SNClose()">
         <mat-icon routerLink="/settings" (click)="SNClose()" style="display:none;"></mat-icon>

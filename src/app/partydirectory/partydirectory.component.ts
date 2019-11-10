@@ -159,13 +159,18 @@ export class PartydirectoryComponent implements OnInit {
   }
 
   getCharacterList() {
-    this.isLoading = true;
-
-    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
-      this.characters = characterData.characters;
+    if(localStorage.getItem("username")){
+      this.isLoading = true;
+      this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
+        this.characters = characterData.characters;
+        this.isLoading = false;
+        this.hasFetchedCharacters = true;
+      });
+    }
+    else{
       this.isLoading = false;
       this.hasFetchedCharacters = true;
-    });
+    }
   }
 
   getJobList() {
@@ -403,6 +408,8 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
     this.form.addControl('instanceimg', new FormControl(this.selectedInstance.img));
     this.form.addControl('instanceName', new FormControl(this.selectedInstance.name));
 
+    // TODO: https://github.com/Nephera/FFRecruiter/issues/30
+    // User should be prompted with a dialog prior to being prompted to accept/block notifications
     this.swp.requestSubscription({
       serverPublicKey: VAPID
     }) // Returns unique subscription for user

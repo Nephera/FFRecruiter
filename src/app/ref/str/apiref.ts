@@ -4,11 +4,9 @@ import { environment } from '../../../environments/environment';
 @Injectable()
 export class apiref {
   hostname() {
-    if(environment.production){
-      return "https://54.187.212.214:3000";
-    }
-    else{
+      /* DEVELOPMENT */
       return "http://localhost:3000";
-    }
+      /* PRODUCTION */
+      // return "https://www.ffrecruiter.com"; 
   }
 }
