@@ -15,5 +15,16 @@
         face
       </mat-icon>
     </button>
+    <button *ngIf="isAuthenticated() && notificationsStatus()!='denied'" [disabled]="!canUpdate()" mat-icon-button>
+      <mat-icon *ngIf="notificationsStatus()=='default'" class="nav-button" title="Enable Notifications" (click)="showEnableNotificationsDialog()">
+        notifications
+      </mat-icon>
+      <mat-icon *ngIf="(notificationsStatus()=='granted' && notificationsEnabled())" class="nav-button" title="Notifications ON" (click)="setNotifications(false)">
+        notifications_active
+      </mat-icon>
+      <mat-icon *ngIf="(notificationsStatus()=='granted' && !notificationsEnabled())" class="nav-button" title="Notifications OFF" (click)="setNotifications(true)">
+        notifications_off
+      </mat-icon>
+    </button>
   </mat-nav-list>
 </div>

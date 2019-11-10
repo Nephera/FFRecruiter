@@ -94,6 +94,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { PushNotificationService } from './push-notification.service';
 import { SettingsComponent } from './settings/settings.component';
+import { NotificationsDialog } from './dialog/notifications-dialog';
 
 @NgModule({
   declarations: [
@@ -127,7 +128,8 @@ import { SettingsComponent } from './settings/settings.component';
     ConfirmDialog,
     PartyfilterComponent,
     PartyDirectoryCreatepartyDialog,
-    SettingsComponent
+    SettingsComponent,
+    NotificationsDialog
   ],
   imports: [
     BrowserModule,
@@ -180,7 +182,8 @@ import { SettingsComponent } from './settings/settings.component';
     PartycompositionPlayerDetailsDialog,
     ErrorDialog,
     ConfirmDialog,
-    PartyDirectoryCreatepartyDialog
+    PartyDirectoryCreatepartyDialog,
+    NotificationsDialog
   ]
 })
 export class AppModule { }

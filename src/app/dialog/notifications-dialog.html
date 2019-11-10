@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Enable Notifications</h1>
+<div mat-dialog-content>
+  <p>
+    FFRecruiter makes use of notifications in order to keep you up to date on the status of your parties.  Once you hit 
+    subscribe on this dialog you will be presented with the option to allow or block notifications from this application.<br><br>
+
+    Reversing this decision is very tedious and time consuming, so be sure to click allow.<br><br>
+    
+    Once you subscribe, you will be able to fine-tune what types of notifications you would like to receive from FFRecruiter.  
+    You will not be spammed with things that you cannot turn off via the settings menu in the sidenav.    
+  </p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
+  <button mat-stroked-button color="accent" (click)="onSubscribe()">Subscribe</button>
+</div>
