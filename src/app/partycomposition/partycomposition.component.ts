@@ -10,7 +10,7 @@ import { ErrorDialog } from '../dialog/error-dialog';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
 
-const VAPID = "BK9LlsTb0lAU8VQDTXNuJgYzvLjjPWqwSJ5mz0bqJX1hiKXXr6KBwdkT2bPOUu1_m6Jkt9p2BMTPv1bqx_hp8cs";
+const VAPID = "BIc7wlKYVm4HvUxlfeaqRSJ6LlaR9s1Pz-_zI5HaWoPVfc2aC1uhVt-A2hH1cKS82J4vYNh-5fNKAhRM4ZeYsgM";
 
 export interface JoinDialogData {
   instance: string,

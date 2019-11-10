@@ -11,8 +11,8 @@ const routes: Routes = [
   { path: 'partydirectory/:id', component: PartydirectoryComponent },
   { path: 'welcome', component: WelcomeComponent },
   { path: 'mycharacters', component: MycharactersComponent, canActivate: [AuthGuard] },
-  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
-  { path: '', redirectTo: '/welcome', pathMatch: 'full' }
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] }//,
+  //{ path: '', redirectTo: '/welcome', pathMatch: 'full' }
 ];
 
 @NgModule({
