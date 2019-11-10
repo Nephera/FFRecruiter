@@ -26,12 +26,13 @@ export class AppComponent implements OnInit, OnDestroy {
     private as: AuthService) {}
 
   ngOnInit()
-  {
-    if (environment.production) {
-      if (location.protocol === 'http:') {
-       window.location.href = location.href.replace('http', 'https');
-      }
-     }    
+  { 
+    // TODO: Uncomment once TLS/SSL is in place
+    // if (environment.production) {
+    //   if (location.protocol === 'http:') {
+    //    window.location.href = location.href.replace('http', 'https');
+    //   }
+    //  }    
     this.as.autoAuthUser();
     this.userIsAuthenticated = this.as.getIsAuth();
     this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
