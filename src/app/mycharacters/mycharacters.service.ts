@@ -5,14 +5,14 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class MycharactersService {
-  private verfMsgListener = new Subject<string>();
+  private verfMsgListener = new Subject<{pass: boolean, msg: string}>();
 
   getVerfMsgListener(){
     return this.verfMsgListener.asObservable();
   }
 
-  updateVerfMsg(msg: string){
-    this.verfMsgListener.next(msg);
+  updateVerfMsg(pass: boolean, msg: string){
+    this.verfMsgListener.next({pass, msg});
   }
   
   constructor() { }
