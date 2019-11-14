@@ -9,8 +9,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { ErrorDialog } from '../dialog/error-dialog';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
-
-const VAPID = "BIc7wlKYVm4HvUxlfeaqRSJ6LlaR9s1Pz-_zI5HaWoPVfc2aC1uhVt-A2hH1cKS82J4vYNh-5fNKAhRM4ZeYsgM";
+import { NotificationsDialog } from '../dialog/notifications-dialog';
 
 export interface JoinDialogData {
   instance: string,
@@ -85,8 +84,6 @@ export class PartycompositionComponent implements OnInit {
     return false;
   }
 
-
-
   onClick(index: number){
     if(this.isPopulated(index)) {
       // Get Details for Player using Name/Server
@@ -121,7 +118,7 @@ export class PartycompositionComponent implements OnInit {
               }
             });
           dialogRef.afterClosed().subscribe(result => {
-            if(result.data.party.composition){
+            if(result && result.data.party.composition){
               var newSlots = [];
               result.data.party.composition.forEach(slot => {
                 newSlots.push(slot);
@@ -185,7 +182,7 @@ export class PartycompositionComponent implements OnInit {
                 }
               })
             dialogRef.afterClosed().subscribe(result => {
-              if(result.data.party.composition){
+              if(result && result.data.party.composition){
                 var newSlots = [];
                 result.data.party.composition.forEach(slot => {
                   newSlots.push(slot);
@@ -276,25 +273,19 @@ export class PartycompositionJoinDialog {
   
   constructor(
     private swp: SwPush, private pns: PushNotificationService,
+    public dialog: MatDialog,
     public dialogRef: MatDialogRef<PartycompositionJoinDialog>,
     @Inject(MAT_DIALOG_DATA) public data: JoinDialogData,
     private fb: FormBuilder,
     private http: HttpClient,
     private apiurl: apiref) {
+      console.log("Notification.permission");
+      console.log(Notification.permission);
       this.form = fb.group({
         charSelected: [Object, Validators.required],
         jobSelected: [String, Validators.required],
         altJobs: [[String]]
       });
-      if(swp.isEnabled) {
-        swp.requestSubscription({
-          serverPublicKey: VAPID
-        }) // Returns unique subscription for user
-        .then(sub => {
-          pns.sendSubToServer(sub).subscribe();
-        })
-        .catch(console.error)
-      }
     };
 
   selectCharacter(){
@@ -418,29 +409,98 @@ export class PartycompositionJoinDialog {
     this.form.addControl('party', new FormControl(this.data.partyID));
     this.form.addControl('slotNum', new FormControl(this.data.slotNum));
 
-    // TODO: https://github.com/Nephera/FFRecruiter/issues/30
-    // User should be prompted with a dialog prior to being prompted to accept/block notifications    
-    this.swp.requestSubscription({
-      serverPublicKey: VAPID
-    }) // Returns unique subscription for user
-    .then(pnsub => {
+    // Notification capable and not explicitly denied by user
+    if(this.swp.isEnabled && localStorage.getItem("disableNotificationDialogReminder") != "true") {
+      console.log("Notification Capable");
+      console.log("Opening Notifications Dialog");
+      const dialogRef = this.dialog.open(NotificationsDialog,
+        {
+          autoFocus: false,
+          width: '90vw',
+          maxWidth: '600px',
+          maxHeight: '90%'
+      })
+      .afterClosed().subscribe(result => {
+        console.log("Notifications Dialog is Closed");
+        console.log("result.data.cancelled");
+        console.log(result.data.cancelled);
+        if(!result.data.cancelled){ // Assume player wants notifications
+          console.log("Requesting Subscription to Push Notifications");
+          console.log(this.pns.key());
+          this.swp.requestSubscription({
+            serverPublicKey: this.pns.key()
+          }) // Returns unique subscription for user
+          .then(pnsub => {
+            console.log("Push Notifications Allowed");
+            var postData = {
+              form: this.form.value,
+              sub: pnsub
+            }
+            console.log(postData);
+
+            console.log("Sending Backend Request to Join");
+            this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
+            .subscribe((responseData) => {
+              console.log("Response Received");
+              console.log(responseData);
+              if(responseData.party){
+                console.log("Updating Party Display Data")
+                this.dialogRef.close({data: responseData});
+              }
+              else{
+                console.log("No Data for Party Display Update");
+                this.dialogRef.close({data: null});
+              }
+            });
+          })
+        }
+        else{
+          console.log("No Push Notifications");
+          var postData = {
+            form: this.form.value,
+            sub: null
+          }
+    
+          console.log("Sending Backend Request to Join");
+          this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
+          .subscribe((responseData) => {
+            console.log("Response Received");
+            console.log(responseData);
+            if(responseData.party){
+              console.log("Updating Party Display Data");
+              this.dialogRef.close({data: responseData});
+            }
+            else{
+              console.log("No Data for Party Display Update");
+              this.dialogRef.close({data: null});
+            }
+          });
+        }
+      })
+    }
+    else{ // Notification incapable or player assumed to not want notifications
+      console.log("Unable to Push Notify");
       var postData = {
         form: this.form.value,
-        sub: pnsub
+        sub: null
       }
 
+      console.log("Sending Backend Request to Join");
       this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
-        .subscribe((responseData) => {
-          if(responseData.party){
-            this.dialogRef.close({data: responseData});
-          }
-          else{
-            this.dialogRef.close({});
-          }
+      .subscribe((responseData) => {
+        console.log("Response Received");
+        console.log(responseData);
+        if(responseData.party){
+          console.log("Updating Party Display Data");
+          this.dialogRef.close({data: responseData});
+        }
+        else{
+          console.log("No Data for Party Display Update");
+          this.dialogRef.close({data: null});
+        }
       });
-    })
+    }
   }
-
 }
 
 @Component({
@@ -470,7 +530,7 @@ export class PartycompositionPlayerDetailsDialog {
           this.dialogRef.close({data: responseData});
         }
         else{
-          this.dialogRef.close({});
+          this.dialogRef.close({data: null});
         }
     });
   }
@@ -481,6 +541,6 @@ export class PartycompositionPlayerDetailsDialog {
   }
 
   onOk() {
-    this.dialogRef.close();
+    this.dialogRef.close({data: null});
   }
 }

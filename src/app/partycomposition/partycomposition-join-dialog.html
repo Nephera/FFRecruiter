@@ -18,5 +18,5 @@
 </div>
 <div mat-dialog-actions align="end">
   <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
-  <button mat-stroked-button *ngIf="data.isAuth" [disabled]="!characterIsSelected || !jobIsSelected" (click)="onJoin()">Join</button>
+  <button mat-stroked-button color="accent" [disabled]="!characterIsSelected || !jobIsSelected" (click)="onJoin()">Join</button>
 </div>

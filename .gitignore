@@ -51,3 +51,8 @@ src/backend/routes/search.js
 src/backend/routes/user.js
 src/app/ref/str/apiref.ts
 src/backend/ref/pw.js
+src/backend/routes/vapid.js
+backend
+frontend
+host
+host

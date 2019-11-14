@@ -11,6 +11,7 @@
   </p>
 </div>
 <div mat-dialog-actions align="end">
+  <mat-checkbox id="reminderCheckbox" [checked]="reminderIsDisabled" (change)="disableReminder()">Don't show me this again</mat-checkbox><br>
   <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
   <button mat-stroked-button color="accent" (click)="onSubscribe()">Subscribe</button>
 </div>

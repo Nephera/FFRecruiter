@@ -9,8 +9,7 @@ import { AuthService } from '../auth/auth.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
-
-const VAPID = "BIc7wlKYVm4HvUxlfeaqRSJ6LlaR9s1Pz-_zI5HaWoPVfc2aC1uhVt-A2hH1cKS82J4vYNh-5fNKAhRM4ZeYsgM";
+import { NotificationsDialog } from '../dialog/notifications-dialog';
 
 export interface CreateDialogData {
   slotCount: number; // can change depending on instance, should fetch from slots
@@ -211,7 +210,7 @@ export class PartydirectoryComponent implements OnInit {
       });
 
     dialogRef.afterClosed().subscribe(data => {
-      console.log(data);
+      //console.log(data); // data: {message: "Party Created Successfully"}
     });
   }
 
@@ -288,83 +287,85 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
   get f() { return this.form.controls; }
 
   constructor(
+    private dialog: MatDialog,
     private swp: SwPush, private pns: PushNotificationService,
     private http: HttpClient,
     private fb: FormBuilder,
     private apiurl: apiref,
     public dialogRef: MatDialogRef<PartyDirectoryCreatepartyDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: CreateDialogData) {    
+    @Inject(MAT_DIALOG_DATA) public data: CreateDialogData){   
       this.form = fb.group({
-      character: [Object, Validators.required],
-      instance: [Object, Validators.required],
-      purpose: ["", Validators.required],
-      sync: ["", Validators.required],
-      slots: [[""]],
-      // Temp, the following should be condensed into above array
-      slot0: [""],
-      slot1: [""],
-      slot2: [""],
-      slot3: [""],
-      slot4: [""],
-      slot5: [""],
-      slot6: [""],
-      slot7: [""],
-      slot8: [""],
-      slot9: [""],
-      slot10: [""],
-      slot11: [""],
-      slot12: [""],
-      slot13: [""],
-      slot14: [""],
-      slot15: [""],
-      slot16: [""],
-      slot17: [""],
-      slot18: [""],
-      slot19: [""],
-      slot20: [""],
-      slot21: [""],
-      slot22: [""],
-      slot23: [""],
-      slot24: [""],
-      slot25: [""],
-      slot26: [""],
-      slot27: [""],
-      slot28: [""],
-      slot29: [""],
-      slot30: [""],
-      slot31: [""],
-      slot32: [""],
-      slot33: [""],
-      slot34: [""],
-      slot35: [""],
-      slot36: [""],
-      slot37: [""],
-      slot38: [""],
-      slot39: [""],
-      slot40: [""],
-      slot41: [""],
-      slot42: [""],
-      slot43: [""],
-      slot44: [""],
-      slot45: [""],
-      slot46: [""],
-      slot47: [""],
-      slot48: [""],
-      slot49: [""],
-      slot50: [""],
-      slot51: [""],
-      slot52: [""],
-      slot53: [""],
-      slot54: [""],
-      slot55: [""],
-      prefj: ["", Validators.required],
-      altj: [],
-      verf: false,
-      pw: "",
-      description: "",
-      currentPartyCount: 0,
-      maximumPartyCount: 5
-    }); }
+        character: [Object, Validators.required],
+        instance: [Object, Validators.required],
+        purpose: ["", Validators.required],
+        sync: ["", Validators.required],
+        slots: [[""]],
+        // Temp, the following should be condensed into above array
+        slot0: [""],
+        slot1: [""],
+        slot2: [""],
+        slot3: [""],
+        slot4: [""],
+        slot5: [""],
+        slot6: [""],
+        slot7: [""],
+        slot8: [""],
+        slot9: [""],
+        slot10: [""],
+        slot11: [""],
+        slot12: [""],
+        slot13: [""],
+        slot14: [""],
+        slot15: [""],
+        slot16: [""],
+        slot17: [""],
+        slot18: [""],
+        slot19: [""],
+        slot20: [""],
+        slot21: [""],
+        slot22: [""],
+        slot23: [""],
+        slot24: [""],
+        slot25: [""],
+        slot26: [""],
+        slot27: [""],
+        slot28: [""],
+        slot29: [""],
+        slot30: [""],
+        slot31: [""],
+        slot32: [""],
+        slot33: [""],
+        slot34: [""],
+        slot35: [""],
+        slot36: [""],
+        slot37: [""],
+        slot38: [""],
+        slot39: [""],
+        slot40: [""],
+        slot41: [""],
+        slot42: [""],
+        slot43: [""],
+        slot44: [""],
+        slot45: [""],
+        slot46: [""],
+        slot47: [""],
+        slot48: [""],
+        slot49: [""],
+        slot50: [""],
+        slot51: [""],
+        slot52: [""],
+        slot53: [""],
+        slot54: [""],
+        slot55: [""],
+        prefj: ["", Validators.required],
+        altj: [],
+        verf: false,
+        pw: "",
+        description: "",
+        currentPartyCount: 0,
+        maximumPartyCount: 5
+      }); 
+    }
 
   ngOnInit(){
     var jobs: string[];
@@ -393,7 +394,7 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
       return;
     }
 
-    this.dialogRef.close(this.form.value);
+    //this.dialogRef.close(this.form.value);
 
     var composition = [];
     for(var i = 0; i < this.selectedInstance.playerCount; i++)
@@ -408,20 +409,70 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
     this.form.addControl('instanceimg', new FormControl(this.selectedInstance.img));
     this.form.addControl('instanceName', new FormControl(this.selectedInstance.name));
 
-    // TODO: https://github.com/Nephera/FFRecruiter/issues/30
-    // User should be prompted with a dialog prior to being prompted to accept/block notifications
-    this.swp.requestSubscription({
-      serverPublicKey: VAPID
-    }) // Returns unique subscription for user
-    .then(pnsub => {
+    // Notification capable and not explicitly denied by user
+    if(this.swp.isEnabled && localStorage.getItem("disableNotificationDialogReminder") != "true") {
+      const dialogRef = this.dialog.open(NotificationsDialog,
+        {
+          autoFocus: false,
+          width: '90vw',
+          maxWidth: '600px',
+          maxHeight: '90%'
+      })
+      .afterClosed().subscribe(result => {
+        if(!result.data.cancelled){ // Assume player wants notifications
+          this.swp.requestSubscription({
+            serverPublicKey: this.pns.key()
+          }) // Returns unique subscription for user
+          .then(pnsub => {
+            var postData = {
+              form: this.form.value,
+              sub: pnsub
+            }
 
+            this.http.post<{message: string, parties: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+            .subscribe((responseData) => {
+              if(responseData){
+                this.dialogRef.close({data: responseData});
+              }
+              else{
+                this.dialogRef.close({});
+              }
+            });
+          })
+        }
+        else{
+          var postData = {
+            form: this.form.value,
+            sub: null
+          }
+    
+          this.http.post<{message: string, parties: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+          .subscribe((responseData) => {
+            if(responseData){
+              this.dialogRef.close({data: responseData});
+            }
+            else{
+              this.dialogRef.close({});
+            }
+          });
+        }
+      })
+    }
+    else{ // Notification incapable or player assumed to not want notifications
       var postData = {
         form: this.form.value,
-        sub: pnsub
+        sub: null
       }
 
       this.http.post<{message: string, parties: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
-        .subscribe((partyData) => { });
-    })
+      .subscribe((responseData) => {
+        if(responseData){
+          this.dialogRef.close({data: responseData});
+        }
+        else{
+          this.dialogRef.close({});
+        }
+      });
+    }
   }
 }

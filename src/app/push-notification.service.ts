@@ -1,15 +1,42 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 import { apiref } from './ref/str/apiref';
+import { SwPush } from '@angular/service-worker';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PushNotificationService {
 
-  constructor(private http: HttpClient, private apiurl: apiref) {}
+  constructor(private http: HttpClient, private apiurl: apiref, private swp: SwPush) {
+    this.http.get<{publicKey: string}>(this.apiurl.hostname() + "/api/vapid/").subscribe(res => {
+      this.publickey = res.publicKey;
+    })
+  }
 
-  public sendSubToServer(subscription: PushSubscription ) {
+  private publickey: string;
+
+  public async sub(): Promise<PushSubscription> {
+    try{
+      if(this.key()){
+        await this.swp.requestSubscription({
+          serverPublicKey: this.key()
+        }).then(result => {
+          return result;
+        })
+      }
+    }
+    catch (err) {
+      console.error('Could not subscribe due to:', err);
+      return null;
+    }
+  }
+
+  public key(){
+    return this.publickey;
+  }
+
+  public sendSubToServer(subscription: PushSubscription) {
     return this.http.post(this.apiurl.hostname() + "/api/parties/pushsubscription", subscription);
   }
 
