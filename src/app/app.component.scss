@@ -85,10 +85,14 @@ div {
 }
 
 .nav-button {
-  &:hover,
-  &:focus {
+  &:hover:enabled,
+  &:focus:enabled {
     color: gold;
   }
+}
+
+.disabled {
+  cursor: not-allowed;
 }
 
 .gold {

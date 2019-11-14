@@ -5,6 +5,8 @@ import { AuthService } from '../auth/auth.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';
+import { SwPush } from '@angular/service-worker';
+import { PushNotificationService } from '../push-notification.service';
 
 export interface MessagesDialogData {}
 
@@ -68,17 +70,6 @@ export class PrimarynavComponent implements OnInit {
   }
 
   showEnableNotificationsDialog(){
-    var SWC: ServiceWorkerContainer;
-    var SWS: ServiceWorkerState;
-    var SW: ServiceWorker;
-    var SWR: ServiceWorkerRegistration;
-
-    console.log("SW State:");
-    console.log(SWS);
-    console.log("SW.state");
-    console.log(SW.state);
-    SWR.update();
-
     const dialogRef = this.dialog.open(NotificationsDialog,
       {
         autoFocus: false,
@@ -86,8 +77,6 @@ export class PrimarynavComponent implements OnInit {
         maxWidth: '600px',
         maxHeight: '90%'
       });
-    dialogRef.afterClosed().subscribe(result => { 
-    })
   }
 
   showMessages() {
@@ -100,7 +89,7 @@ export class PrimarynavComponent implements OnInit {
       });
   }
 
-  constructor(public dialog: MatDialog, private as: AuthService, private http: HttpClient, private apiurl: apiref) {}
+  constructor(public dialog: MatDialog, private as: AuthService, private http: HttpClient, private apiurl: apiref, private swp: SwPush, private pns: PushNotificationService) {}
 
   ngOnInit()
   {

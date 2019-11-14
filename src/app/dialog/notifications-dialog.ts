@@ -15,29 +15,38 @@ export interface NotificationsDialogData {
 })
 export class NotificationsDialog {
 
+  reminderIsDisabled = false;
+
   constructor(
     private api: apiref,
     private swp: SwPush,
     private pns: PushNotificationService,
     public dialogRef: MatDialogRef<NotificationsDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: NotificationsDialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: NotificationsDialogData) {
+      this.reminderIsDisabled = Boolean(localStorage.getItem("disableNotificationDialogReminder"));
+    }
 
-  onCancel() {
-    this.dialogRef.close();
+  disableReminder(){
+    console.log(this.reminderIsDisabled);
+    this.reminderIsDisabled = !this.reminderIsDisabled;
+    localStorage.setItem("disableNotificationDialogReminder", String(this.reminderIsDisabled));
   }
 
+  onCancel() {
+    this.dialogRef.close({data: {
+      cancelled: true
+    }});
+  }
+  
   onSubscribe() {
-    console.log(navigator.serviceWorker.controller);
-    this.swp.requestSubscription({
-      serverPublicKey: this.api.vapid()
-    })
-    .then(sub => {
-      this.pns.sendSubToServer(sub).subscribe();
-      this.dialogRef.close();
-    })
-    .catch(err => {
-      console.error('Could not subscribe to notifications', err);
-      this.dialogRef.close();
-    })
+    this.pns.sub();
+    localStorage.setItem('disableNotificationDialogReminder', "false");
+    this.dialogRef.close({data: {
+      cancelled: false
+    }});
+  }
+
+  disableNotificationReminder(v: string){
+    localStorage.setItem('disableNotificationDialogReminder', v);
   }
 }
