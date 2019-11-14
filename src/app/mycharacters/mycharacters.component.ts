@@ -93,10 +93,14 @@ export class MycharactersAddcharacterDialog implements OnInit {
   lodestoneLink = "";
   verfToken = "";
   errorMsg = "";
+  message = "";
+  pass = false;
   
   isVerified = false;
   characterValid = false;
   isLoading = false;
+
+  userCanFinish = false;
 
   get f() { return this.form.controls; }
 
@@ -118,8 +122,9 @@ export class MycharactersAddcharacterDialog implements OnInit {
     server: ['', Validators.required]});
     this.secondFormGroup = this.fb.group({secondCtrl: ['', Validators.required]});
 
-    this.verfMsgListenerSub = this.mcService.getVerfMsgListener().subscribe(error => {
-      this.errorMsg = error;
+    this.verfMsgListenerSub = this.mcService.getVerfMsgListener().subscribe(result => {
+      this.message = result.msg;
+      this.pass = result.pass;
     })
   }
 
@@ -132,7 +137,12 @@ export class MycharactersAddcharacterDialog implements OnInit {
     return regex.test(input);
   }
 
+  canFinish() {
+    this.userCanFinish = true;
+  }
+
   resetForm() {
+    this.userCanFinish = false;
     this.isVerified = false;
   }
 
@@ -185,9 +195,10 @@ export class MycharactersAddcharacterDialog implements OnInit {
   }
 
   verifyToken() {
+    this.isLoading = true;
     this.http.get<{Pass: boolean, msg: string}>(this.apiurl.hostname() + "/api/characters/verify/" + this.charID + "/" + this.verfToken)
       .subscribe((tokenData) => {
-        this.mcService.updateVerfMsg(tokenData.msg);
+        this.mcService.updateVerfMsg(tokenData.Pass, tokenData.msg);
         if(tokenData.Pass)
         {
           this.isVerified = true;
@@ -204,15 +215,19 @@ export class MycharactersAddcharacterDialog implements OnInit {
           }
 
           this.http.put<{response: any}>(this.apiurl.hostname() + "/api/characters/add", data)
-            .subscribe((responseData) => {})
+            .subscribe((responseData) => {
+              this.isLoading = false;
+            })
         }
         else{
           this.isVerified = false;
+          this.isLoading = false;
         }
       })
   }
 
   onCancel() {
+    // TODO: Should return data about character to refresh screen of user
     this.dialogRef.close();
   }
 }
