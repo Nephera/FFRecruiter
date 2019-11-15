@@ -10,6 +10,7 @@ import { ErrorDialog } from '../dialog/error-dialog';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
+import { checkAndUpdateView } from '@angular/core/src/view/view';
 
 export interface JoinDialogData {
   instance: string,
@@ -57,6 +58,7 @@ export class PartycompositionComponent implements OnInit {
   hasFetchedCharacters = false;
   private authListenerSub: Subscription;
   isAuth = false;
+  forceUpdate = false;
 
   isAuthenticated(){
     return this.isAuth;
@@ -84,13 +86,36 @@ export class PartycompositionComponent implements OnInit {
     return false;
   }
 
+  constructor(public dialog: MatDialog,
+    private icons: partyIcons,
+    private http: HttpClient,
+    private apiurl: apiref,
+    private as: AuthService) { }
+
+  ngOnInit() {
+    this.as.autoAuthUser();
+    this.isAuth = this.as.getIsAuth();
+    this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
+      this.isAuth = isAuthenticated;
+    });
+
+    this.slotFilled = this.icons.get("SlotFilled").icon;
+    
+    for(var i = 0; i < this.partyDetails.composition.length; i++)
+      this.slots.push(this.partyDetails.composition[i])
+
+    this.getCharacterList();
+  }
+
   onClick(index: number){
     if(this.isPopulated(index)) {
+      this.forceUpdate = false; // temp hack to get redraw on main div after slot update
       // Get Details for Player using Name/Server
+      // Issue is that this.slots isn't being used, so updates aren't being caught
       this.http.get<{ message: string, character: any}>(this.apiurl.hostname() + 
         "/api/characters/get/" + 
-        this.partyDetails.composition[index].userOccupying.cServer + "/" + 
-        this.partyDetails.composition[index].userOccupying.cName).subscribe((characterData) => {
+        this.slots[index].userOccupying.cServer + "/" + 
+        this.slots[index].userOccupying.cName).subscribe((characterData) => {
 
           // Display Details
           const dialogRef = this.dialog.open(PartycompositionPlayerDetailsDialog,
@@ -119,11 +144,7 @@ export class PartycompositionComponent implements OnInit {
             });
           dialogRef.afterClosed().subscribe(result => {
             if(result && result.data.party.composition){
-              var newSlots = [];
-              result.data.party.composition.forEach(slot => {
-                newSlots.push(slot);
-              })
-              this.slots = newSlots;
+              this.slots[index] = result.data.party.composition[index];
             }
           })
       });
@@ -183,11 +204,7 @@ export class PartycompositionComponent implements OnInit {
               })
             dialogRef.afterClosed().subscribe(result => {
               if(result && result.data.party.composition){
-                var newSlots = [];
-                result.data.party.composition.forEach(slot => {
-                  newSlots.push(slot);
-                })
-                this.slots = newSlots;
+                this.slots[index] = result.data.party.composition[index];
               }
             })
           }
@@ -228,23 +245,6 @@ export class PartycompositionComponent implements OnInit {
 
       return str;
     }
-  }
-
-  constructor(public dialog: MatDialog, private icons: partyIcons, private http: HttpClient, private apiurl: apiref, private as: AuthService) { }
-
-  ngOnInit() {
-    this.as.autoAuthUser();
-    this.isAuth = this.as.getIsAuth();
-    this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
-      this.isAuth = isAuthenticated;
-    });
-
-    this.slotFilled = this.icons.get("SlotFilled").icon;
-    
-    for(var i = 0; i < this.partyDetails.composition.length; i++)
-      this.slots.push(this.partyDetails.composition[i])
-
-    this.getCharacterList();
   }
 
   ngOnDestroy()
@@ -428,12 +428,7 @@ export class PartycompositionJoinDialog {
 
             this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
             .subscribe((responseData) => {
-              if(responseData.party){
-                this.dialogRef.close({data: responseData});
-              }
-              else{
-                this.dialogRef.close({data: null});
-              }
+              this.dialogRef.close({data: responseData});
             });
           })
         }
@@ -445,12 +440,7 @@ export class PartycompositionJoinDialog {
     
           this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
           .subscribe((responseData) => {
-            if(responseData.party){
-              this.dialogRef.close({data: responseData});
-            }
-            else{
-              this.dialogRef.close({data: null});
-            }
+            this.dialogRef.close({data: responseData});
           });
         }
       })
@@ -463,12 +453,7 @@ export class PartycompositionJoinDialog {
 
       this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
       .subscribe((responseData) => {
-        if(responseData.party){
-          this.dialogRef.close({data: responseData});
-        }
-        else{
-          this.dialogRef.close({data: null});
-        }
+        this.dialogRef.close({data: responseData});
       });
     }
   }
@@ -497,12 +482,7 @@ export class PartycompositionPlayerDetailsDialog {
 
     this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/user/parties/leave", postData)
       .subscribe((responseData) => {
-        if(responseData.party){
-          this.dialogRef.close({data: responseData});
-        }
-        else{
-          this.dialogRef.close({data: null});
-        }
+        this.dialogRef.close({data: responseData});
     });
   }
 
