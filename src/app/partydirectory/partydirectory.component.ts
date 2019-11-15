@@ -209,9 +209,7 @@ export class PartydirectoryComponent implements OnInit {
         }
       });
 
-    dialogRef.afterClosed().subscribe(data => {
-      //console.log(data); // data: {message: "Party Created Successfully"}
-    });
+    dialogRef.afterClosed().subscribe(data => {});
   }
 
   ngOnInit() {
@@ -393,8 +391,6 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
     if (this.form.invalid) {
       return;
     }
-
-    //this.dialogRef.close(this.form.value);
 
     var composition = [];
     for(var i = 0; i < this.selectedInstance.playerCount; i++)

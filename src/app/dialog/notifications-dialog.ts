@@ -26,12 +26,6 @@ export class NotificationsDialog {
       this.reminderIsDisabled = Boolean(localStorage.getItem("disableNotificationDialogReminder"));
     }
 
-  disableReminder(){
-    console.log(this.reminderIsDisabled);
-    this.reminderIsDisabled = !this.reminderIsDisabled;
-    localStorage.setItem("disableNotificationDialogReminder", String(this.reminderIsDisabled));
-  }
-
   onCancel() {
     this.dialogRef.close({data: {
       cancelled: true
@@ -40,13 +34,14 @@ export class NotificationsDialog {
   
   onSubscribe() {
     this.pns.sub();
-    localStorage.setItem('disableNotificationDialogReminder', "false");
+    localStorage.setItem('disableNotificationDialogReminder', "true");
     this.dialogRef.close({data: {
       cancelled: false
     }});
   }
 
-  disableNotificationReminder(v: string){
-    localStorage.setItem('disableNotificationDialogReminder', v);
+  disableReminder(){
+    this.reminderIsDisabled = !this.reminderIsDisabled;
+    localStorage.setItem("disableNotificationDialogReminder", String(this.reminderIsDisabled));
   }
 }

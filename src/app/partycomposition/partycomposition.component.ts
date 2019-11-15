@@ -197,23 +197,22 @@ export class PartycompositionComponent implements OnInit {
   }
 
   slotFillOverlay(index: number){
-    if(this.isPopulated(index)) {
-      return "https://imagizer.imageshack.com/img921/2733/cIKadV.png";
-      //return this.icons.get("slotFilled");
-    }
-    else{
-      return "https://imagizer.imageshack.com/img923/8926/57YPLZ.png";
-    }
+    if(this.isPopulated(index)) { return this.icons.get("Slot Filled").icon; }
+    else{ return this.icons.get("empty").icon; }
   }
 
   getSlotImage(index: number){
     // If the slot is occupied, display class of player in slot
     if(this.isPopulated(index)) {
-      return this.icons.get(this.slots[index].userOccupying.cJob);
+      var icon = this.icons.get(this.slots[index].userOccupying.cJob);
+      if(icon){ return icon; }
+      else{ return this.icons.get("empty"); }
     }
     // Else, display the default slot image
     else {
-      return this.icons.get(this.slots[index].slotJobs[0]);
+      var icon = this.icons.get(this.slots[index].slotJobs[0]);
+      if(icon){ return icon; }
+      else{ return this.icons.get("empty"); }
     }
   }
 
@@ -268,8 +267,7 @@ export class PartycompositionJoinDialog {
 
   selectedCharacter: any;
 
-  jobList = ['PLD', 'GLA', 'WAR', 'MRD', 'DRK', 'GNB', 'WHM', 'CNJ', 'SCH', 'ACN', 'AST', 'MNK', 'PGL', 'DRG', 'LNC',
-      'NIN', 'ROG', 'SAM', 'BRD', 'ARC', 'MCH', 'DNC', 'BLM', 'THM', 'SMN', 'ACN', 'RDM', 'BLU'];
+  jobList = [];
   
   constructor(
     private swp: SwPush, private pns: PushNotificationService,
@@ -279,8 +277,6 @@ export class PartycompositionJoinDialog {
     private fb: FormBuilder,
     private http: HttpClient,
     private apiurl: apiref) {
-      console.log("Notification.permission");
-      console.log(Notification.permission);
       this.form = fb.group({
         charSelected: [Object, Validators.required],
         jobSelected: [String, Validators.required],
@@ -295,6 +291,7 @@ export class PartycompositionJoinDialog {
 
     if(this.jobList.length > 0) {
       this.form.get("jobSelected").setValue(this.jobList[0]);
+      this.form.get("jobSelected").reset();
     }
   }
 
@@ -387,7 +384,7 @@ export class PartycompositionJoinDialog {
     let ret = [];
     for(var i = 0; i < filteredJobs.length; i++){
       if(filteredJobs[i].lvl > 0){
-        ret.push(filteredJobs[i].name); // May want to pass objects back at some point instead of just the name
+        ret.push(filteredJobs[i].name); 
       }
     }
 
@@ -411,8 +408,6 @@ export class PartycompositionJoinDialog {
 
     // Notification capable and not explicitly denied by user
     if(this.swp.isEnabled && localStorage.getItem("disableNotificationDialogReminder") != "true") {
-      console.log("Notification Capable");
-      console.log("Opening Notifications Dialog");
       const dialogRef = this.dialog.open(NotificationsDialog,
         {
           autoFocus: false,
@@ -421,57 +416,39 @@ export class PartycompositionJoinDialog {
           maxHeight: '90%'
       })
       .afterClosed().subscribe(result => {
-        console.log("Notifications Dialog is Closed");
-        console.log("result.data.cancelled");
-        console.log(result.data.cancelled);
         if(!result.data.cancelled){ // Assume player wants notifications
-          console.log("Requesting Subscription to Push Notifications");
-          console.log(this.pns.key());
           this.swp.requestSubscription({
             serverPublicKey: this.pns.key()
           }) // Returns unique subscription for user
           .then(pnsub => {
-            console.log("Push Notifications Allowed");
             var postData = {
               form: this.form.value,
               sub: pnsub
             }
-            console.log(postData);
 
-            console.log("Sending Backend Request to Join");
             this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
             .subscribe((responseData) => {
-              console.log("Response Received");
-              console.log(responseData);
               if(responseData.party){
-                console.log("Updating Party Display Data")
                 this.dialogRef.close({data: responseData});
               }
               else{
-                console.log("No Data for Party Display Update");
                 this.dialogRef.close({data: null});
               }
             });
           })
         }
         else{
-          console.log("No Push Notifications");
           var postData = {
             form: this.form.value,
             sub: null
           }
     
-          console.log("Sending Backend Request to Join");
           this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
           .subscribe((responseData) => {
-            console.log("Response Received");
-            console.log(responseData);
             if(responseData.party){
-              console.log("Updating Party Display Data");
               this.dialogRef.close({data: responseData});
             }
             else{
-              console.log("No Data for Party Display Update");
               this.dialogRef.close({data: null});
             }
           });
@@ -479,23 +456,17 @@ export class PartycompositionJoinDialog {
       })
     }
     else{ // Notification incapable or player assumed to not want notifications
-      console.log("Unable to Push Notify");
       var postData = {
         form: this.form.value,
         sub: null
       }
 
-      console.log("Sending Backend Request to Join");
       this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
       .subscribe((responseData) => {
-        console.log("Response Received");
-        console.log(responseData);
         if(responseData.party){
-          console.log("Updating Party Display Data");
           this.dialogRef.close({data: responseData});
         }
         else{
-          console.log("No Data for Party Display Update");
           this.dialogRef.close({data: null});
         }
       });
