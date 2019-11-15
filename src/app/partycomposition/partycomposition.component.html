@@ -1,11 +1,11 @@
 <div class="party-composition">
   <table [style.height.px]="getTableHeight()">
-    <!-- ngFor Party Slots --> 
+    <!-- ngFor Party Slots -->
     <div style="position: absolute; top: -96px; left: 0px;" *ngFor="let slot of slots; let i = index;">
       <!-- New row every 8 slots (1/7), new row at i == 0 -->
-      <tr *ngIf="i === 0" style="position: absolute; top: 0px; left: 0px; height: 0px;">  
-        <td *ngFor="let slotX of slots; let j = index" style="max-height: 0px;"> <!-- Need a loop here to create 8 tds DO NOT DELETE-->
-          <div *ngIf="j >= 0 && j < 8" style="max-height: 0px;"> <!-- Only slots 1-8 -->
+      <tr *ngIf="i === 0" style="position: absolute; top: 0px; left: 0px;">  
+        <td *ngFor="let slotX of slots; let j = index"> <!-- Need a loop here to create 8 tds DO NOT DELETE-->
+          <div *ngIf="j >= 0 && j < 8"> <!-- Only slots 1-8 -->
             <img class="party-slot-filled" [title]="getSlotTitle(j)" [src]="slotFillOverlay(j)" (click)="onClick(j)">
             <img class="party-job-icon" [title]="getSlotTitle(j)" [src]="getSlotImage(j).icon" (click)="onClick(j)">
           </div>
@@ -65,6 +65,6 @@
           </div>
         </td>
       </tr>   
-    </div> 
+    </div>
   </table>
 </div>

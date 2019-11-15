@@ -14,5 +14,4 @@
     </div>
     <app-charactercard [characterDetails]="character" *ngFor="let character of characters"></app-charactercard>
     <div class="empty-character-list" *ngIf="characters.length <= 0 && !isLoading && hasFetchedCharacters">You don't currently have any verified characters, select "New Character" above.</div>
-    <mat-paginator *ngIf="!isLoading" [length]="totalCharacterCount"></mat-paginator>
   </div>
