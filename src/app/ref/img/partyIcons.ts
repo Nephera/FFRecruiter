@@ -3,6 +3,11 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class partyIcons {
   // Accent and Overlay Icons
+  empty = {
+    icon: "https://imagizer.imageshack.com/img921/1092/gfROWT.png",
+    background: ""
+  }
+
   highlight = {
   }
 
@@ -418,8 +423,11 @@ export class partyIcons {
 
   // Object Getter
   get (str: string){
+    // TODO: Map this
     switch(str)
     {
+      case "empty": { return this.empty; }
+      case "Slot Filled": { return this.slotFilled; }
       case "Speed Run": { return this.speedParty; }
       case "Progression": { return this.progParty; }
       case "0-1 Chest": { return this.oneChestParty; }
@@ -451,6 +459,7 @@ export class partyIcons {
       case "ARC": { return this.jobARC; }
       case "BRD": { return this.jobBRD; }
       case "MCH": { return this.jobMCH; }
+      case "DNC": { return this.jobDNC; }
       case "RDM": { return this.jobRDM; }
       case "ACN": { return this.jobACN; }
       case "SMN": { return this.jobSMN; }

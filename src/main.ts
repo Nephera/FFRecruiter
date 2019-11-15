@@ -11,9 +11,8 @@ if (environment.production) {
 }
 
 if ('serviceWorker' in navigator && 'PushManager' in window) {
-  //console.log('Service Worker and Push is supported');
   navigator.serviceWorker.register('ngsw-worker.js')
-  .then(function(swReg) {/*console.log('Service Worker is registered', swReg);*/})
+  .then(function(swReg) {})
   .catch(function(error) {console.error('Service Worker Error', error);});
 } 
 else {
