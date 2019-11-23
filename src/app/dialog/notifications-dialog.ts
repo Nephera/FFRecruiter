@@ -34,7 +34,7 @@ export class NotificationsDialog {
   
   onSubscribe() {
     this.pns.sub();
-    localStorage.setItem('disableNotificationDialogReminder', "true");
+    localStorage.setItem('disableNotificationDialogReminder', "false");
     this.dialogRef.close({data: {
       cancelled: false
     }});

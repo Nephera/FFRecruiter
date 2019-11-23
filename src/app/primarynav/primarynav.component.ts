@@ -45,9 +45,7 @@ export class PrimarynavComponent implements OnInit {
       }
 
       this.http.put<{message: string}>(this.apiurl.hostname() + "/api/user/settings/set/notifications", putData)
-        .subscribe((responseData) => {
-          console.log(responseData.message);
-        })
+        .subscribe((responseData) => { console.log(responseData.message); })
 
       // Toggle button functionality
       this.canNotify = v;
@@ -75,7 +73,7 @@ export class PrimarynavComponent implements OnInit {
         autoFocus: false,
         width: '90vw',
         maxWidth: '600px',
-        maxHeight: '90%'
+        maxHeight: '85%'
       });
   }
 
@@ -85,7 +83,7 @@ export class PrimarynavComponent implements OnInit {
         autoFocus: false,
         width: '90vw',
         maxWidth: '600px',
-        maxHeight: '90%'
+        maxHeight: '85%'
       });
   }
 

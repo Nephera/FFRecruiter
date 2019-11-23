@@ -405,62 +405,14 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
     this.form.addControl('instanceimg', new FormControl(this.selectedInstance.img));
     this.form.addControl('instanceName', new FormControl(this.selectedInstance.name));
 
-    // Notification capable and not explicitly denied by user
-    if(this.swp.isEnabled && localStorage.getItem("disableNotificationDialogReminder") != "true") {
-      const dialogRef = this.dialog.open(NotificationsDialog,
-        {
-          autoFocus: false,
-          width: '90vw',
-          maxWidth: '600px',
-          maxHeight: '90%'
-      })
-      .afterClosed().subscribe(result => {
-        if(!result.data.cancelled){ // Assume player wants notifications
-          this.swp.requestSubscription({
-            serverPublicKey: this.pns.key()
-          }) // Returns unique subscription for user
-          .then(pnsub => {
-            var postData = {
-              form: this.form.value,
-              sub: pnsub
-            }
-
-            this.http.post<{message: string, parties: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
-            .subscribe((responseData) => {
-              if(responseData){
-                this.dialogRef.close({data: responseData});
-              }
-              else{
-                this.dialogRef.close({});
-              }
-            });
-          })
-        }
-        else{
-          var postData = {
-            form: this.form.value,
-            sub: null
-          }
-    
-          this.http.post<{message: string, parties: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
-          .subscribe((responseData) => {
-            if(responseData){
-              this.dialogRef.close({data: responseData});
-            }
-            else{
-              this.dialogRef.close({});
-            }
-          });
-        }
-      })
-    }
-    else{ // Notification incapable or player assumed to not want notifications
+    // Handle Notification Dialog
+    if(!this.swp.isEnabled || Notification.permission == "denied"){
       var postData = {
         form: this.form.value,
         sub: null
       }
 
-      this.http.post<{message: string, parties: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+      this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
       .subscribe((responseData) => {
         if(responseData){
           this.dialogRef.close({data: responseData});
@@ -469,6 +421,120 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
           this.dialogRef.close({});
         }
       });
+    }
+
+    else if(this.swp.isEnabled && Notification.permission == "granted"){
+      this.swp.requestSubscription({
+        serverPublicKey: this.pns.key()
+      }) // Returns unique subscription for user
+      .then(pnsub => {
+
+        var postData = {
+          form: this.form.value,
+          sub: pnsub
+        }
+
+        this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+        .subscribe((responseData) => {
+          if(responseData){
+            this.dialogRef.close({data: responseData});
+          }
+          else{
+            this.dialogRef.close({});
+          }
+        });
+      })
+    }
+
+    else if(this.swp.isEnabled && Notification.permission == "default"){
+      if(localStorage.getItem("disableNotificationDialogReminder") != "true"){ // If not explicitly denied a reminder
+        const dialogRef = this.dialog.open(NotificationsDialog,
+        {
+          autoFocus: false,
+          width: '90vw',
+          maxWidth: '600px',
+          maxHeight: '85%'
+        })
+        .afterClosed().subscribe(result => {
+          if(!result.data.cancelled){ // Assume player wants notifications
+            Notification.requestPermission()
+            .then(async permission => {
+              if(Notification.permission == "granted"){
+                this.swp.requestSubscription({
+                  serverPublicKey: this.pns.key()
+                }) // Returns unique subscription for user
+                .then(pnsub => {
+                  var postData = {
+                    form: this.form.value,
+                    sub: pnsub
+                  }
+          
+                  this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+                  .subscribe((responseData) => {
+                    if(responseData){
+                      this.dialogRef.close({data: responseData});
+                    }
+                    else{
+                      this.dialogRef.close({});
+                    }
+                  });
+                })
+                .catch(err => {
+                  console.log(err.err.message);
+                })
+              }
+              else{ // Notification.permission == denied/default
+                var postData = {
+                  form: this.form.value,
+                  sub: null
+                }
+          
+                this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+                .subscribe((responseData) => {
+                  if(responseData){
+                    this.dialogRef.close({data: responseData});
+                  }
+                  else{
+                    this.dialogRef.close({});
+                  }
+                });
+              }
+            });
+          }
+          else{ // User doesn't want notifications
+            var postData = {
+              form: this.form.value,
+              sub: null
+            }
+      
+            this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+            .subscribe((responseData) => {
+              if(responseData){
+                this.dialogRef.close({data: responseData});
+              }
+              else{
+                this.dialogRef.close({});
+              }
+            });
+          }
+        })
+      }
+      else{ // Explicitly denied reminders
+        var postData = {
+          form: this.form.value,
+          sub: null
+        }
+
+        this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+        .subscribe((responseData) => {
+          if(responseData){
+            this.dialogRef.close({data: responseData});
+          }
+          else{
+            this.dialogRef.close({});
+          }
+        });
+      }
     }
   }
 }

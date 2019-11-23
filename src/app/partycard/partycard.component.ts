@@ -69,11 +69,12 @@ export class PartycardComponent implements OnInit {
   syncIcon: string;
   syncTitle: string;
   verifiedIcon: string;
+  verifiedTitle: string;
   purposeTitle: string;
   purposeIconObj: PartyPurpose;
   instanceIconGradient: string;
 
-  // Temp, should be pulling from database, never seen by user
+  // TODO: Temp, should be pulling from database, never seen by user
   hasPassword(): boolean {
     if(this.pw == "")
       return false;
@@ -86,7 +87,7 @@ export class PartycardComponent implements OnInit {
         autoFocus: false,
         width: '90vw',
         maxWidth: '600px',
-        maxHeight: '90%',
+        maxHeight: '85%',
         data: {
           instance: this.instanceName,
           owner: this.owner,
@@ -108,7 +109,7 @@ export class PartycardComponent implements OnInit {
         autoFocus: false,
         width: '90vw',
         maxWidth: '600px',
-        maxHeight: '90%',
+        maxHeight: '85%',
         data: {
           instance: this.instanceName,
           owner: this.owner,
@@ -126,7 +127,7 @@ export class PartycardComponent implements OnInit {
           autoFocus: false,
           width: '90vw',
           maxWidth: '600px',
-          maxHeight: '90%',
+          maxHeight: '85%',
           data: {
             title: "Left Party",
             text: response.message
@@ -138,7 +139,7 @@ export class PartycardComponent implements OnInit {
           autoFocus: false,
           width: '90vw',
           maxWidth: '600px',
-          maxHeight: '90%',
+          maxHeight: '85%',
           data: {
             title: error.error.title,
             text: error.error.message
@@ -198,15 +199,24 @@ export class PartycardComponent implements OnInit {
     this.purpose = this.partyDetails.purpose;
     this.slots = [];
 
-
     this.privatePartyIcon = this.icons.privateParty.icon;
     this.purposeIconObj = this.icons.get(this.purpose);
     this.purposeIcon = this.purposeIconObj.icon;
     this.purposeTitle = this.purposeIconObj.title;
-    this.syncTitle = "Sync"; // TODO: Temporary, should be dynamic
 
-    this.syncIcon = "https://imagizer.imageshack.com/img922/1995/VBd0hJ.png"; // TODO: Temporary, should be dynamic
-    this.verifiedIcon = "https://imagizer.imageshack.com/img924/3685/sQUzot.png"; // TODO: Temporary, should be dynamic
+    var sync = this.icons.get(this.partyDetails.sync);
+    this.syncTitle = this.partyDetails.sync;
+    this.syncIcon = sync.icon;
+
+    var verf = this.icons.get(this.partyDetails.verf);
+    if(this.partyDetails.verf){
+      this.verifiedTitle = "Verified Users Only";
+      this.verifiedIcon = this.icons.get(this.verifiedTitle).icon;
+    }
+    else{
+      this.verifiedTitle = "Open to All Users";
+      this.verifiedIcon = this.icons.get(this.verifiedTitle).icon;
+    }
 
     this.instanceIconGradient = this.icons.get("instanceIconGradient").icon;
   }
