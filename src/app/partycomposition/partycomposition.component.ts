@@ -58,7 +58,6 @@ export class PartycompositionComponent implements OnInit {
   hasFetchedCharacters = false;
   private authListenerSub: Subscription;
   isAuth = false;
-  forceUpdate = false;
 
   isAuthenticated(){
     return this.isAuth;
@@ -109,7 +108,6 @@ export class PartycompositionComponent implements OnInit {
 
   onClick(index: number){
     if(this.isPopulated(index)) {
-      this.forceUpdate = false; // temp hack to get redraw on main div after slot update
       // Get Details for Player using Name/Server
       // Issue is that this.slots isn't being used, so updates aren't being caught
       this.http.get<{ message: string, character: any}>(this.apiurl.hostname() + 
@@ -123,7 +121,7 @@ export class PartycompositionComponent implements OnInit {
               autoFocus: false,
               width: '90vw',
               maxWidth: '600px',
-              maxHeight: '90%',
+              maxHeight: '85%',
               data: {
                 id: this.partyDetails._id,
                 instance: this.partyDetails.instanceName,
@@ -133,18 +131,36 @@ export class PartycompositionComponent implements OnInit {
                 slotFFLogs: "https://www.fflogs.com/character/na/" + characterData.character.server + "/" + characterData.character.name,
                 slotLodestone: "https://na.finalfantasyxiv.com/lodestone/character/" + characterData.character.lodestoneID,
                 slotProfile: "Profile",
-                slotUsername: this.partyDetails.composition[index].userOccupying.name,
-                slotCharacterName: this.partyDetails.composition[index].userOccupying.cName,
-                slotServerName: this.partyDetails.composition[index].userOccupying.cServer,
-                slotDatacenterName: this.partyDetails.composition[index].userOccupying.cDC,
-                slotJob: this.partyDetails.composition[index].userOccupying.cJob,
-                slotAltJobs: this.partyDetails.composition[index].userOccupying.cBUJobs,
+                slotUsername: this.slots[index].userOccupying.name,
+                slotCharacterName: this.slots[index].userOccupying.cName,
+                slotServerName: this.slots[index].userOccupying.cServer,
+                slotDatacenterName: this.slots[index].userOccupying.cDC,
+                slotJob: this.slots[index].userOccupying.cJob,
+                slotAltJobs: this.slots[index].userOccupying.cBUJobs,
                 slotNum: index,
               }
             });
           dialogRef.afterClosed().subscribe(result => {
-            if(result && result.data.party.composition){
-              this.slots[index] = result.data.party.composition[index];
+            if(result && result.data){
+              if(result.data.error){
+                const dialogRef = this.dialog.open(ErrorDialog,
+                  {
+                    autoFocus: false,
+                    width: '90vw',
+                    maxWidth: '600px',
+                    maxHeight: '85%',
+                    data: {
+                      title: result.data.title,
+                      text: result.data.message
+                    }
+                  })
+
+                return;
+              }
+
+              if(result.data.party){
+                this.slots[index] = result.data.party.composition[index];
+              }
             }
           })
       });
@@ -156,7 +172,7 @@ export class PartycompositionComponent implements OnInit {
             autoFocus: false,
             width: '90vw',
             maxWidth: '600px',
-            maxHeight: '90%',
+            maxHeight: '85%',
             data: {
               title: "Unable to Join: Authenticate",
               text: "You must first log into FF Recruiter"
@@ -176,7 +192,7 @@ export class PartycompositionComponent implements OnInit {
                 autoFocus: false,
                 width: '90vw',
                 maxWidth: '600px',
-                maxHeight: '90%',
+                maxHeight: '85%',
                 data: {
                   title: "Unable to Join: Already Joined",
                   text: "You are already part of this party, you cannot fill more than one slot."
@@ -189,7 +205,7 @@ export class PartycompositionComponent implements OnInit {
                 autoFocus: false,
                 width: '90vw',
                 maxWidth: '600px',
-                maxHeight: '90%',
+                maxHeight: '85%',
                 data: {
                   partyID: this.partyDetails._id,
                   instance: this.partyDetails.instanceName,
@@ -204,7 +220,7 @@ export class PartycompositionComponent implements OnInit {
               })
             dialogRef.afterClosed().subscribe(result => {
               if(result && result.data.party.composition){
-                this.slots[index] = result.data.party.composition[index];
+                this.slots[index] = result.data.party.composition[index]; // Update current view
               }
             })
           }
@@ -406,46 +422,8 @@ export class PartycompositionJoinDialog {
     this.form.addControl('party', new FormControl(this.data.partyID));
     this.form.addControl('slotNum', new FormControl(this.data.slotNum));
 
-    // Notification capable and not explicitly denied by user
-    if(this.swp.isEnabled && localStorage.getItem("disableNotificationDialogReminder") != "true") {
-      const dialogRef = this.dialog.open(NotificationsDialog,
-        {
-          autoFocus: false,
-          width: '90vw',
-          maxWidth: '600px',
-          maxHeight: '90%'
-      })
-      .afterClosed().subscribe(result => {
-        if(!result.data.cancelled){ // Assume player wants notifications
-          this.swp.requestSubscription({
-            serverPublicKey: this.pns.key()
-          }) // Returns unique subscription for user
-          .then(pnsub => {
-            var postData = {
-              form: this.form.value,
-              sub: pnsub
-            }
-
-            this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
-            .subscribe((responseData) => {
-              this.dialogRef.close({data: responseData});
-            });
-          })
-        }
-        else{
-          var postData = {
-            form: this.form.value,
-            sub: null
-          }
-    
-          this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
-          .subscribe((responseData) => {
-            this.dialogRef.close({data: responseData});
-          });
-        }
-      })
-    }
-    else{ // Notification incapable or player assumed to not want notifications
+    // Handle Notification Dialog
+    if(!this.swp.isEnabled || Notification.permission == "denied"){
       var postData = {
         form: this.form.value,
         sub: null
@@ -455,6 +433,95 @@ export class PartycompositionJoinDialog {
       .subscribe((responseData) => {
         this.dialogRef.close({data: responseData});
       });
+    }
+
+    else if(this.swp.isEnabled && Notification.permission == "granted"){
+      this.swp.requestSubscription({
+        serverPublicKey: this.pns.key()
+      }) // Returns unique subscription for user
+      .then(pnsub => {
+
+        var postData = {
+          form: this.form.value,
+          sub: pnsub
+        }
+
+        this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
+        .subscribe((responseData) => {
+          this.dialogRef.close({data: responseData});
+        });
+      })
+    }
+
+    else if(this.swp.isEnabled && Notification.permission == "default"){
+      if(localStorage.getItem("disableNotificationDialogReminder") != "true"){ // If not explicitly denied a reminder
+        const dialogRef = this.dialog.open(NotificationsDialog,
+        {
+          autoFocus: false,
+          width: '90vw',
+          maxWidth: '600px',
+          maxHeight: '85%'
+        })
+        .afterClosed().subscribe(result => {
+          if(!result.data.cancelled){ // Assume player wants notifications
+            Notification.requestPermission()
+            .then(async permission => {
+              if(Notification.permission == "granted"){
+                this.swp.requestSubscription({
+                  serverPublicKey: this.pns.key()
+                }) // Returns unique subscription for user
+                .then(pnsub => {
+                  var postData = {
+                    form: this.form.value,
+                    sub: pnsub
+                  }
+          
+                  this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
+                  .subscribe((responseData) => {
+                    this.dialogRef.close({data: responseData});
+                  });
+                })
+                .catch(err => {
+                  console.log(err.err.message);
+                })
+              }
+              else{ // Notification.permission == denied/default
+                var postData = {
+                  form: this.form.value,
+                  sub: null
+                }
+          
+                this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
+                .subscribe((responseData) => {
+                  this.dialogRef.close({data: responseData});
+                });
+              }
+            });
+          }
+          else{ // User doesn't want notifications
+            var postData = {
+              form: this.form.value,
+              sub: null
+            }
+      
+            this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
+            .subscribe((responseData) => {
+              this.dialogRef.close({data: responseData});
+            });
+          }
+        })
+      }
+      else{ // Explicitly denied reminders
+        var postData = {
+          form: this.form.value,
+          sub: null
+        }
+  
+        this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
+        .subscribe((responseData) => {
+          this.dialogRef.close({data: responseData});
+        });
+      }
     }
   }
 }
@@ -466,7 +533,7 @@ export class PartycompositionJoinDialog {
 })
 export class PartycompositionPlayerDetailsDialog {
   constructor(
-    private http: HttpClient, private apiurl: apiref,
+    private http: HttpClient, private apiurl: apiref, private dialog: MatDialog,
     public dialogRef: MatDialogRef<PartycompositionPlayerDetailsDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DetailsDialogData) { }
 

@@ -79,22 +79,27 @@ export class partyIcons {
 
   // Sync Icons
   fullSync = {
-    icon: "",
+    icon: "https://imagizer.imageshack.com/img922/1995/VBd0hJ.png",
     title: "Full Sync"
   }
 
   levelSync = {
-    icon: "",
+    icon: "https://imagizer.imageshack.com/img922/1995/VBd0hJ.png",
     title: "Level Sync"
   }
 
   ilvlSync = {
-    icon: "",
+    icon: "https://imagizer.imageshack.com/img922/1995/VBd0hJ.png",
     title: "Item Level Sync"
   }
 
+  sync = {
+    icon: "https://imagizer.imageshack.com/img922/1995/VBd0hJ.png",
+    title: "Synced"
+  }
+
   unsync = {
-    icon: "",
+    icon: "https://imagizer.imageshack.com/img921/1092/gfROWT.png",
     title: "Unsynced"
   }
 
@@ -422,10 +427,12 @@ export class partyIcons {
   }
 
   // Object Getter
-  get (str: string){
+  get (str: string) : {icon: string} {
     // TODO: Map this
     switch(str)
     {
+      case "Verified Users Only": { return this.verifiedParty; }
+      case "Open to All Users": { return this.empty; }
       case "empty": { return this.empty; }
       case "Slot Filled": { return this.slotFilled; }
       case "Speed Run": { return this.speedParty; }
@@ -437,9 +444,10 @@ export class partyIcons {
       case "Other": { return this.otherParty; }
       case "Clear": { return this.clearParty; }
       case "Unsynced": { return this.unsync; }
-      case "Level Synced": { return this.levelSync; }
-      case "iLvl Synced": { return this.ilvlSync; }
-      case "Full Sync": { return this.fullSync; }
+      case "Synced": { return this.sync; }
+      case "Level": { return this.levelSync; }
+      case "Item": { return this.ilvlSync; }
+      case "Full": { return this.fullSync; }
       case "tankBG": { return this.tankBG; }
       case "healerBG": { return this.healerBG; }
       case "dpsBG": { return this.dpsBG; }

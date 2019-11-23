@@ -19,6 +19,5 @@ else {
   console.warn('Push messaging is not supported');
 }
 
-
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));

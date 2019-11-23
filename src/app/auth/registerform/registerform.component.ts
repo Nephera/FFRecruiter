@@ -19,6 +19,10 @@ export class RegisterformComponent implements OnInit {
 
   constructor(public authService: AuthService, private http: HttpClient, private apiurl: apiref) { }
 
+  isRegistering(){
+    return this.authService.isRegistering();
+  }
+
   onRegister(form: NgForm) {
     if((form.value.email != form.value.emailv)) {
       this.errorMsg = "Emails do not match, try again.";

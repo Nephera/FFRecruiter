@@ -17,10 +17,10 @@ var partyslotSchema = mongoose.Schema({
 var userNotificationSubscriptionSchema = mongoose.Schema({
   username: { type: String, required: true },
   sub: { 
-    endpoint: { type: String, required: true },
+    endpoint: { type: String, default: null },
     keys: { 
-      p256dh: { type: String, required: true },
-      auth: { type: String, required: true }
+      p256dh: { type: String, default: null },
+      auth: { type: String, default: null }
     } 
   },
   partyFill: { type: Boolean, required: true },

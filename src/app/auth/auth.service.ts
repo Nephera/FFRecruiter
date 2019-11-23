@@ -18,11 +18,16 @@ export class AuthService {
   private authAvatarListener = new Subject<string>();
   private isAuthenticated = false;
   private logging = false;
+  private registering = false;
 
   constructor(private http: HttpClient, private router: Router, private cps: ControlpanelService, private apiurl: apiref){}
 
   isLogging() {
     return this.logging;
+  }
+
+  isRegistering() {
+    return this.registering;
   }
 
   getToken() {
@@ -63,8 +68,10 @@ export class AuthService {
 
   createUser(username: string, email: string, password: string) {
     const authData: AuthData = {username: username, email: email, password: password};
+    this.registering = true;
     this.http.post<{message: string, result: any}>(this.apiurl.hostname() + "/api/user/register", authData)
       .subscribe(response => {
+        this.registering = false;
         this.login(username, email, password);
       }, error => {
         this.authMsgListener.next(error.error.message);
