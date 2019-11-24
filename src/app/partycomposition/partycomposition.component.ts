@@ -27,6 +27,7 @@ export interface JoinDialogData {
 export interface DetailsDialogData {
   id: string,
   instance: string,
+  ownerUN: string,
   owner: string,
   ownerServer: string,
   slotAvatar: string,
@@ -126,6 +127,7 @@ export class PartycompositionComponent implements OnInit {
                 id: this.partyDetails._id,
                 instance: this.partyDetails.instanceName,
                 owner: this.partyDetails.ownerCharName,
+                ownerUN: this.partyDetails.ownerName,
                 ownerServer: this.partyDetails.ownerServer,
                 slotAvatar: characterData.character.avatar,
                 slotFFLogs: "https://www.fflogs.com/character/na/" + characterData.character.server + "/" + characterData.character.name,
@@ -539,6 +541,22 @@ export class PartycompositionPlayerDetailsDialog {
 
   userOwns(n: string){
     return (localStorage.getItem("username") == n);
+  }
+
+  userIsPartyOwner(){
+    return (localStorage.getItem("username") == this.data.ownerUN);
+  }
+
+  onDisband(){
+    var postData = {
+      username: localStorage.getItem("username"),
+      partyID: this.data.id
+    };
+
+    this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/disband", postData)
+      .subscribe((responseData) => {
+        this.dialogRef.close({data: responseData});
+    });
   }
 
   onLeave(){
