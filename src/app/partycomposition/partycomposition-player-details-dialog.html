@@ -12,6 +12,6 @@
 </div>
 <div mat-dialog-actions align="end">
   <button *ngIf="userIsPartyOwner()" mat-stroked-button color="warn" (click)="onDisband()">DISBAND</button>
-  <button *ngIf="userOwns(data.slotUsername) && !userIsPartyOwner" mat-stroked-button color="warn" (click)="onLeave()">LEAVE</button>
+  <button *ngIf="userOwns(data.slotUsername) && !userIsPartyOwner()" mat-stroked-button color="warn" (click)="onLeave()">LEAVE</button>
   <button mat-stroked-button (click)="onOk()">OK</button>
 </div> 
