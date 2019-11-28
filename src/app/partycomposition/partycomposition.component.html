@@ -3,11 +3,13 @@
     <!-- ngFor Party Slots -->
     <div style="position: absolute; top: -96px; left: 0px;" *ngFor="let slot of slots; let i = index;">
       <!-- New row every 8 slots (1/7), new row at i == 0 -->
-      <tr *ngIf="i === 0" style="position: absolute; top: 0px; left: 0px;">  
+      <tr *ngIf="i === 0 && rendered" style="position: absolute; top: 0px; left: 0px;">  
         <td *ngFor="let slotX of slots; let j = index"> <!-- Need a loop here to create 8 tds DO NOT DELETE-->
           <div *ngIf="j >= 0 && j < 8"> <!-- Only slots 1-8 -->
             <img class="party-slot-filled" [title]="getSlotTitle(j)" [src]="slotFillOverlay(j)" (click)="onClick(j)">
             <img class="party-job-icon" [title]="getSlotTitle(j)" [src]="getSlotImage(j).icon" (click)="onClick(j)">
+            <img class="slot-owned-highlight" [title]="getSlotTitle(j)" [src]="getSlotHighlight(j)" (click)="onClick(j)">
+            <img class="party-slot-leader" [title]="getSlotTitle(j)" [src]="slotLeaderOverlay(j)" (click)="onClick(j)">
           </div>
         </td>
       </tr>

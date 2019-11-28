@@ -45,9 +45,40 @@ div {
   position: absolute;
   float: left;
   width: 36px;
-  width: 36px;
   text-align: center;
   z-index: 2 !important;
+}
+
+.party-slot-leader {
+  position: relative;
+  opacity: .7;
+  float: left;
+  left: 1px;
+  top: -70px;
+  width: 32px;
+  height: 32px;
+  -webkit-filter: brightness(150%);
+  filter: brightness(150%);
+  text-align: center;
+  z-index: 5 !important;
+
+}
+
+.slot-owned-highlight {
+  position: relative;
+  opacity: .8;
+  float: left;
+  left: -1px;
+  top: -35px;
+  width: 38px;
+  height: 38px;
+  text-align: center;
+  -webkit-filter: brightness(150%);
+  filter: brightness(150%);
+  // -webkit-filter: contrast(10000%);
+  // filter: contrast(10000%);
+  z-index: 3 !important;
+
 }
 
 
