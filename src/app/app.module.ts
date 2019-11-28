@@ -72,7 +72,8 @@ import { MycharactersService } from './mycharacters/mycharacters.service';
 
 import { PartycompositionComponent,
   PartycompositionJoinDialog,
-  PartycompositionPlayerDetailsDialog 
+  PartycompositionPlayerDetailsDialog, 
+  PartyCompositionBlankDialog
 } from './partycomposition/partycomposition.component';
 
 import {MatStepperModule} from '@angular/material/stepper';
@@ -129,7 +130,8 @@ import { NotificationsDialog } from './dialog/notifications-dialog';
     PartyfilterComponent,
     PartyDirectoryCreatepartyDialog,
     SettingsComponent,
-    NotificationsDialog
+    NotificationsDialog,
+    PartyCompositionBlankDialog
   ],
   imports: [
     BrowserModule,
@@ -183,7 +185,8 @@ import { NotificationsDialog } from './dialog/notifications-dialog';
     ErrorDialog,
     ConfirmDialog,
     PartyDirectoryCreatepartyDialog,
-    NotificationsDialog
+    NotificationsDialog,
+    PartyCompositionBlankDialog
   ]
 })
 export class AppModule { }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation, Inject, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, Inject, Output, EventEmitter, ChangeDetectorRef} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { partyIcons } from '../ref/img/partyIcons';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +10,6 @@ import { ErrorDialog } from '../dialog/error-dialog';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
-import { checkAndUpdateView } from '@angular/core/src/view/view';
 
 export interface JoinDialogData {
   instance: string,
@@ -43,6 +42,8 @@ export interface DetailsDialogData {
   slotNum: number
 }
 
+export interface BlankDialogData {}
+
 @Component({
   selector: 'app-partycomposition',
   templateUrl: './partycomposition.component.html',
@@ -59,6 +60,7 @@ export class PartycompositionComponent implements OnInit {
   hasFetchedCharacters = false;
   private authListenerSub: Subscription;
   isAuth = false;
+  rendered = true;
 
   isAuthenticated(){
     return this.isAuth;
@@ -90,7 +92,8 @@ export class PartycompositionComponent implements OnInit {
     private icons: partyIcons,
     private http: HttpClient,
     private apiurl: apiref,
-    private as: AuthService) { }
+    private as: AuthService,
+    private CDR: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.as.autoAuthUser();
@@ -161,7 +164,11 @@ export class PartycompositionComponent implements OnInit {
               }
 
               if(result.data.party){
+                // TODO: Unhackify this. Issue #31. To force an update on the position of the
+                // component after modification, we open a modal and immediately close it.
                 this.slots[index] = result.data.party.composition[index];
+                const dialogRef2 = this.dialog.open(PartyCompositionBlankDialog, {})
+                dialogRef2.close();
               }
             }
           })
@@ -222,7 +229,11 @@ export class PartycompositionComponent implements OnInit {
               })
             dialogRef.afterClosed().subscribe(result => {
               if(result && result.data.party.composition){
-                this.slots[index] = result.data.party.composition[index]; // Update current view
+                // TODO: Unhackify this. Issue #31. To force an update on the position of the
+                // component after modification, we open a modal and immediately close it.
+                this.slots[index] = result.data.party.composition[index];
+                const dialogRef2 = this.dialog.open(PartyCompositionBlankDialog, {})
+                dialogRef2.close();              
               }
             })
           }
@@ -231,9 +242,24 @@ export class PartycompositionComponent implements OnInit {
     }
   }
 
+  
   slotFillOverlay(index: number){
     if(this.isPopulated(index)) { return this.icons.get("Slot Filled").icon; }
     else{ return this.icons.get("empty").icon; }
+  }
+
+  slotLeaderOverlay(index: number){
+    if(this.isLeader(index)) { return this.icons.get("Party Leader").icon; }
+    else{ return this.icons.get("empty").icon; }
+  }
+
+  isLeader(index: number){
+    return (this.slots[index].userOccupying.name == this.partyDetails.ownerName);
+  }
+
+  getSlotHighlight(index: number){
+    if(this.slots[index].userOccupying.name == localStorage.getItem("username")){return this.icons.get("Slot Highlight").icon}
+    else{return this.icons.get("empty").icon;}
   }
 
   getSlotImage(index: number){
@@ -269,6 +295,16 @@ export class PartycompositionComponent implements OnInit {
   {
     this.authListenerSub.unsubscribe();
   }
+}
+
+@Component({
+  selector: 'partycomposition-blank-dialog',
+  templateUrl: 'partycomposition-blank-dialog.html',
+  encapsulation: ViewEncapsulation.None
+})
+export class PartyCompositionBlankDialog {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: BlankDialogData){}
+  ngOnInit(){}
 }
 
 @Component({

@@ -8,7 +8,14 @@ export class partyIcons {
     background: ""
   }
 
-  highlight = {
+  slotHighlight = {
+    icon: "https://imagizer.imageshack.com/img923/4518/123vGc.png",
+    background: ""
+  }
+
+  partyLeader = {
+    icon: "https://imagizer.imageshack.com/img922/6222/jvVDTj.png",
+    background: ""
   }
 
   slotFilled = {
@@ -431,6 +438,8 @@ export class partyIcons {
     // TODO: Map this
     switch(str)
     {
+      case "Slot Highlight": { return this.slotHighlight; }
+      case "Party Leader": { return this.partyLeader; }
       case "Verified Users Only": { return this.verifiedParty; }
       case "Open to All Users": { return this.empty; }
       case "empty": { return this.empty; }
