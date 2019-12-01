@@ -595,6 +595,20 @@ export class PartycompositionPlayerDetailsDialog {
     });
   }
 
+  onKick(){
+    const postData = {
+      username: localStorage.getItem("username"),
+      partyID: this.data.id,
+      kickUser: this.data.slotUsername,
+      slotNum: this.data.slotNum
+    }
+
+    this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/kickplayer", postData)
+    .subscribe((responseData) => {
+      this.dialogRef.close({data: responseData});
+    })
+  }
+
   onLeave(){
     var postData = {
       id: this.data.id,

@@ -129,6 +129,10 @@ export class PartydirectoryComponent implements OnInit {
     this.displayFilters = !this.displayFilters;
   }
 
+  isFiltering(){
+    return this.pfs.isFiltering();
+  }
+
   getParties(partiesPerPage: number, currentPage: number): any {
     this.isLoading = true;
 

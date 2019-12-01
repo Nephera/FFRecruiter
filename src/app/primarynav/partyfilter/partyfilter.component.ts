@@ -19,6 +19,12 @@ export class PartyfilterComponent implements OnInit {
   difficulties: any[];
   itypes: any[];
 
+  fetchedInstances = false;
+  fetchedPurposes = false;
+  fetchedJobs = false;
+  fetchedDifficulties = false;
+  fetchedITypes = false;
+
   setInstance(){
     this.pfs.setInstance(this.form.get('instance').value);
   }
@@ -56,14 +62,13 @@ export class PartyfilterComponent implements OnInit {
       parse: [Number],
       parsem: [Number]
     });
-
-    this.instances = ["No Filter", "Unending Coil of Bahamut", "The Void Ark"]; // TODO
-    this.purposes = ["No Filter", "Speed Run", "Parse"]; // TODO
-    this.jobs = ["No Filter", "RDM", "DRG"]; // TODO
-    this.difficulties = ["No Filter", "Normal", "Hard"]; // TODO
-    this.itypes = ["No Filter", "Raid", "Alliance"]; // TODO
   }
 
   ngOnInit() {
+    this.instances = this.pfs.getInstances();
+    this.purposes = this.pfs.getPurposes();
+    this.jobs = this.pfs.getJobs();
+    this.difficulties = this.pfs.getDifficulties();
+    this.itypes = this.pfs.getITypes();
   }
 }

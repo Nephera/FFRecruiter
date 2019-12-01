@@ -1,7 +1,13 @@
 @import "/../app.component";
 
-.filter-button {
-  margin-left: 5px;
+.filterOn {
+  background-color: #9c27b0;
+  color: #FFFFFF;
+}
+
+.filterOff{
+  background-color: #424242;
+  color: #AAAAAA;
 }
 
 .spinner{

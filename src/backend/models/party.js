@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+var uniqueValidator = require('mongoose-unique-validator');
 
 var partyslotSchema = mongoose.Schema({
   userOccupying: {
@@ -33,6 +34,7 @@ var userNotificationSubscriptionSchema = mongoose.Schema({
 });
 
 const partySchema = mongoose.Schema({
+  shortID: { type: String, required: true, unique: true },
   ownerName: { type: String, required: true },
   ownerCharName: { type: String, required: true },
   ownerServer: { type: String, required: true},
@@ -60,4 +62,5 @@ const partySchema = mongoose.Schema({
   subscribers: [ userNotificationSubscriptionSchema ]
 });
 
+partySchema.plugin(uniqueValidator);
 module.exports = mongoose.model('Party', partySchema);
