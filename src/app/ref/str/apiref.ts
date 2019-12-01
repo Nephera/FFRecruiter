@@ -7,6 +7,6 @@ export class apiref {
       /* DEVELOPMENT */
       return "http://localhost:3000";
       /* PRODUCTION */
-      //return "https://www.ffrecruiter.com"; 
+      //return ""; // https://www.ffrecruiter.com
   }
 }

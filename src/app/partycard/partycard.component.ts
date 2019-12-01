@@ -51,6 +51,7 @@ export class PartycardComponent implements OnInit {
   hidden: boolean = false;
 
   id: string;
+  shortID: string;
   instance: string;
   instanceName: string;
   instanceimg: string;
@@ -187,6 +188,7 @@ export class PartycardComponent implements OnInit {
     });
 
     this.id = this.partyDetails._id;
+    this.shortID = this.partyDetails.shortID;
     this.instance = this.partyDetails.instance;
     this.instanceName = this.partyDetails.instanceName;
     this.instanceimg = this.partyDetails.instanceimg;
