@@ -164,7 +164,7 @@ export class PartydirectoryComponent implements OnInit {
   getCharacterList() {
     if(localStorage.getItem("username")){
       this.isLoading = true;
-      this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
+      this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/all/" + localStorage.getItem("username")).subscribe((characterData) => {
         this.characters = characterData.characters;
         this.isLoading = false;
         this.hasFetchedCharacters = true;

@@ -3,6 +3,8 @@ import { ControlpanelService } from './header/controlpanel/controlpanel.service'
 import { AuthService } from './auth/auth.service';
 import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -23,16 +25,15 @@ export class AppComponent implements OnInit, OnDestroy {
   // Initialize Service Providers
   constructor(
     private cps: ControlpanelService, 
-    private as: AuthService) {}
+    private as: AuthService,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer){
+      this.matIconRegistry.addSvgIcon("nav_static", this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/Icon_NavStatic.svg"));
+      this.matIconRegistry.addSvgIcon("nav_party", this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/Icon_NavParty.svg"));
+    }
 
   ngOnInit()
-  { 
-    // TODO: Uncomment once TLS/SSL is in place
-    // if (environment.production) {
-    //   if (location.protocol === 'http:') {
-    //    window.location.href = location.href.replace('http', 'https');
-    //   }
-    //  }    
+  {     
     this.as.autoAuthUser();
     this.userIsAuthenticated = this.as.getIsAuth();
     this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {

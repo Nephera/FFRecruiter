@@ -116,7 +116,7 @@ export class AuthService {
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
           this.cps.setSNO(false);
           this.logging = false;
-          this.http.get<{characters: any}>(this.apiurl.hostname() + "/api/characters/get/" + this.username)
+          this.http.get<{characters: any}>(this.apiurl.hostname() + "/api/characters/get/all/" + this.username)
           .subscribe(responseB => {
             if(responseB.characters.length > 0){
               this.avatar = responseB.characters[0].avatar;

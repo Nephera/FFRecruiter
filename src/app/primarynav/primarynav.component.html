@@ -1,9 +1,17 @@
 <div class="primary-nav">
   <mat-nav-list flex fxFlexAlign="center">
     <button mat-icon-button>
-      <mat-icon class="nav-button" title="Directory" routerLink="/partydirectory" routerLinkActive="gold">
-        list
+      <mat-icon class="nav-button" title="Static Directory" routerLink="/staticdirectory" svgIcon="nav_static" routerLinkActive="gold">
       </mat-icon>
+      <!-- <mat-icon class="nav-button" title="Directory" routerLink="/partydirectory" routerLinkActive="gold">
+        list
+      </mat-icon> -->
+    </button>
+    <button mat-icon-button>
+      <mat-icon class="nav-button" title="Party Directory" routerLink="/partydirectory" routerLinkActive="gold" svgIcon="nav_party"></mat-icon>
+      <!-- <mat-icon class="nav-button" title="Directory" routerLink="/partydirectory" routerLinkActive="gold">
+        list
+      </mat-icon> -->
     </button>
     <button *ngIf="isAuthenticated()" style="display:none" mat-icon-button>
       <mat-icon class="nav-button" title="Messages" (click)="showMessages()">

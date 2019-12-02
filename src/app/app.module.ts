@@ -96,6 +96,7 @@ import { environment } from '../environments/environment';
 import { PushNotificationService } from './push-notification.service';
 import { SettingsComponent } from './settings/settings.component';
 import { NotificationsDialog } from './dialog/notifications-dialog';
+import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.component';
 
 @NgModule({
   declarations: [
@@ -131,7 +132,8 @@ import { NotificationsDialog } from './dialog/notifications-dialog';
     PartyDirectoryCreatepartyDialog,
     SettingsComponent,
     NotificationsDialog,
-    PartyCompositionBlankDialog
+    PartyCompositionBlankDialog,
+    StaticdirectoryComponent
   ],
   imports: [
     BrowserModule,

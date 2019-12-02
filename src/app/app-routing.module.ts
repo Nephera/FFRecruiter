@@ -5,10 +5,13 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { MycharactersComponent } from './mycharacters/mycharacters.component';
 import { AuthGuard } from './auth/auth.guard';
 import { SettingsComponent } from './settings/settings.component';
+import { StaticdirectoryComponent} from './staticdirectory/staticdirectory.component';
 
 const routes: Routes = [
   { path: 'partydirectory', component: PartydirectoryComponent },
   { path: 'partydirectory/:id', component: PartydirectoryComponent },
+  { path: 'staticdirectory', component: StaticdirectoryComponent },
+  { path: 'staticdirectory/:id', component: StaticdirectoryComponent },
   { path: 'welcome', component: WelcomeComponent },
   { path: 'mycharacters', component: MycharactersComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
