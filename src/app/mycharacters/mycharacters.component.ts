@@ -156,7 +156,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
 
       if(this.stringIsSafe(this.charFName + this.charLName + this.charServer))
       {
-        this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/" + this.charFName + "/" + this.charLName + "/" + this.charServer)
+        this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/server/" + this.charFName + "/" + this.charLName + "/" + this.charServer)
         .subscribe((characterData) => {
           this.isLoading = false;
 
