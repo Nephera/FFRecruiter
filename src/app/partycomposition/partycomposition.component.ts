@@ -71,7 +71,7 @@ export class PartycompositionComponent implements OnInit {
       return;
 
     this.isLoading = true;
-    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/" + localStorage.getItem("username")).subscribe((characterData) => {
+    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/dc/" + localStorage.getItem("username") + "/" + this.partyDetails.ownerDC).subscribe((characterData) => {
       this.characters = characterData.characters;
       this.isLoading = false;
       this.hasFetchedCharacters = true;
@@ -115,7 +115,7 @@ export class PartycompositionComponent implements OnInit {
       // Get Details for Player using Name/Server
       // Issue is that this.slots isn't being used, so updates aren't being caught
       this.http.get<{ message: string, character: any}>(this.apiurl.hostname() + 
-        "/api/characters/get/" + 
+        "/api/characters/get/name/" + 
         this.slots[index].userOccupying.cServer + "/" + 
         this.slots[index].userOccupying.cName).subscribe((characterData) => {
 

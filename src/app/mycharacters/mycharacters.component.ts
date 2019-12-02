@@ -59,7 +59,7 @@ export class MycharactersComponent implements OnInit {
 
   getCharacterList() {
     this.isLoading = true;
-    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/" + localStorage.username).subscribe((characterData) => {
+    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/all/" + localStorage.username).subscribe((characterData) => {
       this.characters = characterData.characters;
       this.isLoading = false;
       this.hasFetchedCharacters = true;
