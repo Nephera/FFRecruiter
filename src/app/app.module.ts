@@ -28,7 +28,9 @@ import {
   MatPaginatorModule,
   MatGridListModule,
   MatSliderModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatTooltipModule,
+  MatSnackBarModule
 } from '@angular/material';
 
 import { Routes, RouterModule } from '@angular/router';
@@ -162,6 +164,8 @@ import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.comp
     MatStepperModule,
     MatSliderModule,
     MatSlideToggleModule,
+    MatTooltipModule,
+    MatSnackBarModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [

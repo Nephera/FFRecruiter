@@ -478,7 +478,6 @@ export class PartycompositionJoinDialog {
         serverPublicKey: this.pns.key()
       }) // Returns unique subscription for user
       .then(pnsub => {
-
         var postData = {
           form: this.form.value,
           sub: pnsub
