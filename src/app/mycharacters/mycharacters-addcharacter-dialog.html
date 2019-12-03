@@ -5,11 +5,8 @@
       <form [formGroup]="firstFormGroup">
         <ng-template matStepLabel>Enter Character Information</ng-template>
         <mat-form-field>
-          <input matInput placeholder="First Name" formControlName="firstname" required>
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="Last Name" formControlName="lastname" required>
-        </mat-form-field>
+          <input matInput placeholder="Character Name" formControlName="name" required>
+        </mat-form-field><br>
         <mat-form-field>
           <input matInput placeholder="Server" formControlName="server" required>
         </mat-form-field>
@@ -33,7 +30,7 @@
                   <img src="{{ charAvatar }}">
                 </td> 
                 <td>
-                  <a href="{{ lodestoneLink }}" target="_blank">{{ charFName }} {{ charLName }} ({{ charServer }})</a>
+                  <a href="{{ lodestoneLink }}" target="_blank">{{ charName }} ({{ charServer }})</a>
                 </td>
               </tr>
               <tr>
@@ -63,10 +60,11 @@
         <ng-container *ngIf="!isLoading">
         <div>
           <br>Here is your token, it expires in one hour:<br><br>
+          <mat-icon matTooltip="Copy Token" (click)="copyToken(verfTokenText)" style="cursor: pointer; margin-right: 10px;">file_copy</mat-icon>
           <mat-form-field>
             <mat-label>Token</mat-label>
             <input matInput value="{{ verfToken }}" #verfTokenText>
-          </mat-form-field><mat-icon (click)="copyToken(verfTokenText)" style="margin-left: 10px">file_copy</mat-icon>
+          </mat-form-field>
           <br>
           Copy this and paste it into your <a href="{{ lodestoneLink }}" target="_blank">Character Profile</a> located toward the bottom of your character's info, then press verify.  Do not close this dialog box or you will need to generate another token.
           <br><br>

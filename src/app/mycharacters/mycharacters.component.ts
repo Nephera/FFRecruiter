@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { apiref } from '../ref/str/apiref';
 import { datacenters } from '../ref/str/datacenters';
 import { Subscription } from 'rxjs';
@@ -86,6 +86,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
   private verfMsgListenerSub: Subscription;
 
   charAvatar = "";
+  charName = "";
   charFName = "";
   charLName = "";
   charServer = "";
@@ -111,14 +112,15 @@ export class MycharactersAddcharacterDialog implements OnInit {
     private apiurl: apiref,
     private DCs: datacenters,
     private mcService: MycharactersService,
+    private sb: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: AddCharDialogData) {    
       this.form = fb.group({
       owner: ""
     }); }
 
   ngOnInit(){
-    this.firstFormGroup = this.fb.group({firstname: ['', Validators.required],
-    lastname: ['', Validators.required],
+    this.firstFormGroup = this.fb.group({
+    name: ['', Validators.required],
     server: ['', Validators.required]});
     this.secondFormGroup = this.fb.group({secondCtrl: ['', Validators.required]});
 
@@ -150,13 +152,13 @@ export class MycharactersAddcharacterDialog implements OnInit {
     if(this.firstFormGroup.valid)
     {
       this.isLoading = true;
-      this.charFName = this.firstFormGroup.get("firstname").value;
-      this.charLName = this.firstFormGroup.get("lastname").value;
+      this.charName = this.firstFormGroup.get("name").value;
       this.charServer = this.firstFormGroup.get("server").value;
 
       if(this.stringIsSafe(this.charFName + this.charLName + this.charServer))
       {
-        this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/server/" + this.charFName + "/" + this.charLName + "/" + this.charServer)
+        this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/server/" + this.charName + "/" + this.charServer)
+        //this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/server/" + this.charFName + "/" + this.charLName + "/" + this.charServer)
         .subscribe((characterData) => {
           this.isLoading = false;
 
@@ -176,8 +178,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
 
     var data = {
       username: localStorage.getItem("username"),
-      firstname: this.charFName,
-      lastname: this.charLName,
+      charName: this.charName,
       server: this.charServer
     };
 
@@ -192,6 +193,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
     inputElement.select();
     document.execCommand("copy");
     inputElement.setSelectionRange(0, 0);
+    this.sb.open("Copied", "", {duration: 3000});
   }
 
   verifyToken() {

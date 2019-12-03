@@ -40,7 +40,6 @@ const partySchema = mongoose.Schema({
   ownerServer: { type: String, required: true},
   ownerDC: {type: String, required: true},
 
-  // list of all member's in the party, first index is always owner
   composition: [ partyslotSchema ], 
   
   // Instance
