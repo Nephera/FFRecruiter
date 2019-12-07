@@ -1,4 +1,4 @@
-<mat-card class="character-card">
+<mat-card class="character-card" height="200px">
   <table width="100%">
     <tr width="100%">
       <td width="15%">
@@ -6,7 +6,7 @@
         <img mat-card-avatar src="{{ avatar }}"><br>
         ({{ server }})
       </td>
-      <td width="40%">
+      <td width="40%" fxHide.lt-md="true">
         <table style="align-items: center">
           <tr class="tanks-healers">
             <td class="pld">
@@ -98,7 +98,7 @@
           </tr>
         </table>
       </td>
-      <td width="40%">
+      <td width="40%" fxHide.lt-md="true">
         <table>
           <tr>
             <td [ngClass]="{goldParse: isGold(parses[0]), orangeParse: isOrange(parses[0]), purpleParse: isPurple(parses[0]), blueParse: isBlue(parses[0]), greenParse: isGreen(parses[0]), grayParse: isGray(parses[0])}">
@@ -129,6 +129,139 @@
             </td>
           </tr>
         </table>
+      </td>
+      <td width="80%" fxHide.gt-sm="true">
+        <mat-tab-group mat-align-tabs="center">
+          <mat-tab label="Jobs">
+            <table style="align-items: center">
+              <tr class="tanks-healers">
+                <td class="pld">
+                  <img *ngIf="pldSpec" src="https://imagizer.imageshack.com/img923/7792/6M2Z98.png">
+                  <img *ngIf="!pldSpec" src="https://imagizer.imageshack.com/img921/6619/Q9mNGE.png">
+                  <br><span>{{ jobLevels[0] }}</span>
+                </td>
+                <td class="war">
+                  <img *ngIf="warSpec" src="https://imagizer.imageshack.com/img921/2389/jDmn3l.png">
+                  <img *ngIf="!warSpec" src="https://imagizer.imageshack.com/img921/5986/fcNORZ.png">
+                  <br><span>{{ jobLevels[1] }}</span>
+                </td>
+                <td class="drk">
+                  <img src="https://imagizer.imageshack.com/img924/7858/MbYriQ.png">
+                  <br><span>{{ jobLevels[2] }}</span>
+                </td>
+                <td class="gnb">
+                  <img src="https://imagizer.imageshack.com/img924/4720/UmMoX1.png">
+                  <br><span>{{ jobLevels[3] }}</span>
+                </td>
+                <td class="whm">
+                  <img *ngIf="whmSpec" src="https://imagizer.imageshack.com/img924/4822/agID3W.png">
+                  <img *ngIf="!whmSpec" src="https://imagizer.imageshack.com/img923/1799/eRIWfi.png">
+                  <br><span>{{ jobLevels[4] }}</span>
+                </td>
+                <td class="sch">
+                  <img *ngIf="schSpec" src="https://imagizer.imageshack.com/img921/5334/Ewwu8C.png">
+                  <img *ngIf="!schSpec" src="https://imagizer.imageshack.com/img921/6232/BHTwOq.png">
+                  <br><span>{{ jobLevels[5] }}</span>
+                </td>
+                <td class="ast">
+                  <img src="https://imagizer.imageshack.com/img924/9874/BrNlHU.png">
+                  <br><span>{{ jobLevels[6] }}</span>
+                </td>
+              </tr>
+              <tr class="melee">
+                <td class="mnk">
+                  <img *ngIf="mnkSpec" src="https://imagizer.imageshack.com/img924/7632/kQkfSs.png">
+                  <img *ngIf="!mnkSpec" src="https://imagizer.imageshack.com/img921/1570/eEUCAZ.png">
+                  <br><span>{{ jobLevels[7] }}</span>
+                </td>
+                <td class="drg">
+                  <img *ngIf="drgSpec" src="https://imagizer.imageshack.com/img923/6941/DkBb3n.png">
+                  <img *ngIf="!drgSpec" src="https://imagizer.imageshack.com/img923/6941/DkBb3n.png">
+                  <br><span>{{ jobLevels[8] }}</span>
+                </td>
+                <td class="nin">
+                  <img *ngIf="ninSpec" src="https://imagizer.imageshack.com/img924/3374/yd4sQg.png">
+                  <img *ngIf="!ninSpec" src="https://imagizer.imageshack.com/img924/9721/vgRkyP.png">
+                  <br><span>{{ jobLevels[9] }}</span>
+                </td>
+                <td class="sam">
+                  <img src="https://imagizer.imageshack.com/img923/2145/uEThD3.png">
+                  <br><span>{{ jobLevels[10] }}</span>
+                </td>
+                <td class="brd">
+                  <img *ngIf="brdSpec" src="https://imagizer.imageshack.com/img924/9849/UAFbv8.png">
+                  <img *ngIf="!brdSpec" src="https://imagizer.imageshack.com/img924/427/DCp6Yn.png">
+                  <br><span>{{ jobLevels[11] }}</span>
+                </td>
+                <td class="mch">
+                  <img src="https://imagizer.imageshack.com/img921/4551/AfcuVu.png">
+                  <br><span>{{ jobLevels[12] }}</span>
+                </td>
+                <td class="dnc">
+                  <img src="https://imagizer.imageshack.com/img924/1867/MEkP1s.png">
+                  <br><span>{{ jobLevels[13] }}</span>
+                </td>
+              </tr>
+              <tr class="caster">
+                <td class="blm">
+                  <img *ngIf="blmSpec" src="https://imagizer.imageshack.com/img923/8850/18nmqz.png">
+                  <img *ngIf="!blmSpec" src="https://imagizer.imageshack.com/img924/6461/4DAqQZ.png">
+                  <br><span>{{ jobLevels[14] }}</span>
+                </td>
+                <td class="smn">
+                  <img *ngIf="smnSpec" src="https://imagizer.imageshack.com/img923/4978/00F3j7.png">
+                  <img *ngIf="!smnSpec" src="https://imagizer.imageshack.com/img921/6232/BHTwOq.png">
+                  <br><span>{{ jobLevels[15] }}</span>
+                </td>
+                <td class="rdm">
+                  <img src="https://imagizer.imageshack.com/img921/6654/nBXYHS.png">
+                  <br><span>{{ jobLevels[16] }}</span>
+                </td>
+                <td class="blu">
+                  <img src="https://imagizer.imageshack.com/img923/8366/FkBkm8.png">
+                  <br><span>{{ jobLevels[17] }}</span>
+                </td>
+              </tr>
+            </table>
+          </mat-tab>
+          <mat-tab label="Parses">
+            <table>
+              <tr>
+                <td [ngClass]="{goldParse: isGold(parses[0]), orangeParse: isOrange(parses[0]), purpleParse: isPurple(parses[0]), blueParse: isBlue(parses[0]), greenParse: isGreen(parses[0]), grayParse: isGray(parses[0])}">
+                  <img src="https://imagizer.imageshack.com/img923/6786/MtOJRY.jpg"><br>
+                  {{ parses[0] }}
+                </td>
+                <td [ngClass]="{goldParse: isGold(parses[1]), orangeParse: isOrange(parses[1]), purpleParse: isPurple(parses[1]), blueParse: isBlue(parses[1]), greenParse: isGreen(parses[1]), grayParse: isGray(parses[1])}">
+                  <img src="https://imagizer.imageshack.com/img922/6339/lvoZYE.jpg"><br>
+                  {{ parses[1] }}
+                </td>
+                <td [ngClass]="{goldParse: isGold(parses[2]), orangeParse: isOrange(parses[2]), purpleParse: isPurple(parses[2]), blueParse: isBlue(parses[2]), greenParse: isGreen(parses[2]), grayParse: isGray(parses[2])}">
+                  <img src="https://imagizer.imageshack.com/img921/4206/DYRrzl.jpg"><br>
+                  {{ parses[2] }}
+                </td>
+                <td [ngClass]="{goldParse: isGold(parses[3]), orangeParse: isOrange(parses[3]), purpleParse: isPurple(parses[3]), blueParse: isBlue(parses[3]), greenParse: isGreen(parses[3]), grayParse: isGray(parses[3])}">
+                  <img src="https://imagizer.imageshack.com/img923/7776/lohCIj.jpg"><br>
+                  {{ parses[3] }}
+                </td>
+              </tr>
+              <tr>
+                <td [ngClass]="{goldParse: isGold(parses[5]), orangeParse: isOrange(parses[5]), purpleParse: isPurple(parses[5]), blueParse: isBlue(parses[5]), greenParse: isGreen(parses[5]), grayParse: isGray(parses[5])}">
+                  <img src="https://imagizer.imageshack.com/img921/1425/gUxLf5.jpg"><br>
+                  {{ parses[5] }}
+                </td>
+                <td [ngClass]="{goldParse: isGold(parses[6]), orangeParse: isOrange(parses[6]), purpleParse: isPurple(parses[6]), blueParse: isBlue(parses[6]), greenParse: isGreen(parses[6]), grayParse: isGray(parses[6])}">
+                  <img src="https://imagizer.imageshack.com/img924/7401/y1Lq8B.jpg"><br>
+                  {{ parses[6] }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <img src="https://imagizer.imageshack.com/img921/1092/gfROWT.png" style="height:35px">
+                </td>
+              </tr>
+            </table>
+          </mat-tab>
+        </mat-tab-group>
       </td>
       <td width="5%" align="right">
         <button mat-icon-button>

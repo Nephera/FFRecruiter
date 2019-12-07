@@ -410,8 +410,6 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
         break;
       }
     }
-
-    console.log(ownerIndex);
     
     this.form.addControl('ownerSlot', new FormControl(ownerIndex));
     this.form.addControl('composition', new FormControl(composition));
@@ -561,39 +559,40 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
       return true;
   
     if(slot == "TANK"){
-      if(job == "MRD" || job == "GLD" || job == "DRK" || job == "PLD" || job == "WAR" || job == "GNB"){
+      if(job == "TANK" || job == "MRD" || job == "GLD" || job == "DRK" || job == "PLD" || job == "WAR" || job == "GNB"){
         return true;
       }
     } 
   
     if(slot == "HEAL"){
-      if(job == "WHM" || job == "CNJ" || job == "SCH" || job == "AST"){
+      if(job == "HEAL" || job == "WHM" || job == "CNJ" || job == "SCH" || job == "AST"){
         return true;
       }
     }
   
     if(slot == "DPS"){
-      if(job == "ACN" || job == "SMN" || job == "THM" || job == "BLM" || job == "RDM" || job == "ROG" ||
+      if(job == "DPS" || job == "MDPS" || job == "RDPS" || job == "CDPS" ||
+        job == "ACN" || job == "SMN" || job == "THM" || job == "BLM" || job == "RDM" || job == "ROG" ||
         job == "NIN" || job == "SAM" || job == "PGL" || job == "MNK" || job == "LNC" || job == "DRG" ||
         job == "ARC" || job == "BRD" || job == "MCH" || job == "DNC"){
         return true;
       }
     }
     if(slot == "CDPS"){
-      if(job == "ACN" || job == "SMN" || job == "THM" || job == "BLM" || job == "RDM"){
+      if(job == "CDPS" || job == "ACN" || job == "SMN" || job == "THM" || job == "BLM" || job == "RDM"){
         return true;
       }
     }
   
     if(slot == "MDPS"){
-      if(job == "ROG" || job == "NIN" || job == "SAM" || job == "PGL" || job == "MNK" || job == "LNC" ||
+      if(job == "MDPS" || job == "ROG" || job == "NIN" || job == "SAM" || job == "PGL" || job == "MNK" || job == "LNC" ||
         job == "DRG"){
         return true;
       }
     }
   
     if(slot == "RDPS"){
-      if(job == "ARC" || job == "BRD" || job == "MCH" || job == "DNC"){
+      if(job == "RDPS" || job == "ARC" || job == "BRD" || job == "MCH" || job == "DNC"){
         return true;
       }
     }
