@@ -8,7 +8,10 @@
           <input matInput placeholder="Character Name" formControlName="name" required>
         </mat-form-field><br>
         <mat-form-field>
-          <input matInput placeholder="Server" formControlName="server" required>
+          <mat-label>Server</mat-label>
+          <select formControlName="server" matNativeControl required>
+            <option *ngFor="let server of data.servers" [ngValue]="server">{{ server.name }}</option>
+          </select>
         </mat-form-field>
         <div align="end">
           <button mat-button (click)="getChar()" matStepperNext>Next</button>
@@ -19,7 +22,7 @@
       <ng-template matStepLabel>Verify Character Lodestone</ng-template>
         <ng-container *ngIf="!isLoading && characterValid">
           <div>
-            <br>Please verify that this is your account before we generate a token for you.
+            <br>Please verify that this is your character before we generate a token for you.
             If this is not your character, please press back and edit your details.
           </div>
           <br>
@@ -31,11 +34,6 @@
                 </td> 
                 <td>
                   <a href="{{ lodestoneLink }}" target="_blank">{{ charName }} ({{ charServer }})</a>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <mat-checkbox (click)="isCharacter = !isCharacter" required>This is my character</mat-checkbox> 
                 </td>
               </tr>
             </table>
@@ -61,7 +59,7 @@
         <div>
           <br>Here is your token, it expires in one hour:<br><br>
           <mat-icon matTooltip="Copy Token" (click)="copyToken(verfTokenText)" style="cursor: pointer; margin-right: 10px;">file_copy</mat-icon>
-          <mat-form-field>
+          <mat-form-field (click)="copyToken(verfTokenText)">
             <mat-label>Token</mat-label>
             <input matInput value="{{ verfToken }}" #verfTokenText>
           </mat-form-field>

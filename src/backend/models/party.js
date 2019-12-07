@@ -58,7 +58,7 @@ const partySchema = mongoose.Schema({
   // Description
   description: { type: String, default: 'None' },
   // Notifications
-  subscribers: [ userNotificationSubscriptionSchema ]
+  // subscribers: [ userNotificationSubscriptionSchema ]
 });
 
 partySchema.plugin(uniqueValidator);

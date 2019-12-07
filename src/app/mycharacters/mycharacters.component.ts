@@ -8,7 +8,8 @@ import { Subscription } from 'rxjs';
 import { MycharactersService } from './mycharacters.service';
 
 export interface AddCharDialogData {
-  owner: string;  
+  owner: string; 
+  servers: any; 
 }
 
 @Component({
@@ -23,12 +24,15 @@ export class MycharactersComponent implements OnInit {
   timeLeft: number = 10;
   interval: any;
   characters = [];
+  servers: any;
+  hasFetchedServers: boolean = false;
 
   constructor(public dialog: MatDialog, private http: HttpClient, private apiurl: apiref) { }
 
   ngOnInit() {
     this.startTimer();
     this.getCharacterList();
+    this.getServerList();
   }
   
   // Timer responsible for allowing the DOM to update if no response from server,
@@ -50,7 +54,8 @@ export class MycharactersComponent implements OnInit {
         maxHeight: '100vh',
         data: {
           owner: "",
-          characters: this.characters
+          characters: this.characters,
+          servers: this.servers
         }
       });
 
@@ -64,6 +69,15 @@ export class MycharactersComponent implements OnInit {
       this.isLoading = false;
       this.hasFetchedCharacters = true;
     });
+  }
+
+  getServerList() {
+    this.isLoading = true;
+    this.http.get<{ message: string, servers: any }>(this.apiurl.hostname() + "/api/servers/").subscribe((serverData) => {
+      this.servers = serverData.servers;
+      this.isLoading = false;
+      this.hasFetchedServers = true;
+    })
   }
 
   retryFetchData() {
@@ -87,8 +101,6 @@ export class MycharactersAddcharacterDialog implements OnInit {
 
   charAvatar = "";
   charName = "";
-  charFName = "";
-  charLName = "";
   charServer = "";
   charID = "";
   lodestoneLink = "";
@@ -153,9 +165,9 @@ export class MycharactersAddcharacterDialog implements OnInit {
     {
       this.isLoading = true;
       this.charName = this.firstFormGroup.get("name").value;
-      this.charServer = this.firstFormGroup.get("server").value;
+      this.charServer = this.firstFormGroup.get("server").value.name;
 
-      if(this.stringIsSafe(this.charFName + this.charLName + this.charServer))
+      if(this.stringIsSafe(this.charName + this.charServer))
       {
         this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/server/" + this.charName + "/" + this.charServer)
         //this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/server/" + this.charFName + "/" + this.charLName + "/" + this.charServer)
@@ -193,6 +205,9 @@ export class MycharactersAddcharacterDialog implements OnInit {
     inputElement.select();
     document.execCommand("copy");
     inputElement.setSelectionRange(0, 0);
+    if (window.getSelection) {
+      window.getSelection().removeAllRanges();
+    }
     this.sb.open("Copied", "", {duration: 3000});
   }
 
@@ -210,8 +225,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
             //token: localStorage.token,
             avatar: this.charAvatar,
             ID: this.charID,
-            first: this.charFName,
-            last: this.charLName,
+            name: this.charName,
             server: this.charServer,
             datacenter: this.DCs.getDatacenter(this.charServer)
           }

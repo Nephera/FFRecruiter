@@ -113,7 +113,6 @@ export class PartycompositionComponent implements OnInit {
   onClick(index: number){
     if(this.isPopulated(index)) {
       // Get Details for Player using Name/Server
-      // Issue is that this.slots isn't being used, so updates aren't being caught
       this.http.get<{ message: string, character: any}>(this.apiurl.hostname() + 
         "/api/characters/get/name/" + 
         this.slots[index].userOccupying.cServer + "/" + 
@@ -146,8 +145,8 @@ export class PartycompositionComponent implements OnInit {
               }
             });
           dialogRef.afterClosed().subscribe(result => {
-            if(result && result.data){
-              if(result.data.error){
+            if(result != null && result.data != null){
+              if(result.data.error != null){
                 const dialogRef = this.dialog.open(ErrorDialog,
                   {
                     autoFocus: false,
@@ -163,7 +162,7 @@ export class PartycompositionComponent implements OnInit {
                 return;
               }
 
-              if(result.data.party){
+              if(result.data.party != null){
                 // TODO: Unhackify this. Issue #31. To force an update on the position of the
                 // component after modification, we open a modal and immediately close it.
                 this.slots[index] = result.data.party.composition[index];
@@ -588,6 +587,7 @@ export class PartycompositionPlayerDetailsDialog {
       partyID: this.data.id
     };
 
+    console.log("Disbanding");
     this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/disband", postData)
       .subscribe((responseData) => {
         this.dialogRef.close({data: responseData});
@@ -603,8 +603,13 @@ export class PartycompositionPlayerDetailsDialog {
     }
 
     this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/kickplayer", postData)
-    .subscribe((responseData) => {
+    .subscribe(responseData => {
+      console.log("responseData");
+      console.log(responseData); 
       this.dialogRef.close({data: responseData});
+    },
+    error => {
+      this.dialogRef.close();
     })
   }
 
