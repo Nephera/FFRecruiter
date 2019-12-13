@@ -1,6 +1,9 @@
+/* Welcome to CSS hell.
+   Please, have a seat. */
+
 .party-composition {
   max-width: 300px;
-  height: 100%; // needs to scale somehow TODO
+  height: 100%;
 
   table {
     width: 100%;
@@ -17,13 +20,47 @@ div {
   height: 32px;
   margin-right: 1px;
 }
+.firstRow{
+  position: absolute; 
+  top: 0px;
+}
+
+.secondRow{
+  position: absolute; 
+  top: 34px;
+}
+
+.thirdRow{
+  position: absolute; 
+  top: 68px;
+}
+
+.fourthRow{
+  position: absolute; 
+  top: 102px;
+}
+
+.fifthRow{
+  position: absolute; 
+  top: 136px;
+}
+
+.sixthRow{
+  position: absolute; 
+  top: 170px;
+}
+
+.seventhRow{
+  position: absolute; 
+  top: 204px;
+}
 
 .party-slot-filled {
   position: relative;
   opacity: 0.7;
   float: left;
   left: 2px;
-  top: 32px; // Must match height
+  top: 32px;
   width: 32px;
   height: 32px;
   text-align: center;
@@ -51,7 +88,7 @@ div {
 
 .party-slot-leader {
   position: relative;
-  opacity: .7;
+  opacity: 0.7;
   float: left;
   left: 1px;
   top: -70px;
@@ -62,6 +99,15 @@ div {
   text-align: center;
   z-index: 5 !important;
 
+}
+
+.slot-tooltip-overlay {
+  position: relative;
+  top: 68px;
+  left: 2px;
+  height: 32px;
+  width: 32px;
+  z-index: 6 !important;
 }
 
 .slot-owned-highlight {
@@ -75,10 +121,7 @@ div {
   text-align: center;
   -webkit-filter: brightness(150%);
   filter: brightness(150%);
-  // -webkit-filter: contrast(10000%);
-  // filter: contrast(10000%);
   z-index: 3 !important;
-
 }
 
 

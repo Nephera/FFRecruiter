@@ -30,7 +30,8 @@ import {
   MatSliderModule,
   MatSlideToggleModule,
   MatTooltipModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatProgressBarModule
 } from '@angular/material';
 
 import { Routes, RouterModule } from '@angular/router';
@@ -166,6 +167,7 @@ import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.comp
     MatSlideToggleModule,
     MatTooltipModule,
     MatSnackBarModule,
+    MatProgressBarModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [

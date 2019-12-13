@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { apiref } from '../ref/str/apiref';
-import { datacenters } from '../ref/str/datacenters';
 import { Subscription } from 'rxjs';
 import { MycharactersService } from './mycharacters.service';
 
@@ -59,7 +58,14 @@ export class MycharactersComponent implements OnInit {
         }
       });
 
-    dialogRef.afterClosed().subscribe(data => {});
+    dialogRef.afterClosed().subscribe(data => {
+      if(data.verified){
+        this.http.patch<{message: string, characters: any[]}>(this.apiurl.hostname() + "/api/characters/refresh/", {id: data.id})
+        .subscribe(() => {
+          this.getCharacterList();
+        });
+      }
+    });
   }
 
   getCharacterList() {
@@ -122,7 +128,6 @@ export class MycharactersAddcharacterDialog implements OnInit {
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<MycharactersAddcharacterDialog>,
     private apiurl: apiref,
-    private DCs: datacenters,
     private mcService: MycharactersService,
     private sb: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: AddCharDialogData) {    
@@ -170,7 +175,6 @@ export class MycharactersAddcharacterDialog implements OnInit {
       if(this.stringIsSafe(this.charName + this.charServer))
       {
         this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/server/" + this.charName + "/" + this.charServer)
-        //this.http.get<{character: {ID: string, Avatar: string}}>(this.apiurl.hostname() + "/api/characters/get/server/" + this.charFName + "/" + this.charLName + "/" + this.charServer)
         .subscribe((characterData) => {
           this.isLoading = false;
 
@@ -219,15 +223,14 @@ export class MycharactersAddcharacterDialog implements OnInit {
         if(tokenData.Pass)
         {
           this.isVerified = true;
+          this.canFinish();
 
           const data = {
             owner: localStorage.username,
-            //token: localStorage.token,
             avatar: this.charAvatar,
             ID: this.charID,
             name: this.charName,
-            server: this.charServer,
-            datacenter: this.DCs.getDatacenter(this.charServer)
+            server: this.charServer
           }
 
           this.http.put<{response: any}>(this.apiurl.hostname() + "/api/characters/add", data)
@@ -243,7 +246,10 @@ export class MycharactersAddcharacterDialog implements OnInit {
   }
 
   onCancel() {
-    // TODO: Should return data about character to refresh screen of user
-    this.dialogRef.close();
+    this.dialogRef.close({verified: false});
+  }
+
+  onFinish() {
+    this.dialogRef.close({verified: true, id: this.charID});
   }
 }

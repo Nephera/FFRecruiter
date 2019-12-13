@@ -1,22 +1,39 @@
-<h1 mat-dialog-title>Joining {{ this.joinHeaderPartyString(data.slotNum) }}<br> 
+<ng-container *ngIf="data.isAuth && (data.characters.length > 0)">
+  <h1 mat-dialog-title>
+    Joining {{ this.joinHeaderPartyString(data.slotNum) }}<br> 
     {{ data.instance }} <br>
-  {{ data.owner }} @ {{ data.ownerServer }}<br>
+    {{ data.owner }} @ {{ data.ownerServer }}<br>
   </h1>
-<div mat-dialog-content *ngIf="data.isAuth" [formGroup]="form">
-  <mat-form-field>
-    <mat-label>Character</mat-label>
-    <select matNativeControl formControlName="charSelected" [(ngModel)]="selectedCharacter" (change)="selectCharacter()" required>
-      <option *ngFor="let character of data.characters; let i = index" [ngValue]="character">{{ character.name }} @ {{ character.server }}</option>
-    </select>
-  </mat-form-field><br>
-  <mat-form-field>
-    <mat-label>Job Class</mat-label>
-    <select formControlName="jobSelected" (change)="selectJob()" matNativeControl required>
-      <option *ngFor="let job of jobList" [ngValue]="job">{{ job }}</option>
-    </select>
-  </mat-form-field>
-</div>
-<div mat-dialog-actions align="end">
-  <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
-  <button mat-stroked-button color="accent" [disabled]="!characterIsSelected || !jobIsSelected" (click)="onJoin()">Join</button>
-</div>
+  <div mat-dialog-content [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Character</mat-label>
+      <select matNativeControl formControlName="charSelected" [(ngModel)]="selectedCharacter" (change)="selectCharacter()" required>
+        <option *ngFor="let character of data.characters; let i = index" [ngValue]="character">{{ character.name }} @ {{ character.server }}</option>
+      </select>
+    </mat-form-field><br>
+    <mat-form-field>
+      <mat-label>Job Class</mat-label>
+      <select formControlName="jobSelected" (change)="selectJob()" matNativeControl required>
+        <option *ngFor="let job of jobList" [ngValue]="job">{{ job }}</option>
+      </select>
+    </mat-form-field>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
+    <button mat-stroked-button color="accent" [disabled]="!characterIsSelected || !jobIsSelected" (click)="onJoin()">Join</button>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="data.isAuth && (data.characters.length == 0)">
+  <h1 mat-dialog-title >
+    Unable to Join: No Characters Found
+  </h1>
+  <div>
+    <div mat-dialog-content>
+      <p>Unable to locate a character on this datacenter, please add one and try again.</p>
+    </div>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()">OK </button>
+    </div>
+</ng-container>

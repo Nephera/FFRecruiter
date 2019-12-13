@@ -67,28 +67,20 @@
           Copy this and paste it into your <a href="{{ lodestoneLink }}" target="_blank">Character Profile</a> located toward the bottom of your character's info, then press verify.  Do not close this dialog box or you will need to generate another token.
           <br><br>
           <button mat-raised-button color="primary" (click)="verifyToken()">Verify</button>
-          <mat-progress-spinner *ngIf="isLoading" class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner><br>
+          <mat-progress-spinner *ngIf="isLoading" class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner><br><br>
           <span [ngClass]="{verfSuccess: (pass == true), verfFailure: (pass == false)}">{{ message }}</span>
-        </div>
+        </div><br>
       </ng-container>
       <ng-container>
         <mat-progress-spinner *ngIf="isLoading" class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
       </ng-container>
       <div align="end">
         <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext [disabled]="isLoading || !isVerified" (click)="canFinish()">Next</button><br>
-      </div>
-    </mat-step>
-    <mat-step>
-      <ng-template matStepLabel>Done</ng-template>
-      <br>You have successfully added your character to your account.<br><br>
-      <div align="end">
-        <button mat-button (click)="stepper.reset(); resetForm()">Add Another</button>
       </div>
     </mat-step>
   </mat-vertical-stepper>
 </div>
 <div mat-dialog-actions align="end">
-  <button *ngIf="userCanFinish" mat-stroked-button color="accent" (click)="onCancel()">Finish</button>
+  <button *ngIf="userCanFinish" mat-stroked-button color="accent" (click)="onFinish()">Finish</button>
   <button *ngIf="!userCanFinish" mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
 </div>

@@ -63,6 +63,7 @@ export class PartycardComponent implements OnInit {
   description: string;
   schedule: string;
   pw: string;
+  isPrivate = false; // TODO
   slots: any[];
 
   privatePartyIcon: string;
@@ -75,11 +76,8 @@ export class PartycardComponent implements OnInit {
   purposeIconObj: PartyPurpose;
   instanceIconGradient: string;
 
-  // TODO: Temp, should be pulling from database, never seen by user
   hasPassword(): boolean {
-    if(this.pw == "")
-      return false;
-    return true;
+    return this.isPrivate;
   }
 
   toggleDescription(): void {

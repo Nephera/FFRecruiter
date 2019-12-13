@@ -8,13 +8,13 @@
     <br *ngIf="!hasFetchedParties && timeLeft > 0"><span *ngIf="!hasFetchedParties && timeLeft > 0">Fetching Parties...</span>
     <br *ngIf="isLoading && timeLeft == 0"><span *ngIf="isLoading && timeLeft == 0">Failed to Retrieve Data.<br><br> <button mat-raised-button (click)="retryFetchData()">Try Again</button></span>
   </div>
-  <button mat-raised-button class="create-button" *ngIf="isAuth && !isLoading && hasFetchedInstances && hasFetchedCharacters && hasFetchedPurposes && hasFetchedJobs && !this.routeParams.id" (click)="confirmCreate()" title="Create a New Party">
+  <button mat-raised-button class="create-button" *ngIf="isAuth && !isLoading && hasFetchedInstances && hasFetchedCharacters && hasFetchedPurposes && hasFetchedJobs && !this.routeParams.id" (click)="confirmCreate()" matTooltip="Create a New Party">
     <mat-icon>
       create
     </mat-icon>
     New Party
   </button>
-  <button mat-raised-button [ngClass]="{filterOn: isFiltering(), filterOff: !isFiltering()}" *ngIf="!isLoading && hasFetchedInstances && hasFetchedCharacters && hasFetchedPurposes && hasFetchedJobs && !this.routeParams.id" (click)="toggleFilters()" title="Show/Hide Filters">
+  <button mat-raised-button [ngClass]="{filterOn: isFiltering(), filterOff: !isFiltering()}" *ngIf="!isLoading && hasFetchedInstances && hasFetchedCharacters && hasFetchedPurposes && hasFetchedJobs && !this.routeParams.id" (click)="toggleFilters()" matTooltip="Show/Hide Filters">
     <mat-icon>
       filter_list
     </mat-icon>

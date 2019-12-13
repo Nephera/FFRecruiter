@@ -72,7 +72,7 @@
         Job selection is required.
     </div>
     <br>
-    <mat-form-field>
+    <mat-form-field color="accent">
       <mat-label>Alternate Jobs</mat-label>
       <mat-select formControlName="altj" multiple>
         <mat-option *ngFor="let job of data.jobs" [value]="job">{{ job }}</mat-option>

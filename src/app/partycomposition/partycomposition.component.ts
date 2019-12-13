@@ -39,7 +39,9 @@ export interface DetailsDialogData {
   slotDatacenterName: string,
   slotJob: string,
   slotAltJobs: string[],
-  slotNum: number
+  slotNum: number,
+  discordID: number,
+  discordTag: string
 }
 
 export interface BlankDialogData {}
@@ -60,7 +62,6 @@ export class PartycompositionComponent implements OnInit {
   hasFetchedCharacters = false;
   private authListenerSub: Subscription;
   isAuth = false;
-  rendered = true;
 
   isAuthenticated(){
     return this.isAuth;
@@ -141,7 +142,9 @@ export class PartycompositionComponent implements OnInit {
                 slotDatacenterName: this.slots[index].userOccupying.cDC,
                 slotJob: this.slots[index].userOccupying.cJob,
                 slotAltJobs: this.slots[index].userOccupying.cBUJobs,
-                slotNum: index,
+                slotNum: index//,
+                //discordID: 147578085569593344, // TODO:
+                //discordTag: "Neph#3398" // TODO:
               }
             });
           dialogRef.afterClosed().subscribe(result => {
@@ -193,7 +196,8 @@ export class PartycompositionComponent implements OnInit {
         "/api/user/get/parties/" + 
         localStorage.getItem("username")).subscribe((partiesData) => {
           // If the ID is contained in the parties already joined, throw error
-          if(partiesData.parties.indexOf(this.partyDetails._id) > -1)
+          var partyIDs = partiesData.parties.map(party => { return party.id; })
+          if(partyIDs.indexOf(this.partyDetails._id) > -1)
           {
             const dialogRef = this.dialog.open(ErrorDialog,
               {
@@ -223,7 +227,6 @@ export class PartycompositionComponent implements OnInit {
                   characters: this.characters,
                   isAuth: this.isAuth,
                   jobsWanted: [this.getSlotTitle(index)]
-                  //levelReq: 1 // TODO: Should get levelReq from partyDetails.instanceLevel
                 }
               })
             dialogRef.afterClosed().subscribe(result => {
@@ -241,6 +244,17 @@ export class PartycompositionComponent implements OnInit {
     }
   }
 
+  rowStyle(i: number){
+    return "position: absolute; top: 34px; left: -32px;";
+  }
+
+  getRow(i: number, j: number){
+    return i == j;
+  }
+
+  slotOverlay(){
+    return this.icons.get("empty").icon;
+  }
   
   slotFillOverlay(index: number){
     if(this.isPopulated(index)) { return this.icons.get("Slot Filled").icon; }
@@ -365,7 +379,7 @@ export class PartycompositionJoinDialog {
 
     // Healers: WHM 6, CNJ 7, SCH 8, ACN 9, AST 10
     filteredJobs.push({name: "WHM", lvl: jobs[4]}, {name: "CNJ", lvl: jobs[4]}, {name: "SCH", lvl: jobs[5]}, 
-      {name: "ACN", lvl: jobs[5]}, {name: "AST", lvl: jobs[6]});
+      {name: "AST", lvl: jobs[6]});
 
     // DPS
     // MDPS: MNK 11, PGL 12, DRG 13, LNC 14, NIN 15, ROG 16, SAM 17
@@ -619,7 +633,7 @@ export class PartycompositionPlayerDetailsDialog {
       username: this.data.slotUsername
     }
 
-    this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/user/parties/leave", postData)
+    this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/leave", postData)
       .subscribe((responseData) => {
         this.dialogRef.close({data: responseData});
     });

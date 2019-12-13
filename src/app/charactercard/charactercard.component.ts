@@ -17,22 +17,21 @@ export class CharactercardComponent implements OnInit {
   lastname: string;
   server: string;
 
-  pldSpec = false;
-  warSpec = false;
-  whmSpec = false;
-  schSpec = false;
-  mnkSpec = false;
-  drgSpec = false;
-  ninSpec = false;
-  brdSpec = false;
-  blmSpec = false;
-  smnSpec = false;
   jobLevels = [];
   parses = [];
 
+  isRefreshing = false;
+
   refreshCharacter() { 
-    this.http.patch<{Results: [any]}>(this.apiurl.hostname() + "/api/characters/refresh/", {id: this.characterDetails.lodestoneID})
-      .subscribe((refreshData) => {});
+    this.isRefreshing = true;
+    this.http.patch<{message: string, characters: any[]}>(this.apiurl.hostname() + "/api/characters/refresh/", {id: this.characterDetails.lodestoneID})
+      .subscribe((refreshData) => {
+        if(refreshData.characters != null){
+          this.jobLevels = refreshData.characters[0].jobs;
+          this.parses = refreshData.characters[0].parses;
+        }
+        this.isRefreshing = false;
+      });
   }
 
   // Helper functions for dynamic styling w/ ngClass
@@ -84,18 +83,6 @@ export class CharactercardComponent implements OnInit {
     this.avatar = this.characterDetails.avatar;
     this.name = this.characterDetails.name;
     this.server = this.characterDetails.server;
-
-    // Temporary, should be generated dynamically
-    this.pldSpec = true;
-    this.warSpec = true;
-    this.whmSpec = true;
-    this.schSpec = true;
-    this.mnkSpec = true;
-    this.drgSpec = true;
-    this.ninSpec = true;
-    this.brdSpec = true;
-    this.blmSpec = true;
-    this.smnSpec = true;
 
     for(var i = 0; i < this.characterDetails.jobs.length; i++)
       this.jobLevels.push(this.characterDetails.jobs[i]);

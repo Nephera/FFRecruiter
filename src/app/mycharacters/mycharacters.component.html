@@ -5,7 +5,7 @@
         <br *ngIf="!hasFetchedCharacters && timeLeft > 0"><span *ngIf="!hasFetchedCharacters && timeLeft > 0">Fetching Character Data...</span>
         <br *ngIf="isLoading && timeLeft == 0"><span *ngIf="isLoading && timeLeft == 0">It looks like we've failed you...<br><br> <button mat-raised-button (click)="retryFetchData()">Try Again</button></span>
       </div>
-      <button *ngIf="!isLoading && hasFetchedServers" mat-raised-button class="add-button" (click)="confirmAdd()" title="Add a New Character">
+      <button *ngIf="!isLoading && hasFetchedServers" mat-raised-button class="add-button" (click)="confirmAdd()" matTooltip="Add a New Character">
         <mat-icon>
           person_add
         </mat-icon>
