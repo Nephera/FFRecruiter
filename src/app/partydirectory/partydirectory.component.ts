@@ -64,6 +64,7 @@ export class PartydirectoryComponent implements OnInit {
   isAuth: boolean = false;
 
   displayFilters: boolean = false;
+  filtering: boolean = false;
 
   constructor(private http: HttpClient, 
     private apiurl: apiref, 
@@ -130,7 +131,8 @@ export class PartydirectoryComponent implements OnInit {
   }
 
   isFiltering(){
-    return this.pfs.isFiltering();
+    this.filtering = this.pfs.isFiltering();
+    return this.filtering;
   }
 
   getParties(partiesPerPage: number, currentPage: number): any {

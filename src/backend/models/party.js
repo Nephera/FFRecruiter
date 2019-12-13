@@ -47,6 +47,9 @@ const partySchema = mongoose.Schema({
   instanceName: { type: String },
   instanceID: { type: String },
   instanceimg: { type: String },
+  // TODO: difficulty: { type: String },
+  // TODO: itype: { type: String },
+  
   // Purpose
   purpose: { type: String, required: true },
   // Sync Options

@@ -1,84 +1,21 @@
 <div class="party-composition">
   <table [style.height.px]="getTableHeight()">
-    <!-- ngFor Party Slots -->
-    <div style="position: absolute; top: -96px; left: 0px;" *ngFor="let slot of slots; let i = index;">
-      <!-- New row every 8 slots (1/7), new row at i == 0 -->
-      <tr *ngIf="i === 0 && rendered" style="position: absolute; top: 0px; left: 0px;">  
-        <td *ngFor="let slotX of slots; let j = index"> <!-- Need a loop here to create 8 tds DO NOT DELETE-->
-          <div *ngIf="j >= 0 && j < 8"> <!-- Only slots 1-8 -->
-            <img class="party-slot-filled" [title]="getSlotTitle(j)" [src]="slotFillOverlay(j)" (click)="onClick(j)">
-            <img class="party-job-icon" [title]="getSlotTitle(j)" [src]="getSlotImage(j).icon" (click)="onClick(j)">
-            <img class="slot-owned-highlight" [title]="getSlotTitle(j)" [src]="getSlotHighlight(j)" (click)="onClick(j)">
-            <img class="party-slot-leader" [title]="getSlotTitle(j)" [src]="slotLeaderOverlay(j)" (click)="onClick(j)">
-          </div>
-        </td>
-      </tr>
-      <!-- New row every 8 slots (2/7), new row at i == 8 -->
-      <tr *ngIf="i === 8" style="position: absolute; top: 34px; left: -32px;"> 
-        <td *ngFor="let slotX of slots; let j = index">
-          <div *ngIf="j >= 8 && j < 16">
-            <img class="party-slot-filled" [title]="getSlotTitle(j)" [src]="slotFillOverlay(j)" (click)="onClick(j)">
-            <img class="party-job-icon" [title]="getSlotTitle(j)" [src]="getSlotImage(j).icon" (click)="onClick(j)">
-            <img class="slot-owned-highlight" [title]="getSlotTitle(j)" [src]="getSlotHighlight(j)" (click)="onClick(j)">
-            <img class="party-slot-leader" [title]="getSlotTitle(j)" [src]="slotLeaderOverlay(j)" (click)="onClick(j)">
-          </div>
-        </td>
-      </tr>
-      <!-- New row every 8 slots (3/7), new row at i == 16 -->
-      <tr *ngIf="i === 16" style="position: absolute; top: 68px; left: -64px;"> 
-        <td *ngFor="let slotX of slots; let j = index">
-          <div *ngIf="j >= 16 && j < 24">
-            <img class="party-slot-filled" [title]="getSlotTitle(j)" [src]="slotFillOverlay(j)" (click)="onClick(j)">
-            <img class="party-job-icon" [title]="getSlotTitle(j)" [src]="getSlotImage(j).icon" (click)="onClick(j)">
-            <img class="slot-owned-highlight" [title]="getSlotTitle(j)" [src]="getSlotHighlight(j)" (click)="onClick(j)">
-            <img class="party-slot-leader" [title]="getSlotTitle(j)" [src]="slotLeaderOverlay(j)" (click)="onClick(j)">
-          </div>
-        </td>
-      </tr>      
-      <!-- New row every 8 slots (4/7), new row at i == 24 -->
-      <tr *ngIf="i === 24" style="position: absolute; top: 102px; left: -96px;"> 
-        <td *ngFor="let slotX of slots; let j = index">
-          <div *ngIf="j >= 24 && j < 32">
-            <img class="party-slot-filled" [title]="getSlotTitle(j)" [src]="slotFillOverlay(j)" (click)="onClick(j)">
-            <img class="party-job-icon" [title]="getSlotTitle(j)" [src]="getSlotImage(j).icon" (click)="onClick(j)">
-            <img class="slot-owned-highlight" [title]="getSlotTitle(j)" [src]="getSlotHighlight(j)" (click)="onClick(j)">
-            <img class="party-slot-leader" [title]="getSlotTitle(j)" [src]="slotLeaderOverlay(j)" (click)="onClick(j)">
-          </div>
-        </td>
-      </tr>
-      <!-- New row every 8 slots (5/7), new row at i == 32 -->
-      <tr *ngIf="i === 32" style="position: absolute; top: 136px; left: -128px;"> 
-        <td *ngFor="let slotX of slots; let j = index" (click)="onClick(j)">
-          <div *ngIf="j >= 32 && j < 40">
-            <img class="party-slot-filled" [title]="getSlotTitle(j)" [src]="slotFillOverlay(j)" (click)="onClick(j)">
-            <img class="party-job-icon" [title]="getSlotTitle(j)" [src]="getSlotImage(j).icon" (click)="onClick(j)">
-            <img class="slot-owned-highlight" [title]="getSlotTitle(j)" [src]="getSlotHighlight(j)" (click)="onClick(j)">
-            <img class="party-slot-leader" [title]="getSlotTitle(j)" [src]="slotLeaderOverlay(j)" (click)="onClick(j)">
-          </div>
-        </td>
-      </tr>
-      <!-- New row every 8 slots (6/7), new row at i == 40 -->
-      <tr *ngIf="i === 40" style="position: absolute; top: 170px; left: -160px;"> 
-        <td *ngFor="let slotX of slots; let j = index">
-          <div *ngIf="j >= 40 && j < 48">
-            <img class="party-slot-filled" [title]="getSlotTitle(j)" [src]="slotFillOverlay(j)" (click)="onClick(j)">
-            <img class="party-job-icon" [title]="getSlotTitle(j)" [src]="getSlotImage(j).icon" (click)="onClick(j)">
-            <img class="slot-owned-highlight" [title]="getSlotTitle(j)" [src]="getSlotHighlight(j)" (click)="onClick(j)">
-            <img class="party-slot-leader" [title]="getSlotTitle(j)" [src]="slotLeaderOverlay(j)" (click)="onClick(j)">
-          </div>
-        </td>
-      </tr>        
-      <!-- New row every 8 slots (7/7), new row at i == 48 -->
-      <tr *ngIf="i === 48" style="position: absolute; top: 204px; left: -192px;">
-        <td *ngFor="let slotX of slots; let j = index">
-          <div *ngIf="j >= 48 && j < 56">
-            <img class="party-slot-filled" [title]="getSlotTitle(j)" [src]="slotFillOverlay(j)" (click)="onClick(j)">
-            <img class="party-job-icon" [title]="getSlotTitle(j)" [src]="getSlotImage(j).icon" (click)="onClick(j)">
-            <img class="slot-owned-highlight" [title]="getSlotTitle(j)" [src]="getSlotHighlight(j)" (click)="onClick(j)">
-            <img class="party-slot-leader" [title]="getSlotTitle(j)" [src]="slotLeaderOverlay(j)" (click)="onClick(j)">
-          </div>
-        </td>
-      </tr>   
-    </div>
+    <ng-container *ngFor="let slot of slots; let i = index;">
+      <div *ngIf="i%8 === 0" style="position: absolute; top: -124px; left: 0px;">
+        <tr *ngIf="i%8 === 0" [ngClass]="{firstRow: (i == 0), secondRow: (i == 8), thirdRow: (i == 16), fourthRow: (i == 24), fifthRow: (i == 32), sixthRow: (i == 40), seventhRow: (i == 48)}">
+          <ng-container *ngFor="let slotX of slots; let j = index;">
+            <td *ngIf="(j >= i) && (j < i+8)">
+              <div>
+                <img class="slot-tooltip-overlay" [matTooltip]="getSlotTitle(j)" matTooltipPosition="above" [src]="slotOverlay()" (click)="onClick(j)">
+                <img class="party-slot-filled" [src]="slotFillOverlay(j)">
+                <img class="party-job-icon" [src]="getSlotImage(j).icon">
+                <img class="slot-owned-highlight" [src]="getSlotHighlight(j)">
+                <img class="party-slot-leader" [src]="slotLeaderOverlay(j)">
+              </div>
+            </td>
+          </ng-container>
+        </tr>   
+      </div>
+    </ng-container>
   </table>
 </div>

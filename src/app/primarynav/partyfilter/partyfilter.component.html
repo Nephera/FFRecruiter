@@ -1,34 +1,34 @@
 <div class="filters" [formGroup]="form">
   <h2>Filters</h2>
-  <mat-form-field (change)="setInstance()">
+  <mat-form-field color="accent" [matTooltip]="getSelectedInstances()">
     <mat-label>Instance</mat-label>
-    <select formControlName="instance" matNativeControl>
-      <option *ngFor="let instance of this.instances" [value]="instance">{{ instance }}</option>
-    </select>
+    <mat-select formControlName="instance" multiple>
+      <mat-option matInput (onSelectionChange)="setInstance()" *ngFor="let instance of this.instances" [value]="instance">{{ instance.name }}</mat-option>
+    </mat-select>
   </mat-form-field>
-  <mat-form-field (change)="setPurpose()">
+  <mat-form-field color="accent" [matTooltip]="getSelectedPurposes()">
     <mat-label>Purpose</mat-label>
-    <select formControlName="purpose" matNativeControl>
-      <option *ngFor="let purpose of this.purposes" [value]="purpose">{{ purpose }}</option>
-    </select>
+    <mat-select formControlName="purpose" multiple>
+      <mat-option matInput (onSelectionChange)="setPurpose()" *ngFor="let purpose of this.purposes" [value]="purpose">{{ purpose }}</mat-option>
+    </mat-select>
   </mat-form-field>
-  <mat-form-field (change)="setJob()">
-    <mat-label>Job Availability (Not Implemented)</mat-label>
-    <select formControlName="job" matNativeControl>
-      <option *ngFor="let job of this.jobs" [value]="job">{{ job }}</option>
-    </select>
+  <mat-form-field color="accent" [matTooltip]="getSelectedJobs()">
+    <mat-label>Job Availability</mat-label>
+    <mat-select formControlName="job" multiple>
+      <mat-option matInput (onSelectionChange)="setJob()" *ngFor="let job of this.jobs" [value]="job">{{ job }}</mat-option>
+    </mat-select>
   </mat-form-field>
-  <mat-form-field (change)="setDifficulty()">
+  <mat-form-field color="accent" [matTooltip]="getSelectedDifficulties()">
     <mat-label>Difficulty (Not Implemented)</mat-label>
-    <select formControlName="difficulty" matNativeControl>
-      <option *ngFor="let difficulty of this.difficulties" [value]="difficulty">{{ difficulty }}</option>
-    </select>
+    <mat-select formControlName="difficulty" multiple>
+      <mat-option matInput (onSelectionChange)="setDifficulty()" *ngFor="let difficulty of this.difficulties" [value]="difficulty">{{ difficulty }}</mat-option>
+    </mat-select>
   </mat-form-field>
-  <mat-form-field (change)="setIType()">
+  <mat-form-field color="accent" [matTooltip]="getSelectedITypes()">
     <mat-label>Instance Type (Not Implemented)</mat-label>
-    <select formControlName="itype" matNativeControl>
-      <option *ngFor="let itype of this.itypes" [value]="itype">{{ itype }}</option>
-    </select>
+    <mat-select formControlName="itype" multiple>
+      <mat-option matInput (onSelectionChange)="setIType()" *ngFor="let itype of this.itypes" [value]="itype">{{ itype }}</mat-option>
+    </mat-select>
   </mat-form-field>
   <!--<mat-form-field>
     <mat-label>Minimum iLevel</mat-label>
@@ -56,10 +56,10 @@
   <!-- Description Contains TODO -->
   <!-- Schedule TODO -->
   <br>
-  <button mat-raised-button class="filter-button" (click)="filterSearch()" title="Filtered Search">
+  <button mat-raised-button class="filter-button" (click)="filterSearch()" matTooltip="Change Filtered Search">
     <mat-icon class="filter-search-icon">
       search
     </mat-icon>
-    Filter Search
+    Update Filter
   </button>
 </div>

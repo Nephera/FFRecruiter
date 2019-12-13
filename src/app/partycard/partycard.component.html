@@ -5,16 +5,16 @@
         <img src="{{ this.instanceimg }}">
       </td>
       <td class="partycard-purpose-icon center">
-        <img title="{{ purposeTitle }}" class="partycard-purpose-icon-img" src="{{ purposeIcon }}">
+        <img matTooltip="{{ purposeTitle }}" class="partycard-purpose-icon-img" src="{{ purposeIcon }}">
       </td>
       <td class="partycard-sync-icon center">
-        <img title="{{ syncTitle }}" class="partycard-sync-icon-img" src="{{ syncIcon }}">
+        <img matTooltip="{{ syncTitle }}" class="partycard-sync-icon-img" src="{{ syncIcon }}">
       </td>
       <td class="partycard-verf-icon center">
-        <img title="{{ verifiedTitle }}" class="partycard-verf-icon-img" src="{{ verifiedIcon }}">
+        <img matTooltip="{{ verifiedTitle }}" class="partycard-verf-icon-img" src="{{ verifiedIcon }}">
       </td>
       <td class="partycard-priv-icon center">
-        <img *ngIf="hasPassword()" title="Private Party" class="partycard-priv-icon-img" src="{{ privatePartyIcon }}">
+        <img *ngIf="hasPassword()" matTooltip="Private Party" class="partycard-priv-icon-img" src="{{ privatePartyIcon }}">
       </td>
       <td class="partycard-icon-bg">
           <img src="{{ instanceIconGradient }}">
@@ -45,67 +45,21 @@
     <mat-card-actions>
       <div style="float:left;" fxHide.gt-sm="true">
         <button mat-icon-button *ngIf="isDescription(this.description)">
-          <mat-icon class="description-button" (click)="toggleDescription()" title="Description">description</mat-icon>
-        </button>
-        <button mat-icon-button>
-          <mat-icon class="schedule-button" (click)="toggleSchedule()" title="Schedule">
-            schedule</mat-icon>
+          <mat-icon class="description-button" (click)="toggleDescription()" matTooltip="Description">description</mat-icon>
         </button>
       </div>
-      <div *ngIf="isAuth" style="float:right">
-        <button mat-icon-button style="display:none">
-          <mat-icon class="join-button" (click)="confirmJoin()" title="Join Party">
-            done
-          </mat-icon>
-        </button>
-        <button mat-icon-button style="display:none">
-          <mat-icon class="leave-button" (click)="confirmLeave()" title="Leave Party">
-            eject
-          </mat-icon>
-        </button>
-        <button mat-icon-button style="display:none">
-          <mat-icon class="link-button" (click)="confirmLink()" title="Copy Link">
-            link
-          </mat-icon>
-        </button>
-        <button mat-icon-button style="display:none">
-          <mat-icon class="chat-button" (click)="confirmMessage()" title="Send Message">
-            chat
-          </mat-icon>
-        </button>
+      <div style="float:right">
         <button mat-icon-button>
-          <mat-icon class="hide-button" (click)="toggleHidden()" title="Hide Party">
+          <mat-icon class="hide-button" (click)="toggleHidden()" matTooltip="Hide Party">
             visibility_off
           </mat-icon>
         </button>
         <button mat-icon-button style="display:none">
-          <mat-icon class="dismiss-button" (click)="confirmDismiss()" title="Dismiss">
+          <mat-icon class="dismiss-button" (click)="confirmDismiss()" matTooltip="Dismiss">
             not_interested
           </mat-icon>
         </button>
       </div>
-      <div *ngIf="!isAuth" style="float:right">
-          <button mat-icon-button style="display:none">
-            <mat-icon class="link-button" (click)="confirmLink()" title="Copy Link">
-              link
-            </mat-icon>
-          </button>
-          <button mat-icon-button style="display:none">
-            <mat-icon class="chat-button" (click)="confirmMessage()" title="Send Message">
-              chat
-            </mat-icon>
-          </button>
-          <button mat-icon-button>
-            <mat-icon class="hide-button" (click)="toggleHidden()" title="Hide Party">
-              visibility_off
-            </mat-icon>
-          </button>
-          <button mat-icon-button style="display:none">
-            <mat-icon class="dismiss-button" (click)="confirmDismiss()" title="Dismiss">
-              not_interested
-            </mat-icon>
-          </button>
-        </div>
     </mat-card-actions>
   </div>
 </mat-card>

@@ -7,7 +7,12 @@
     User: {{ data.slotUsername }}<br>
     Character: {{ data.slotCharacterName }} @ {{ data.slotServerName }} ({{ data.slotDatacenterName }})<br>
     Current Job: {{ data.slotJob }} <br>
-    Other Jobs: {{ data.slotAltJobs }} <br>
+    <ng-container *ngIf="data.slotAltJobs && data.slotAltJobs.length > 0">
+      Other Jobs: {{ data.slotAltJobs }} <br>
+    </ng-container>
+    <ng-container *ngIf="data.discordID && data.discordTag">
+      <a href="https://discordapp.com/users/{{data.discordID}}" target="_blank">Discord: {{ data.discordTag }}</a>
+    </ng-container>
   </p>
 </div>
 <div mat-dialog-actions align="end">
