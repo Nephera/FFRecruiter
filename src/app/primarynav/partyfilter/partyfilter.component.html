@@ -4,9 +4,9 @@
     <mat-label>Party ID</mat-label>
     <input matInput formControlName="shortID" (keyup.enter)="filterSearch()" placeholder="3-5 Digit ID (e.g. &#34;S43, X8AB1&#34;)">
   </mat-form-field>
-  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedShortIDs()">
-    <mat-label>User (Not Implemented)</mat-label>
-    <input matInput formControlName="user" placeholder="Username or Character">
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedUsers()">
+    <mat-label>Username or Character</mat-label>
+    <input matInput formControlName="user" (keyup.enter)="filterSearch()" placeholder="(e.g. &#34;Nephera, Ori Zona Cactuar&#34;)">
   </mat-form-field>
   <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedDatacenters()">
     <mat-label>Datacenter (Not Implemented)</mat-label>
@@ -64,37 +64,6 @@
     <mat-slide-toggle formControlName="verf" [(ngModel)]="verf">Verified Users Only (Not Implemented)</mat-slide-toggle>
     <textarea matInput hidden></textarea>
   </mat-form-field>
-  <!-- <mat-form-field>
-    <mat-slide-toggle matInput formControlName="verf">
-      Verified Users Only (Not Implemented)
-    </mat-slide-toggle>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-slide-toggle matInput formControlName="sync">
-      Synced (Not Implemented)
-    </mat-slide-toggle>
-  </mat-form-field> -->
-
-  <!--<mat-form-field>
-    <mat-label>Minimum iLevel</mat-label>
-    <mat-slider min="0" max="500" step="5" value="0" matNativeControl formControlName="ilvl"></mat-slider>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Minimum Level</mat-label>
-    <mat-slider min="0" max="80" step="1" value="0" matNativeControl formControlName="lvl"></mat-slider>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Minimum Parse</mat-label>
-    <mat-slider min="0" max="100" step="1" value="0" matNativeControl formControlName="parse"></mat-slider>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Minimum Parse Median</mat-label>
-    <mat-slider min="0" max="100" step="1" value="0" matNativeControl formControlName="parsem"></mat-slider>
-  </mat-form-field> -->
-  <!-- Owner Name TODO -->
-  <!-- Party Member Name TODO -->
-  <!-- Description Contains TODO -->
-  <!-- Schedule TODO -->
   <br>
   <button mat-raised-button class="filter-button" (click)="filterSearch()" matTooltip="Change Filtered Search">
     <mat-icon class="filter-search-icon">

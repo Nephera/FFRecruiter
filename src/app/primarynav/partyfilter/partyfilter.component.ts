@@ -16,6 +16,7 @@ export class PartyfilterComponent implements OnInit {
   owned: any[];
   verf: any[];
   servers: any[];
+  users: any[];
   syncs: any[];
   shortIDs: any[];
   datacenters: any[];
@@ -28,6 +29,7 @@ export class PartyfilterComponent implements OnInit {
   selectedServers = [];
   selectedSyncs = [];
   selectedShortIDs = [];
+  selectedUsers = [];
   selectedDatacenters = [];
   selectedInstances = [];
   selectedPurposes = [];
@@ -53,7 +55,11 @@ export class PartyfilterComponent implements OnInit {
   }
 
   getSelectedShortIDs(){
-    return this.selectedShortIDs;
+    return this.form.get('shortID').value;
+  }
+
+  getSelectedUsers(){
+    return this.form.get('user').value;
   }
 
   getSelectedDatacenters(){
@@ -201,7 +207,9 @@ export class PartyfilterComponent implements OnInit {
     this.form = fb.group({
       server: [String],
       shortID: ['', {validators: [Validators.pattern('^([a-zA-Z0-9]{3,5})(,\\s?([a-zA-Z0-9]){3,5})*$')], updateOn: 'change'}],
-      user: [String],
+      // Usernames: ^(,?\\s?([a-zA-Z0-9]){3,25})*$
+      // Characters: ^(,?\\s?[a-zA-Z\'\-]{3,15}\\s[a-zA-Z\'\-]{3,15}\\s[a-zA-Z]{4,12})*$
+      user: ['', {validators: [Validators.pattern('^((\,?\\s?([a-zA-Z0-9]){3,25})?|(\,?\\s?[a-zA-Z\'\-]{3,15}\\s[a-zA-Z\'\-]{3,15}\\s[a-zA-Z]{4,12})?)*$')], updateOn: 'change'}],
       datacenter: [String],
       difficulty: [String],
       instance: [String],

@@ -139,6 +139,7 @@ export class PartydirectoryComponent implements OnInit {
     this.isLoading = true;
 
     const shortID = this.pfs.getShortID();
+    const user = this.pfs.getUser();
     const instance = this.pfs.getInstance();
     const difficulty = this.pfs.getDifficulty();
     const job = this.pfs.getJob();
@@ -146,7 +147,7 @@ export class PartydirectoryComponent implements OnInit {
     const purpose = this.pfs.getPurpose();
     const id = this.routeParams.id;
 
-    const queryParams = `?id=${id}&shortID=${shortID}&pagesize=${partiesPerPage}&page=${currentPage}&instance=${instance}&difficulty=${difficulty}&job=${job}&itype=${itype}&purpose=${purpose}`;
+    const queryParams = `?id=${id}&pagesize=${partiesPerPage}&page=${currentPage}&shortID=${shortID}&user=${user}&instance=${instance}&difficulty=${difficulty}&job=${job}&itype=${itype}&purpose=${purpose}`;
     this.http.get<{ message: string, parties: any[], totalParties: number }>(this.apiurl.hostname() + "/api/parties/" + queryParams).subscribe((partyData) => {
       this.parties = partyData.parties;
       this.length = partyData.totalParties;
