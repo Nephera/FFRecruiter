@@ -100,12 +100,6 @@ div {
 }
 
 input {
-  background-color: $tfldbg;
-  border: 1px solid $brdclr;
-  color: white;
-  height: 21px;
-  width: 100%;
-
   &.search-button {
     background: url("/assets/img/search.png") no-repeat 4px 4px;
     background-size: 16px 16px;

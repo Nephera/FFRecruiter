@@ -1,11 +1,11 @@
 <div *ngIf="!userIsAuthenticated">
   <mat-spinner *ngIf="isLoading"></mat-spinner>
   <form (submit)="onLogin(loginForm)" #loginForm="ngForm" *ngIf="!isLoading" fxLayout="column" fxLayoutAlign="center center">
-    <mat-form-field>
+    <mat-form-field color="accent">
       <input type="email" name="email" ngModel #emailInput="ngModel" matInput placeholder="Email" required email>
       <mat-error *ngIf="emailInput.invalid">Please enter a valid email.</mat-error>
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field color="accent">
       <input type="password" name="password" ngModel matInput placeholder="Password" #passwordInput="ngModel" required>
       <mat-error *ngIf="passwordInput.invalid">Please enter a password.</mat-error>
     </mat-form-field><br>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { apiref } from 'src/app/ref/str/apiref';
 import { HttpClient } from '@angular/common/http';
 import { PartyfilterService } from './partyfilter.service';
@@ -12,23 +12,51 @@ import { PartyfilterService } from './partyfilter.service';
 export class PartyfilterComponent implements OnInit {
 
   form: FormGroup;
+
+  servers: any[];
+  syncs: any[];
+  shortIDs: any[];
+  datacenters: any[];
   instances: any[];
   purposes: any[];
   jobs: any[];
   difficulties: any[];
   itypes: any[];
 
+  selectedServers = [];
+  selectedSyncs = [];
+  selectedShortIDs = [];
+  selectedDatacenters = [];
   selectedInstances = [];
   selectedPurposes = [];
   selectedJobs = [];
   selectedDifficulties = [];
   selectedITypes = [];
 
+  fetchedServers = false;
+  fetchedSyncs = false;
+  fetchedDatacenters = false;
   fetchedInstances = false;
   fetchedPurposes = false;
   fetchedJobs = false;
   fetchedDifficulties = false;
   fetchedITypes = false;
+  
+  getSelectedServers(){
+    return this.selectedServers;
+  }
+
+  getSelectedSyncs(){
+    return this.selectedSyncs;
+  }
+
+  getSelectedShortIDs(){
+    return this.selectedShortIDs;
+  }
+
+  getSelectedDatacenters(){
+    return this.selectedDatacenters;
+  }
 
   getSelectedInstances(){
     return this.selectedInstances;
@@ -48,6 +76,16 @@ export class PartyfilterComponent implements OnInit {
 
   getSelectedITypes(){
     return this.selectedITypes;
+  }
+
+  setDatacenter(){
+    // Give time for form validation, or value will not be ready
+    setTimeout(() => {
+      this.selectedDatacenters = [];
+      for(var i = 0; i < this.form.get('datacenter').value.length; i++){
+        this.selectedDatacenters.push((this.form.get('datacenter').value[i]).name);
+      }
+    }, 100)
   }
 
   setInstance(){
@@ -104,8 +142,66 @@ export class PartyfilterComponent implements OnInit {
     this.pfs.update(this.form);
   }
 
+  onChanges() {
+    this.form.get('shortID').valueChanges
+    .subscribe(IDs => {
+      console.log(IDs);
+        if (IDs.length > 0) {
+            this.form.get('user').reset();
+            this.form.get('user').disable();
+
+            this.form.get('datacenter').reset();
+            this.form.get('datacenter').disable();
+
+            this.form.get('server').reset();
+            this.form.get('server').disable();
+
+            this.form.get('instance').reset();
+            this.form.get('instance').disable();
+
+            this.form.get('purpose').reset();
+            this.form.get('purpose').disable();
+
+            this.form.get('job').reset();
+            this.form.get('job').disable();
+
+            this.form.get('difficulty').reset();
+            this.form.get('difficulty').disable();
+
+            this.form.get('itype').reset();
+            this.form.get('itype').disable();
+
+            this.form.get('sync').reset();
+            this.form.get('sync').disable();
+
+            this.form.get('owned').reset();
+            this.form.get('owned').disable();
+
+            this.form.get('verf').reset();
+            this.form.get('verf').disable();
+        }
+        else {
+            this.form.get('user').enable();
+            this.form.get('datacenter').enable();
+            this.form.get('server').enable();
+            this.form.get('instance').enable();
+            this.form.get('purpose').enable();
+            this.form.get('job').enable();
+            this.form.get('difficulty').enable();
+            this.form.get('itype').enable();
+            this.form.get('sync').enable();
+            this.form.get('owned').enable();
+            this.form.get('verf').enable();
+        }
+    });
+}
+
   constructor(private fb: FormBuilder, private http: HttpClient, private apiurl: apiref, private pfs: PartyfilterService) { 
     this.form = fb.group({
+      server: [String],
+      shortID: ['', {validators: [Validators.pattern('^([a-zA-Z0-9]{3,5})(,\\s?([a-zA-Z0-9]){3,5})*$')], updateOn: 'change'}],
+      user: [String],
+      datacenter: [String],
       difficulty: [String],
       instance: [String],
       itype: [String],
@@ -114,12 +210,16 @@ export class PartyfilterComponent implements OnInit {
       job: [String],
       purpose: [String],
       verf: [Boolean],
+      owned: [Boolean],
+      sync: [String],
       parse: [Number],
       parsem: [Number]
     });
   }
 
   ngOnInit() {
+    this.onChanges();
+
     this.instances = this.pfs.getInstances();
     this.purposes = this.pfs.getPurposes();
     this.jobs = this.pfs.getJobs();
@@ -127,6 +227,11 @@ export class PartyfilterComponent implements OnInit {
     this.itypes = this.pfs.getITypes();
 
     // The following prevents function String() from being propagated to backend
+    this.form.get('server').setValue("");
+    this.form.get('sync').setValue("");
+    this.form.get('user').setValue("");
+    this.form.get('shortID').setValue("");
+    this.form.get('datacenter').setValue("");
     this.form.get('instance').setValue("");
     this.form.get('purpose').setValue("");
     this.form.get('job').setValue("");

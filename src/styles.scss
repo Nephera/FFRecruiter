@@ -79,9 +79,13 @@ mat-sidenav-container {
 	background-color: $dgrybg;
 }
 
+.right-margin {
+  margin-right: 5px;
+}
+
 mat-form-field {
   width: 80%;
-  max-width: 200px;
+  max-width: 300px;
 }
 
 .mat-option-text {
