@@ -10,6 +10,7 @@ import { FormGroup } from '@angular/forms';
 export class PartyfilterService {
 
   private filter = {
+    shortID: [],
     instance: [],
     purpose: [],
     job: [],
@@ -33,6 +34,8 @@ export class PartyfilterService {
       this.filter.difficulty.length > 0 ||
       this.filter.itype.length > 0);
   }
+
+  getShortID(){ return this.filter.shortID; }
 
   getInstances(){ return this.instanceList; }
   getInstance(){ return this.filter.instance; }
@@ -62,6 +65,8 @@ export class PartyfilterService {
   getFilter(){ return this.filter;   }
 
   update(f: FormGroup){
+
+    this.filter.shortID = f.get('shortID').value.split(',').map(ID => { return ID.trim(); });
 
     let instanceNames = [];
     for(var i = 0; i < f.get('instance').value.length; i++){

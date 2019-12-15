@@ -1,35 +1,80 @@
 <div class="filters" [formGroup]="form">
   <h2>Filters</h2>
-  <mat-form-field color="accent" [matTooltip]="getSelectedInstances()">
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedShortIDs()">
+    <mat-label>Party ID</mat-label>
+    <input matInput formControlName="shortID" (keyup.enter)="filterSearch()" placeholder="3-5 Digit ID (e.g. &#34;S43, X8AB1&#34;)">
+  </mat-form-field>
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedShortIDs()">
+    <mat-label>User (Not Implemented)</mat-label>
+    <input matInput formControlName="user" placeholder="Username or Character">
+  </mat-form-field>
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedDatacenters()">
+    <mat-label>Datacenter (Not Implemented)</mat-label>
+    <mat-select formControlName="datacenter" multiple>
+      <mat-option matInput (onSelectionChange)="setDatacenters()" *ngFor="let datacenter of this.datacenters" [value]="datacenter">{{ datacenter }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedServers()">
+    <mat-label>Server (Not Implemented)</mat-label>
+    <mat-select formControlName="server" multiple>
+      <mat-option matInput (onSelectionChange)="setServers()" *ngFor="let server of this.servers" [value]="server">{{ server }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedInstances()">
     <mat-label>Instance</mat-label>
     <mat-select formControlName="instance" multiple>
       <mat-option matInput (onSelectionChange)="setInstance()" *ngFor="let instance of this.instances" [value]="instance">{{ instance.name }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field color="accent" [matTooltip]="getSelectedPurposes()">
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedPurposes()">
     <mat-label>Purpose</mat-label>
     <mat-select formControlName="purpose" multiple>
       <mat-option matInput (onSelectionChange)="setPurpose()" *ngFor="let purpose of this.purposes" [value]="purpose">{{ purpose }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field color="accent" [matTooltip]="getSelectedJobs()">
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedJobs()">
     <mat-label>Job Availability</mat-label>
     <mat-select formControlName="job" multiple>
       <mat-option matInput (onSelectionChange)="setJob()" *ngFor="let job of this.jobs" [value]="job">{{ job }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field color="accent" [matTooltip]="getSelectedDifficulties()">
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedDifficulties()">
     <mat-label>Difficulty (Not Implemented)</mat-label>
     <mat-select formControlName="difficulty" multiple>
       <mat-option matInput (onSelectionChange)="setDifficulty()" *ngFor="let difficulty of this.difficulties" [value]="difficulty">{{ difficulty }}</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field color="accent" [matTooltip]="getSelectedITypes()">
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedITypes()">
     <mat-label>Instance Type (Not Implemented)</mat-label>
     <mat-select formControlName="itype" multiple>
       <mat-option matInput (onSelectionChange)="setIType()" *ngFor="let itype of this.itypes" [value]="itype">{{ itype }}</mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedSyncs()">
+    <mat-label>Sync (Not Implemented)</mat-label>
+    <mat-select formControlName="sync" multiple>
+      <mat-option matInput (onSelectionChange)="setSync()" *ngFor="let sync of this.syncs" [value]="sync">{{ sync }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="right-margin" floatLabel="always" appearance="none" >
+    <mat-slide-toggle formControlName="owned" [(ngModel)]="owned">Owner (Not Implemented)</mat-slide-toggle>
+    <textarea matInput hidden></textarea>
+  </mat-form-field>
+  <mat-form-field class="right-margin" floatLabel="always" appearance="none" >
+    <mat-slide-toggle formControlName="verf" [(ngModel)]="verf">Verified Users Only (Not Implemented)</mat-slide-toggle>
+    <textarea matInput hidden></textarea>
+  </mat-form-field>
+  <!-- <mat-form-field>
+    <mat-slide-toggle matInput formControlName="verf">
+      Verified Users Only (Not Implemented)
+    </mat-slide-toggle>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-slide-toggle matInput formControlName="sync">
+      Synced (Not Implemented)
+    </mat-slide-toggle>
+  </mat-form-field> -->
+
   <!--<mat-form-field>
     <mat-label>Minimum iLevel</mat-label>
     <mat-slider min="0" max="500" step="5" value="0" matNativeControl formControlName="ilvl"></mat-slider>
@@ -37,11 +82,6 @@
   <mat-form-field>
     <mat-label>Minimum Level</mat-label>
     <mat-slider min="0" max="80" step="1" value="0" matNativeControl formControlName="lvl"></mat-slider>
-  </mat-form-field>
-  <mat-form-field>
-    <mat-slide-toggle matNativeControl formControlName="verf">
-      Verified Users Only
-    </mat-slide-toggle>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Minimum Parse</mat-label>
