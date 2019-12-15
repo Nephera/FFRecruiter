@@ -11,6 +11,7 @@ export class PartyfilterService {
 
   private filter = {
     shortID: [],
+    user: [],
     instance: [],
     purpose: [],
     job: [],
@@ -28,7 +29,9 @@ export class PartyfilterService {
 
   // TODO: is there a way to iterate over all properties and check if they're null?
   isFiltering(){
-    return (this.filter.instance.length > 0 ||
+    return (this.filter.shortID.length > 0 || 
+      this.filter.user.length > 0 ||
+      this.filter.instance.length > 0 ||
       this.filter.purpose.length > 0 || 
       this.filter.job.length > 0 ||
       this.filter.difficulty.length > 0 ||
@@ -36,6 +39,7 @@ export class PartyfilterService {
   }
 
   getShortID(){ return this.filter.shortID; }
+  getUser(){ return this.filter.user; }
 
   getInstances(){ return this.instanceList; }
   getInstance(){ return this.filter.instance; }
@@ -65,8 +69,8 @@ export class PartyfilterService {
   getFilter(){ return this.filter;   }
 
   update(f: FormGroup){
-
     this.filter.shortID = f.get('shortID').value.split(',').map(ID => { return ID.trim(); });
+    this.filter.user = f.get('user').value.split(',').map(name => { return name.trim(); });
 
     let instanceNames = [];
     for(var i = 0; i < f.get('instance').value.length; i++){
