@@ -2,11 +2,11 @@
   <mat-progress-spinner *ngIf="isLoading && (!hasFetchedInstances || !hasFetchedCharacters || !hasFetchedPurposes || !hasFetchedJobs)" class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
   <div class="progress-notifications">
     <span *ngIf="!hasFetchedInstances && timeLeft > 0">Fetching Instance Data...</span>
-    <br *ngIf="!hasFetchedCharacters && timeLeft > 0"><span *ngIf="!hasFetchedCharacters && timeLeft > 0">Fetching Character Data...</span>
-    <br *ngIf="!hasFetchedJobs && timeLeft > 0"><span *ngIf="!hasFetchedJobs && timeLeft > 0">Fetching Job Data...</span>
-    <br *ngIf="!hasFetchedPurposes && timeLeft > 0"><span *ngIf="!hasFetchedPurposes && timeLeft > 0">Fetching Party Purpose Data...</span>
-    <br *ngIf="!hasFetchedParties && timeLeft > 0"><span *ngIf="!hasFetchedParties && timeLeft > 0">Fetching Parties...</span>
-    <br *ngIf="isLoading && timeLeft == 0"><span *ngIf="isLoading && timeLeft == 0">Failed to Retrieve Data.<br><br> <button mat-raised-button (click)="retryFetchData()">Try Again</button></span>
+    <span *ngIf="!hasFetchedCharacters && timeLeft > 0">Fetching Character Data...</span>
+    <span *ngIf="!hasFetchedJobs && timeLeft > 0">Fetching Job Data...</span>
+    <span *ngIf="!hasFetchedPurposes && timeLeft > 0">Fetching Party Purpose Data...</span>
+    <span *ngIf="!hasFetchedParties && timeLeft > 0">Fetching Parties...</span>
+    <span *ngIf="isLoading && timeLeft == 0">Failed to Retrieve Data.<br><br> <button mat-raised-button (click)="retryFetchData()">Try Again</button></span>
   </div>
   <button mat-raised-button class="create-button" *ngIf="isAuth && !isLoading && hasFetchedInstances && hasFetchedCharacters && hasFetchedPurposes && hasFetchedJobs && !this.routeParams.id" (click)="confirmCreate()" matTooltip="Create a New Party">
     <mat-icon>
@@ -25,7 +25,8 @@
   <app-partyfilter></app-partyfilter>
 </div>
 <div class="parties-container" *ngIf="!isLoading">
-  <mat-paginator *ngIf="!this.routeParams.id" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
+  <mat-paginator *ngIf="!this.routeParams.id && parties.length > 0" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
   <app-partycard [partyDetails]="party" *ngFor="let party of parties"></app-partycard>
+  <ng-container *ngIf="parties.length == 0"><span style="margin-top: 20px; margin-bottom: 20px;">No parties found, try easing up on the filters or creating your own party.</span></ng-container>
   <mat-paginator *ngIf="!this.routeParams.id" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
 </div>

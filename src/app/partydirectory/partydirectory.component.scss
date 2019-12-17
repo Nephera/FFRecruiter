@@ -1,7 +1,17 @@
 @import "/../app.component";
 
+span{
+  text-align: center;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: 1.125;
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+  display: block;
+  width: 100%;
+}
+
 .filterOn {
-  background-color: #9c27b0;
+  background-color: #0485f8;
   color: #FFFFFF;
 }
 
