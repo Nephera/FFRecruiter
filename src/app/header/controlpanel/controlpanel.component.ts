@@ -28,7 +28,7 @@ export class ControlpanelComponent implements OnInit {
     });
 
     const n = localStorage.getItem('username');
-    const a = localStorage.getItem('avatar');
+    var a = localStorage.getItem('avatar');
 
     if(n && this.userIsAuthenticated){
       this.name = n;
@@ -38,6 +38,9 @@ export class ControlpanelComponent implements OnInit {
     }
 
     if(a && this.userIsAuthenticated){
+      if(a == null || a == ""){
+        a = "../../../assets/icons/icon_default_avatar.png";
+      }
       this.avatar = a;
     }
     else{
