@@ -125,7 +125,6 @@ export class CharactercardComponent implements OnInit {
       if (distance < 0) {
         clearInterval(x);
         this.timeLeft = "Refresh Available";
-        console.log("Refresh Available");
       }
       else {
         this.timeLeft = "Next Refresh: " + days + ":" + fHours + ":" + fMinutes + ":" + fSeconds;
