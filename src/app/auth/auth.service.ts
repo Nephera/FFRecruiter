@@ -122,7 +122,7 @@ export class AuthService {
               this.avatar = responseB.characters[0].avatar;
               this.authAvatarListener.next(this.avatar)
             }else{
-              this.avatar = "";
+              this.avatar = "../../../assets/icons/icon_default_avatar.png";
               this.authAvatarListener.next(this.avatar);
             }
             this.saveAuthData(responseA.token, expirationDate, responseA.username, this.avatar);
