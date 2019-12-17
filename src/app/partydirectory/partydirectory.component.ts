@@ -140,14 +140,21 @@ export class PartydirectoryComponent implements OnInit {
 
     const shortID = this.pfs.getShortID();
     const user = this.pfs.getUser();
+    const datacenter = this.pfs.getDatacenter();
+    const server = this.pfs.getServer();
+
     const instance = this.pfs.getInstance();
     const difficulty = this.pfs.getDifficulty();
-    const job = this.pfs.getJob();
+    const job = this.pfs.getJob();                       
     const itype = this.pfs.getIType();
     const purpose = this.pfs.getPurpose();
     const id = this.routeParams.id;
+    const sync = this.pfs.getSync();
+    const owned = this.pfs.getOwned();
+    const verf = this.pfs.getVerf();
+    const owner = localStorage.username;
 
-    const queryParams = `?id=${id}&pagesize=${partiesPerPage}&page=${currentPage}&shortID=${shortID}&user=${user}&instance=${instance}&difficulty=${difficulty}&job=${job}&itype=${itype}&purpose=${purpose}`;
+    const queryParams = `?id=${id}&pagesize=${partiesPerPage}&page=${currentPage}&shortID=${shortID}&user=${user}&datacenter=${datacenter}&server=${server}&instance=${instance}&difficulty=${difficulty}&job=${job}&itype=${itype}&purpose=${purpose}&sync=${sync}&owned=${owned}&verf=${verf}&owner=${owner}`;
     this.http.get<{ message: string, parties: any[], totalParties: number }>(this.apiurl.hostname() + "/api/parties/" + queryParams).subscribe((partyData) => {
       this.parties = partyData.parties;
       this.length = partyData.totalParties;

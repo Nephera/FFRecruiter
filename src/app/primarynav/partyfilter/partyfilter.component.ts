@@ -91,7 +91,17 @@ export class PartyfilterComponent implements OnInit {
     setTimeout(() => {
       this.selectedDatacenters = [];
       for(var i = 0; i < this.form.get('datacenter').value.length; i++){
-        this.selectedDatacenters.push((this.form.get('datacenter').value[i]).name);
+        this.selectedDatacenters.push((this.form.get('datacenter').value[i]));
+      }
+    }, 100)
+  }
+
+  setServer(){
+    // Give time for form validation, or value will not be ready
+    setTimeout(() => {
+      this.selectedServers = [];
+      for(var i = 0; i < this.form.get('server').value.length; i++){
+        this.selectedServers.push((this.form.get('server').value[i]));
       }
     }, 100)
   }
@@ -229,11 +239,14 @@ export class PartyfilterComponent implements OnInit {
   ngOnInit() {
     this.onChanges();
 
+    this.datacenters = this.pfs.getDatacenters();
+    this.servers = this.pfs.getServers();
     this.instances = this.pfs.getInstances();
     this.purposes = this.pfs.getPurposes();
     this.jobs = this.pfs.getJobs();
     this.difficulties = this.pfs.getDifficulties();
     this.itypes = this.pfs.getITypes();
+    this.syncs = this.pfs.getSyncs();
 
     // The following prevents function String() from being propagated to backend
     this.form.get('server').setValue("");

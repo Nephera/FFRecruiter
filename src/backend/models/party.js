@@ -41,27 +41,17 @@ const partySchema = mongoose.Schema({
   ownerDC: {type: String, required: true},
 
   composition: [ partyslotSchema ], 
-  
-  // Instance
-  // Should wrap in an instance object (will break attached components)
+
   instanceName: { type: String },
   instanceID: { type: String },
   instanceimg: { type: String },
-  // TODO: difficulty: { type: String },
-  // TODO: itype: { type: String },
-  
-  // Purpose
+  difficulty: { type: String, required: true },
+  itype: { type: String, required: true },
   purpose: { type: String, required: true },
-  // Sync Options
   sync: { type: String, required: true},
-  // Verified Only
   verf: { type: Boolean },
-  // Password
   pw: { type: String },
-  // Description
   description: { type: String, default: 'None' },
-  // Notifications
-  // subscribers: [ userNotificationSubscriptionSchema ]
 });
 
 partySchema.plugin(uniqueValidator);

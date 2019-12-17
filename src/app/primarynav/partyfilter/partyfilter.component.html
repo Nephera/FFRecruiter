@@ -5,19 +5,19 @@
     <input matInput formControlName="shortID" (keyup.enter)="filterSearch()" placeholder="3-5 Digit ID (e.g. &#34;S43, X8AB1&#34;)">
   </mat-form-field>
   <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedUsers()">
-    <mat-label>Username or Character</mat-label>
-    <input matInput formControlName="user" (keyup.enter)="filterSearch()" placeholder="(e.g. &#34;Nephera, Ori Zona Cactuar&#34;)">
+    <mat-label>Username or Character (Case Sensitive)</mat-label>
+    <input matInput formControlName="user" (keyup.enter)="filterSearch()" placeholder="(e.g. &#34;Nephera, First Last Server&#34;)">
   </mat-form-field>
   <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedDatacenters()">
-    <mat-label>Datacenter (Not Implemented)</mat-label>
+    <mat-label>Datacenter</mat-label>
     <mat-select formControlName="datacenter" multiple>
-      <mat-option matInput (onSelectionChange)="setDatacenters()" *ngFor="let datacenter of this.datacenters" [value]="datacenter">{{ datacenter }}</mat-option>
+      <mat-option matInput (onSelectionChange)="setDatacenter()" *ngFor="let datacenter of this.datacenters" [value]="datacenter">{{ datacenter }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedServers()">
-    <mat-label>Server (Not Implemented)</mat-label>
+    <mat-label>Server</mat-label>
     <mat-select formControlName="server" multiple>
-      <mat-option matInput (onSelectionChange)="setServers()" *ngFor="let server of this.servers" [value]="server">{{ server }}</mat-option>
+      <mat-option matInput (onSelectionChange)="setServer()" *ngFor="let server of this.servers" [value]="server">{{ server }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedInstances()">
@@ -39,29 +39,29 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedDifficulties()">
-    <mat-label>Difficulty (Not Implemented)</mat-label>
+    <mat-label>Difficulty</mat-label>
     <mat-select formControlName="difficulty" multiple>
       <mat-option matInput (onSelectionChange)="setDifficulty()" *ngFor="let difficulty of this.difficulties" [value]="difficulty">{{ difficulty }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedITypes()">
-    <mat-label>Instance Type (Not Implemented)</mat-label>
+    <mat-label>Instance Type</mat-label>
     <mat-select formControlName="itype" multiple>
       <mat-option matInput (onSelectionChange)="setIType()" *ngFor="let itype of this.itypes" [value]="itype">{{ itype }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="right-margin" color="accent" [matTooltip]="getSelectedSyncs()">
-    <mat-label>Sync (Not Implemented)</mat-label>
+    <mat-label>Sync</mat-label>
     <mat-select formControlName="sync" multiple>
       <mat-option matInput (onSelectionChange)="setSync()" *ngFor="let sync of this.syncs" [value]="sync">{{ sync }}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="right-margin" floatLabel="always" appearance="none" >
-    <mat-slide-toggle formControlName="owned" [(ngModel)]="owned">Owner (Not Implemented)</mat-slide-toggle>
+    <mat-slide-toggle formControlName="owned" [(ngModel)]="owned">Owner</mat-slide-toggle>
     <textarea matInput hidden></textarea>
   </mat-form-field>
   <mat-form-field class="right-margin" floatLabel="always" appearance="none" >
-    <mat-slide-toggle formControlName="verf" [(ngModel)]="verf">Verified Users Only (Not Implemented)</mat-slide-toggle>
+    <mat-slide-toggle formControlName="verf" [(ngModel)]="verf">Verified Users Only</mat-slide-toggle>
     <textarea matInput hidden></textarea>
   </mat-form-field>
   <br>
