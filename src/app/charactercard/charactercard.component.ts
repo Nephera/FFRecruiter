@@ -120,11 +120,7 @@ export class CharactercardComponent implements OnInit {
       var seconds = Math.floor((distance % (1000 * 60)) / 1000);
       var fHours = ("0" + hours).slice(-2);
       var fMinutes = ("0" + minutes).slice(-2);
-      var fSeconds = ("0" + seconds).slice(-2);
-        
-      // Output the result in an element with id="demo"
-      //document.getElementById("demo").innerHTML = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-        
+      var fSeconds = ("0" + seconds).slice(-2);        
       // If the count down is over, write some text 
       if (distance < 0) {
         clearInterval(x);
