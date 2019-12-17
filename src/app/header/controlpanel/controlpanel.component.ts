@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 export class ControlpanelComponent implements OnInit {
 
   name = 'Login';
-  avatar = "";
+  avatar = "../../../assets/icons/icon_default_avatar.png";
   authUserListenerSub: Subscription;
   authListenerSub: Subscription;
   authAvatarListenerSub: Subscription;

@@ -252,9 +252,10 @@
         </mat-tab-group>
       </td>
       <td width="5%" align="right">
-        <button mat-icon-button>
-          <mat-icon (click)="refreshCharacter()">refresh</mat-icon>
+        <button mat-icon-button [disabled]="!canRefresh()" (click)="refreshCharacter()">
+          <mat-icon>refresh</mat-icon>
         </button>
+        {{ timeLeft }}
       </td>
     </tr>
     <tr>
