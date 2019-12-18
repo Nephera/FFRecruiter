@@ -188,11 +188,11 @@ export class PartydirectoryComponent implements OnInit {
   }
 
   getJobList() {
-    this.jobs = ['TANK', 'DRK', 'PLD', 'WAR', 'GLA', 'MRD', 'GNB', 'DPS',
-  'MDPS', 'ROG', 'NIN', 'SAM', 'PGL', 'MNK', 'LNC', 'DRG',
-  'CDPS', 'ACN', 'SMN', 'THM', 'BLM', 'RDM',
-  'RDPS', 'ARC', 'BRD', 'MCH', 'DNC', 
-  'HEAL', 'WHM', 'CNJ', 'SCH', 'AST'];
+    this.jobs = ['TANK', 'DRK', 'PLD', 'WAR','GNB', 'DPS',
+  'MDPS', 'NIN', 'SAM', 'MNK', 'DRG',
+  'CDPS', 'SMN', 'BLM', 'RDM',
+  'RDPS', 'BRD', 'MCH', 'DNC', 
+  'HEAL', 'WHM', 'SCH', 'AST'];
 
     this.hasFetchedJobs = true;
   }
@@ -573,40 +573,39 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
       return true;
   
     if(slot == "TANK"){
-      if(job == "TANK" || job == "MRD" || job == "GLD" || job == "DRK" || job == "PLD" || job == "WAR" || job == "GNB"){
+      if(job == "TANK" || job == "DRK" || job == "PLD" || job == "WAR" || job == "GNB"){
         return true;
       }
     } 
   
     if(slot == "HEAL"){
-      if(job == "HEAL" || job == "WHM" || job == "CNJ" || job == "SCH" || job == "AST"){
+      if(job == "HEAL" || job == "WHM" || job == "SCH" || job == "AST"){
         return true;
       }
     }
   
     if(slot == "DPS"){
       if(job == "DPS" || job == "MDPS" || job == "RDPS" || job == "CDPS" ||
-        job == "ACN" || job == "SMN" || job == "THM" || job == "BLM" || job == "RDM" || job == "ROG" ||
-        job == "NIN" || job == "SAM" || job == "PGL" || job == "MNK" || job == "LNC" || job == "DRG" ||
-        job == "ARC" || job == "BRD" || job == "MCH" || job == "DNC"){
+        job == "SMN" || job == "BLM" || job == "RDM" || 
+        job == "NIN" || job == "SAM" || job == "MNK" || job == "DRG" ||
+        job == "BRD" || job == "MCH" || job == "DNC"){
         return true;
       }
     }
     if(slot == "CDPS"){
-      if(job == "CDPS" || job == "ACN" || job == "SMN" || job == "THM" || job == "BLM" || job == "RDM"){
+      if(job == "CDPS" || job == "SMN" || job == "BLM" || job == "RDM"){
         return true;
       }
     }
   
     if(slot == "MDPS"){
-      if(job == "MDPS" || job == "ROG" || job == "NIN" || job == "SAM" || job == "PGL" || job == "MNK" || job == "LNC" ||
-        job == "DRG"){
+      if(job == "MDPS" || job == "NIN" || job == "SAM" || job == "MNK" || job == "DRG"){
         return true;
       }
     }
   
     if(slot == "RDPS"){
-      if(job == "RDPS" || job == "ARC" || job == "BRD" || job == "MCH" || job == "DNC"){
+      if(job == "RDPS" || job == "BRD" || job == "MCH" || job == "DNC"){
         return true;
       }
     }

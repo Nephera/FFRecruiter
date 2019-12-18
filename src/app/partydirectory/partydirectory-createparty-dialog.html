@@ -101,7 +101,7 @@
     <button mat-stroked-button color="accent" (click)="onCreate()">Create</button>
   </div>
 </ng-container>
-<ng-container *ngIf="(data.characters.length == 0)">
+<ng-container *ngIf="(data.characters.length <= 0)">
   <h1 mat-dialog-title >
     Unable to Create: No Characters Found
   </h1>

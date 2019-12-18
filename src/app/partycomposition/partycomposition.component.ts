@@ -117,7 +117,8 @@ export class PartycompositionComponent implements OnInit {
       this.http.get<{ message: string, character: any}>(this.apiurl.hostname() + 
         "/api/characters/get/name/" + 
         this.slots[index].userOccupying.cServer + "/" + 
-        this.slots[index].userOccupying.cName).subscribe((characterData) => {
+        this.slots[index].userOccupying.cName + "/" +
+        this.slots[index].userOccupying.name).subscribe((characterData) => {
 
           // Display Details
           const dialogRef = this.dialog.open(PartycompositionPlayerDetailsDialog,
@@ -368,32 +369,29 @@ export class PartycompositionJoinDialog {
 
   filterJobs(jobs: number[], filterJobs?: string[], filterLevel?: number, specializedOnly?: boolean){
 
-    let fullJobList = ['PLD', 'GLA', 'WAR', 'MRD', 'DRK', 'GNB', 'WHM', 'CNJ', 'SCH', 'ACN', 'AST', 'MNK', 'PGL', 'DRG', 'LNC',
-      'NIN', 'ROG', 'SAM', 'BRD', 'ARC', 'MCH', 'DNC', 'BLM', 'THM', 'SMN', 'ACN', 'RDM', 'BLU'];
+    let fullJobList = ['PLD', 'WAR', 'DRK', 'GNB', 'WHM', 'SCH', 'AST', 'MNK', 'DRG',
+      'NIN', 'SAM', 'BRD', 'MCH', 'DNC', 'BLM', 'SMN', 'RDM', 'BLU'];
 
     let filteredJobs = [];
 
-    // Tanks: PLD 0, GLA 1, WAR 2, MRD 3, DRK 4, GNB 5
-    filteredJobs.push({name: "PLD", lvl: jobs[0]}, {name: "GLA", lvl: jobs[0]}, {name: "WAR", lvl: jobs[1]}, 
-      {name: "MRD", lvl: jobs[1]}, {name: "DRK", lvl: jobs[2]}, {name: "GNB", lvl: jobs[3]});  
+    // Tanks: PLD 0, WAR 1, DRK 2, GNB 3
+    filteredJobs.push({name: "PLD", lvl: jobs[0]}, {name: "WAR", lvl: jobs[1]}, 
+     {name: "DRK", lvl: jobs[2]}, {name: "GNB", lvl: jobs[3]});  
 
-    // Healers: WHM 6, CNJ 7, SCH 8, ACN 9, AST 10
-    filteredJobs.push({name: "WHM", lvl: jobs[4]}, {name: "CNJ", lvl: jobs[4]}, {name: "SCH", lvl: jobs[5]}, 
-      {name: "AST", lvl: jobs[6]});
+    // Healers: WHM 4, SCH 5, AST 6
+    filteredJobs.push({name: "WHM", lvl: jobs[4]}, {name: "SCH", lvl: jobs[5]}, {name: "AST", lvl: jobs[6]});
 
     // DPS
-    // MDPS: MNK 11, PGL 12, DRG 13, LNC 14, NIN 15, ROG 16, SAM 17
-    filteredJobs.push({name: "MNK", lvl: jobs[7]}, {name: "PGL", lvl: jobs[7]}, {name: "DRG", lvl: jobs[8]}, 
-      {name: "LNC", lvl: jobs[8]}, {name: "NIN", lvl: jobs[9]}, {name: "ROG", lvl: jobs[9]}, 
-      {name: "SAM", lvl: jobs[10]});
+    // MDPS: MNK 7, DRG 8, NIN 9, SAM 10
+    filteredJobs.push({name: "MNK", lvl: jobs[7]}, {name: "DRG", lvl: jobs[8]}, 
+      {name: "NIN", lvl: jobs[9]}, {name: "SAM", lvl: jobs[10]});
 
-    // RDPS: BRD 18, ARC 19, MCH 20, DNC 21
-    filteredJobs.push({name: "BRD", lvl: jobs[11]}, {name: "ARC", lvl: jobs[11]}, {name: "MCH", lvl: jobs[12]}, 
-      {name: "DNC", lvl: jobs[13]});
+    // RDPS: BRD 11, MCH 12, DNC 13
+    filteredJobs.push({name: "BRD", lvl: jobs[11]}, {name: "MCH", lvl: jobs[12]}, {name: "DNC", lvl: jobs[13]});
 
-    // CDPS: BLM 22, THM 23, SMN 24, ACN 25, RDM 26, BLU 27
-    filteredJobs.push({name: "BLM", lvl: jobs[14]}, {name: "THM", lvl: jobs[14]}, {name: "SMN", lvl: jobs[15]}, 
-      {name: "ACN", lvl: jobs[15]}, {name: "RDM", lvl: jobs[16]}, {name: "BLU", lvl: jobs[17]});
+    // CDPS: BLM 14, SMN 15, RDM 16, BLU 17
+    filteredJobs.push({name: "BLM", lvl: jobs[14]}, {name: "SMN", lvl: jobs[15]}, 
+      {name: "RDM", lvl: jobs[16]}, {name: "BLU", lvl: jobs[17]});
 
     if(filterLevel){
       for(var i = 0; i < filteredJobs.length; i++){
@@ -405,37 +403,37 @@ export class PartycompositionJoinDialog {
 
     if(filterJobs) {
       for(var i = 0; i < filteredJobs.length; i++) {
-        if(i <= 5) { // Tanks, 0-5
+        if(i <= 3) { // Tanks, 0-3
           if(!filterJobs.includes("TANK")) { // If superset tank isn't in filter
             if(!filterJobs.includes(fullJobList[i])) { // Nor the job class explicitly
               filteredJobs[i].lvl = 0;
             }
           }
         } 
-        else if(i > 5 && i <= 10) { // Healers, 6-10
+        else if(i > 4 && i <= 6) { // Healers, 4-6
           if(!filterJobs.includes("HEAL")) { // If superset heal isn't in filter
             if(!filterJobs.includes(fullJobList[i])) { // Nor the job class explicitly
               filteredJobs[i].lvl = 0;
             }
           }
         } 
-        else if(i > 10 && i <= 27) { // DPS, 11-27
+        else if(i > 7 && i <= 17) { // DPS, 7-17
           if(!filterJobs.includes("DPS")) { // If superset dps isn't in filter
-            if(i > 10 && i <= 17) { // Melee, 11-17
+            if(i > 7 && i <= 10) { // Melee, 7-10
               if(!filterJobs.includes("MDPS")) {  // Nor subset mdps
                 if(!filterJobs.includes(fullJobList[i])) { // Nor the job class explicitly
                   filteredJobs[i].lvl = 0;
                 }
               }
             }
-            else if(i > 17 && i <= 22) { // Ranged, 18-22
+            else if(i > 10 && i <= 13) { // Ranged, 11-13
               if(!filterJobs.includes("RDPS")) {  // Nor subset cdps
                 if(!filterJobs.includes(fullJobList[i])) { // Nor the job class explicitly
                   filteredJobs[i].lvl = 0;
                 }
               }
             } 
-            else if(i > 22 && i <= 27) { // Casters, 23-27
+            else if(i > 13 && i <= 17) { // Casters, 14-17
               if(!filterJobs.includes("CDPS")) {  // Nor subset rdps
                 if(!filterJobs.includes(fullJobList[i])) { // Nor the job class explicitly
                   filteredJobs[i].lvl = 0;

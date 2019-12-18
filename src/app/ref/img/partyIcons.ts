@@ -159,48 +159,12 @@ export class partyIcons {
     archetype: "TANK"
   }
 
-  jobGLA = {
-    icon: "https://imagizer.imageshack.com/img921/6619/Q9mNGE.png",
-    // icon: "https://imagizer.imageshack.com/img924/8559/NFcSGY.png",
-    background: this.tankBG.icon,
-    shortName: "GLA",
-    name: "Gladiator",
-    archetype: "TANK"
-  }
-
-  jobMRD = {
-    icon: "https://imagizer.imageshack.com/img921/5986/fcNORZ.png",
-    // icon: "https://imagizer.imageshack.com/img921/7671/VLZFe5.png",
-    background: this.tankBG.icon,
-    shortName: "MRD",
-    name: "Marauder",
-    archetype: "TANK"
-  }
-
-  jobLNC = {
-    icon: "https://imagizer.imageshack.com/img924/1105/9OaZ2o.png",
-    // icon: "https://imagizer.imageshack.com/img921/9734/cpQGEs.png",
-    background: this.dpsBG.icon,
-    shortName: "LNC",
-    name: "Lancer",
-    archetype: "MDPS"
-  }
-
   jobDRG = {
     icon: "https://imagizer.imageshack.com/img923/6941/DkBb3n.png",
     // icon: "https://imagizer.imageshack.com/img923/9862/1G4cLu.png",
     background: this.dpsBG.icon,
     shortName: "DRG",
     name: "Dragoon",
-    archetype: "MDPS"
-  }
-
-  jobPGL = {
-    icon: "https://imagizer.imageshack.com/img921/1570/eEUCAZ.png",
-    // icon: "https://imagizer.imageshack.com/img921/9246/8o2PSo.png",
-    background: this.dpsBG.icon,
-    shortName: "PGL",
-    name: "Pugilist",
     archetype: "MDPS"
   }
 
@@ -240,15 +204,6 @@ export class partyIcons {
     archetype: "MDPS"
   }
 
-  jobARC = {
-    icon: "https://imagizer.imageshack.com/img924/427/DCp6Yn.png",
-    // icon: "https://imagizer.imageshack.com/img924/1874/smhFch.png",
-    background: this.dpsBG.icon,
-    shortName: "ARC",
-    name: "Archer",
-    archetype: "RDPS"
-  }
-
   jobBRD = {
     icon: "https://imagizer.imageshack.com/img924/9849/UAFbv8.png",
     // icon: "https://imagizer.imageshack.com/img921/4922/YEfXDY.png",
@@ -284,30 +239,12 @@ export class partyIcons {
     archetype: "CDPS"
   }
 
-  jobACN = {
-    icon: "https://imagizer.imageshack.com/img921/6232/BHTwOq.png",
-    // icon: "https://imagizer.imageshack.com/img921/7776/TZrpKQ.png",
-    background: this.dpsBG.icon,
-    shortName: "ACN",
-    name: "Arcanist",
-    archetype: "CDPS"
-  }
-
   jobSMN = {
     icon: "https://imagizer.imageshack.com/img923/4978/00F3j7.png",
     // icon: "https://imagizer.imageshack.com/img921/125/OkuvZI.png",
     background: this.dpsBG.icon,
     shortName: "SMN",
     name: "Summoner",
-    archetype: "CDPS"
-  }
-
-  jobTHM = {
-    icon: "https://imagizer.imageshack.com/img924/6461/4DAqQZ.png",
-    // icon: "https://imagizer.imageshack.com/img924/5812/L5Xl0E.png",
-    background: this.dpsBG.icon,
-    shortName: "THM",
-    name: "Thaumaturge",
     archetype: "CDPS"
   }
 
@@ -326,15 +263,6 @@ export class partyIcons {
     background: this.dpsBG.icon,
     shortName: "BLU",
     name: "Blue Mage",
-    archetype: "CDPS"
-  }
-
-  jobCNJ = {
-    icon: "https://imagizer.imageshack.com/img923/1799/eRIWfi.png",
-    // icon: "https://imagizer.imageshack.com/img924/6933/HE04CF.png",
-    background: this.healerBG.icon,
-    shortName: "CNJ",
-    name: "Conjurer",
     archetype: "CDPS"
   }
 
@@ -464,26 +392,17 @@ export class partyIcons {
       case "PLD": { return this.jobPLD; }
       case "DRK": { return this.jobDRK; }
       case "GNB": { return this.jobGNB; }
-      case "GLA": { return this.jobGLA; }
-      case "MRD": { return this.jobMRD; }
-      case "LNC": { return this.jobLNC; }
       case "DRG": { return this.jobDRG; }
-      case "PGL": { return this.jobPGL; }
       case "MNK": { return this.jobMNK; }
-      case "ROG": { return this.jobROG; }
       case "NIN": { return this.jobNIN; }
       case "SAM": { return this.jobSAM; }
-      case "ARC": { return this.jobARC; }
       case "BRD": { return this.jobBRD; }
       case "MCH": { return this.jobMCH; }
       case "DNC": { return this.jobDNC; }
       case "RDM": { return this.jobRDM; }
-      case "ACN": { return this.jobACN; }
       case "SMN": { return this.jobSMN; }
-      case "THM": { return this.jobTHM; }
       case "BLM": { return this.jobBLM; }
       case "BLU": { return this.jobBLU; }
-      case "CNJ": { return this.jobCNJ; }
       case "WHM": { return this.jobWHM; }
       case "AST": { return this.jobAST; }
       case "SCH": { return this.jobSCH; }

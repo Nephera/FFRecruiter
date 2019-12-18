@@ -5,13 +5,13 @@
     {{ data.owner }} @ {{ data.ownerServer }}<br>
   </h1>
   <div mat-dialog-content [formGroup]="form">
-    <mat-form-field>
+    <mat-form-field color="accent">
       <mat-label>Character</mat-label>
       <select matNativeControl formControlName="charSelected" [(ngModel)]="selectedCharacter" (change)="selectCharacter()" required>
         <option *ngFor="let character of data.characters; let i = index" [ngValue]="character">{{ character.name }} @ {{ character.server }}</option>
       </select>
     </mat-form-field><br>
-    <mat-form-field>
+    <mat-form-field color="accent">
       <mat-label>Job Class</mat-label>
       <select formControlName="jobSelected" (change)="selectJob()" matNativeControl required>
         <option *ngFor="let job of jobList" [ngValue]="job">{{ job }}</option>
