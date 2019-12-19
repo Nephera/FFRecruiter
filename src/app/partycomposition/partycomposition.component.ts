@@ -368,11 +368,6 @@ export class PartycompositionJoinDialog {
   }
 
   filterJobs(jobs: number[], filterJobs?: string[], filterLevel?: number, specializedOnly?: boolean){
-    console.log("filtering jobs");
-    console.log("jobs");
-    console.log(jobs);
-    console.log("filterJobs");
-    console.log(filterJobs);
 
     let fullJobList = ['PLD', 'WAR', 'DRK', 'GNB', 'WHM', 'SCH', 'AST', 'MNK', 'DRG',
       'NIN', 'SAM', 'BRD', 'MCH', 'DNC', 'BLM', 'SMN', 'RDM', 'BLU'];
@@ -394,9 +389,11 @@ export class PartycompositionJoinDialog {
     // RDPS: BRD 11, MCH 12, DNC 13
     filteredJobs.push({name: "BRD", lvl: jobs[11]}, {name: "MCH", lvl: jobs[12]}, {name: "DNC", lvl: jobs[13]});
 
-    // CDPS: BLM 14, SMN 15, RDM 16, BLU 17
-    filteredJobs.push({name: "BLM", lvl: jobs[14]}, {name: "SMN", lvl: jobs[15]}, 
-      {name: "RDM", lvl: jobs[16]}, {name: "BLU", lvl: jobs[17]});
+    // CDPS: BLM 14, SMN 15, RDM 16, 
+    filteredJobs.push({name: "BLM", lvl: jobs[14]}, {name: "SMN", lvl: jobs[15]}, {name: "RDM", lvl: jobs[16]});
+
+    // BLU 17
+    filteredJobs.push({name: "BLU", lvl: jobs[17]});
 
     if(filterLevel){
       for(var i = 0; i < filteredJobs.length; i++){
@@ -422,7 +419,7 @@ export class PartycompositionJoinDialog {
             }
           }
         } 
-        else if(i > 6 && i <= 17) { // DPS, 7-17
+        else if(i > 6 && i <= 16) { // DPS, 7-17
           if(!filterJobs.includes("DPS")) { // If superset dps isn't in filter
             if(i > 6 && i <= 10) { // Melee, 7-10
               if(!filterJobs.includes("MDPS")) {  // Nor subset mdps
@@ -438,7 +435,7 @@ export class PartycompositionJoinDialog {
                 }
               }
             } 
-            else if(i > 13 && i <= 17) { // Casters, 14-17
+            else if(i > 13 && i <= 16) { // Casters, 14-16
               if(!filterJobs.includes("CDPS")) {  // Nor subset rdps
                 if(!filterJobs.includes(fullJobList[i])) { // Nor the job class explicitly
                   filteredJobs[i].lvl = 0;
@@ -446,7 +443,12 @@ export class PartycompositionJoinDialog {
               }
             } 
           }
-        } 
+        }
+        else if(i == 17){ // BLU
+          if(!filterJobs.includes("BLU")) {
+            filteredJobs[i].lvl = 0;
+          }
+        }
       }
     }
 
