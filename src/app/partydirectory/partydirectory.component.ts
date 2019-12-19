@@ -193,7 +193,8 @@ export class PartydirectoryComponent implements OnInit {
   'MDPS', 'NIN', 'SAM', 'MNK', 'DRG',
   'CDPS', 'SMN', 'BLM', 'RDM',
   'RDPS', 'BRD', 'MCH', 'DNC', 
-  'HEAL', 'WHM', 'SCH', 'AST'];
+  'HEAL', 'WHM', 'SCH', 'AST',
+  'BLU'];
 
     this.hasFetchedJobs = true;
   }
