@@ -368,6 +368,11 @@ export class PartycompositionJoinDialog {
   }
 
   filterJobs(jobs: number[], filterJobs?: string[], filterLevel?: number, specializedOnly?: boolean){
+    console.log("filtering jobs");
+    console.log("jobs");
+    console.log(jobs);
+    console.log("filterJobs");
+    console.log(filterJobs);
 
     let fullJobList = ['PLD', 'WAR', 'DRK', 'GNB', 'WHM', 'SCH', 'AST', 'MNK', 'DRG',
       'NIN', 'SAM', 'BRD', 'MCH', 'DNC', 'BLM', 'SMN', 'RDM', 'BLU'];
@@ -410,16 +415,16 @@ export class PartycompositionJoinDialog {
             }
           }
         } 
-        else if(i > 4 && i <= 6) { // Healers, 4-6
+        else if(i > 3 && i <= 6) { // Healers, 4-6
           if(!filterJobs.includes("HEAL")) { // If superset heal isn't in filter
             if(!filterJobs.includes(fullJobList[i])) { // Nor the job class explicitly
               filteredJobs[i].lvl = 0;
             }
           }
         } 
-        else if(i > 7 && i <= 17) { // DPS, 7-17
+        else if(i > 6 && i <= 17) { // DPS, 7-17
           if(!filterJobs.includes("DPS")) { // If superset dps isn't in filter
-            if(i > 7 && i <= 10) { // Melee, 7-10
+            if(i > 6 && i <= 10) { // Melee, 7-10
               if(!filterJobs.includes("MDPS")) {  // Nor subset mdps
                 if(!filterJobs.includes(fullJobList[i])) { // Nor the job class explicitly
                   filteredJobs[i].lvl = 0;
@@ -442,7 +447,6 @@ export class PartycompositionJoinDialog {
             } 
           }
         } 
-        
       }
     }
 
