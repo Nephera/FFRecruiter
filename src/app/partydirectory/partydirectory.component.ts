@@ -104,6 +104,7 @@ export class PartydirectoryComponent implements OnInit {
   onChangePage(pageData: PageEvent){
     this.isLoading = true;
     this.currentPage = pageData.pageIndex + 1;
+    localStorage.setItem("pageSize", pageData.pageSize.toString());
     this.pageSize = pageData.pageSize;
     this.getParties(this.pageSize, this.currentPage);
   }
@@ -232,7 +233,7 @@ export class PartydirectoryComponent implements OnInit {
 
   ngOnInit() {
     this.length = 100;
-    this.pageSize = 5;
+    (localStorage.pageSize != null) ? this.pageSize = +localStorage.pageSize : this.pageSize = 5;
     this.currentPage = 1;
     this.startTimer();
     this.parties = this.getParties(this.pageSize, this.currentPage);
