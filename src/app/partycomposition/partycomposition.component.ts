@@ -20,7 +20,8 @@ export interface JoinDialogData {
   characters: any[],
   isAuth: boolean,
   jobsWanted: string[],
-  levelReq: number
+  levelReq: number,
+  private: boolean
 }
 
 export interface DetailsDialogData {
@@ -227,7 +228,8 @@ export class PartycompositionComponent implements OnInit {
                   slotNum: index,
                   characters: this.characters,
                   isAuth: this.isAuth,
-                  jobsWanted: [this.getSlotTitle(index)]
+                  jobsWanted: [this.getSlotTitle(index)],
+                  private: this.partyDetails.private
                 }
               })
             dialogRef.afterClosed().subscribe(result => {
@@ -346,11 +348,25 @@ export class PartycompositionJoinDialog {
     private http: HttpClient,
     private apiurl: apiref) {
       this.form = fb.group({
+        pw: [String],
         charSelected: [Object, Validators.required],
         jobSelected: [String, Validators.required],
         altJobs: [[String]]
       });
     };
+
+  ngOnInit(){
+    this.form.get('pw').setValue("");
+  }
+
+  joinDisabled(){
+    if(this.data.private){
+      return !this.characterIsSelected || !this.jobIsSelected || (this.form.get('pw').value == "")
+    } else {
+      return !this.characterIsSelected || !this.jobIsSelected;
+    }
+    
+  }
 
   selectCharacter(){
     this.characterIsSelected = true;
@@ -469,6 +485,18 @@ export class PartycompositionJoinDialog {
     return "Party: " + (Math.floor(index/8)+1) + ", Slot: " + ((index%8)+1);
   }
 
+  isPrivate(){
+    return this.data.private; // TODO:
+  }
+
+  characterDisabled(){
+    return true; // TODO:
+  }
+
+  jobDisabled(){
+    return true; // TODO:
+  }
+
   onCancel() {
     this.dialogRef.close();
   }
@@ -484,8 +512,21 @@ export class PartycompositionJoinDialog {
         sub: null
       }
 
-      this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/join", postData)
+      this.http.post<{message: string, party: any, error: string}>(this.apiurl.hostname() + "/api/parties/join", postData)
       .subscribe((responseData) => {
+        if(responseData.error){
+          const dialogErrRef = this.dialog.open(ErrorDialog,
+          {
+            autoFocus: false,
+            width: '90vw',
+            maxWidth: '600px',
+            maxHeight: '85%',
+            data: {
+              title: "Cannot Join Party", 
+              text: responseData.error
+            }
+          })
+        }
         this.dialogRef.close({data: responseData});
       });
     }

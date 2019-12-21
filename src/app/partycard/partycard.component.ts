@@ -63,7 +63,7 @@ export class PartycardComponent implements OnInit {
   description: string;
   schedule: string;
   pw: string;
-  isPrivate = false; // TODO
+  isPrivate: boolean = false;
   slots: any[];
 
   privatePartyIcon: string;
@@ -195,7 +195,8 @@ export class PartycardComponent implements OnInit {
     this.ownerServer = this.partyDetails.ownerServer;
     this.ownerDC = this.partyDetails.ownerDC;
     this.description = this.partyDetails.description;
-    this.pw = this.partyDetails.pw;
+    this.isPrivate = this.partyDetails.private;
+    //this.pw = this.partyDetails.pw;
     this.purpose = this.partyDetails.purpose;
     this.slots = [];
 

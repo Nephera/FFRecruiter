@@ -5,6 +5,10 @@
     {{ data.owner }} @ {{ data.ownerServer }}<br>
   </h1>
   <div mat-dialog-content [formGroup]="form">
+    <mat-form-field color="accent" *ngIf="isPrivate()">
+      <mat-label>Password</mat-label>
+      <input matInput formControlName="pw" (keyup.enter)="onJoin()" required>
+    </mat-form-field>
     <mat-form-field color="accent">
       <mat-label>Character</mat-label>
       <select matNativeControl formControlName="charSelected" [(ngModel)]="selectedCharacter" (change)="selectCharacter()" required>
@@ -20,7 +24,7 @@
   </div>
   <div mat-dialog-actions align="end">
     <button mat-stroked-button color="warn" (click)="onCancel()">Cancel</button>
-    <button mat-stroked-button color="accent" [disabled]="!characterIsSelected || !jobIsSelected" (click)="onJoin()">Join</button>
+    <button mat-stroked-button color="accent" [disabled]="joinDisabled()" (click)="onJoin()">Join</button>
   </div>
 </ng-container>
 
