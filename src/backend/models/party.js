@@ -51,6 +51,7 @@ const partySchema = mongoose.Schema({
   sync: { type: String, required: true},
   verf: { type: Boolean },
   pw: { type: String },
+  private: { type: Boolean },
   description: { type: String, default: 'None' },
 });
 
