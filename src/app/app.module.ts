@@ -2,10 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { FormsModule,
-  ReactiveFormsModule,
-  FormBuilder,
-  Validators,
-  FormGroup} from '@angular/forms';
+  ReactiveFormsModule} from '@angular/forms';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -47,19 +44,13 @@ import { ControlpanelComponent } from './header/controlpanel/controlpanel.compon
 import {
   PartycardComponent,
   PartycardDescriptionDialog,
-  PartycardScheduleDialog,
-  PartycardJoinDialog,
-  PartycardMessageDialog,
-  PartycardDismissDialog
+  PartycardUpdateDialog
 } from './partycard/partycard.component';
 
 import { BannerComponent } from './banner/banner.component';
 import { PartydirectoryComponent, PartyDirectoryCreatepartyDialog } from './partydirectory/partydirectory.component';
 
-import {
-  PrimarynavComponent,
-  PrimarynavMessagesDialog
-} from './primarynav/primarynav.component';
+import { PrimarynavComponent } from './primarynav/primarynav.component';
 
 import { LoginformComponent } from './auth/loginform/loginform.component';
 import { RegisterformComponent } from './auth/registerform/registerform.component';
@@ -119,11 +110,6 @@ import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.comp
     PartydescriptionComponent,
     FooterComponent,
     PartycardDescriptionDialog,
-    PartycardScheduleDialog,
-    PartycardJoinDialog,
-    PartycardMessageDialog,
-    PartycardDismissDialog,
-    PrimarynavMessagesDialog,
     RecoveryformComponent,
     PartycompositionJoinDialog,
     PartycompositionPlayerDetailsDialog,
@@ -136,7 +122,8 @@ import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.comp
     SettingsComponent,
     NotificationsDialog,
     PartyCompositionBlankDialog,
-    StaticdirectoryComponent
+    StaticdirectoryComponent,
+    PartycardUpdateDialog
   ],
   imports: [
     BrowserModule,
@@ -183,18 +170,14 @@ import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.comp
   entryComponents: [MycharactersAddcharacterDialog,
     PartycardComponent,
     PartycardDescriptionDialog,
-    PartycardScheduleDialog,
-    PartycardJoinDialog,
-    PartycardMessageDialog,
-    PartycardDismissDialog,
-    PrimarynavMessagesDialog,
     PartycompositionJoinDialog,
     PartycompositionPlayerDetailsDialog,
     ErrorDialog,
     ConfirmDialog,
     PartyDirectoryCreatepartyDialog,
     NotificationsDialog,
-    PartyCompositionBlankDialog
+    PartyCompositionBlankDialog,
+    PartycardUpdateDialog
   ]
 })
 export class AppModule { }

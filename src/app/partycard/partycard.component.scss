@@ -95,6 +95,29 @@ div {
   height: 32px;
 }
 
+.partycard-settings-bg {
+  z-index: 5 !important;
+  position: absolute;
+  left: 16px;
+  top: 77px;
+
+  img{
+    object-fit: cover;
+    transform: scaleY(-1);
+    object-position: 100% 0;
+    width: 38px;
+    height: 38px;
+  }
+
+}
+
+.update-party-icon {
+  z-index: 6 !important;
+  position: absolute;
+  left: 8px;
+  top: 82px;
+}
+
 .party-description {
   max-width: 200px;
 }

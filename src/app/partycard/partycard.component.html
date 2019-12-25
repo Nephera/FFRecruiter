@@ -17,11 +17,23 @@
         <img *ngIf="hasPassword()" matTooltip="Private Party" class="partycard-priv-icon-img" src="{{ privatePartyIcon }}">
       </td>
       <td class="partycard-icon-bg">
-          <img src="{{ instanceIconGradient }}">
+        <img src="{{ instanceIconGradient }}">
       </td>
       <td class="partycard-id">
         ID: {{ this.shortID }}
       </td>
+      <ng-container *ngIf="isOwner() && isAuth">
+        <td class="partycard-settings-bg">
+          <img src="{{ instanceIconGradient}}">
+        </td>
+        <td class="update-party-icon center">
+          <button mat-icon-button>
+            <mat-icon matTooltip="Update Party Options" (click)="updatePartyOptions()">
+              settings_applications
+            </mat-icon>
+          </button>
+        </td>
+      </ng-container>
     </tr>
     <tr>
       <td colspan="5" style="vertical-align: text-top;">
@@ -52,11 +64,6 @@
         <button mat-icon-button>
           <mat-icon class="hide-button" (click)="toggleHidden()" matTooltip="Hide Party">
             visibility_off
-          </mat-icon>
-        </button>
-        <button mat-icon-button style="display:none">
-          <mat-icon class="dismiss-button" (click)="confirmDismiss()" matTooltip="Dismiss">
-            not_interested
           </mat-icon>
         </button>
       </div>

@@ -1,0 +1,105 @@
+<ng-container>
+  <h1 mat-dialog-title>Updating Party: {{ data.party.shortID }}<br></h1>
+  <div>
+    <mat-dialog-content [formGroup]="form">
+      <mat-form-field color="accent">
+          <mat-label>Instance</mat-label>
+          <input matInput disabled="true" [value]="data.party.instanceName">
+        </mat-form-field>
+        <br>
+      <mat-form-field color="accent">
+        <mat-label>Character</mat-label>
+        <select formControlName="character" [(ngModel)]="selectedCharacter" matNativeControl required>
+          <option *ngFor="let character of data.characters" [ngValue]="character">{{ character.name }} @ {{ character.server }}</option>
+        </select>
+      </mat-form-field>
+      <!-- <div *ngIf="submitted && f.character.errors && f.character.errors.required" class="invalid-form-entry">
+        Character selection is required.
+      </div>  -->
+      <br>
+      <mat-form-field color="accent">
+        <mat-label>Purpose</mat-label>
+        <select formControlName="purpose" matNativeControl required>
+          <option *ngFor="let purpose of data.purposes" [value]="purpose">{{ purpose }}</option>
+        </select>
+      </mat-form-field>
+      <!-- <div *ngIf="submitted && f.purpose.errors && f.purpose.errors.required" class="invalid-form-entry">
+          Purpose selection is required.
+      </div> -->
+      <br>
+      <span style="width:100%">
+        <mat-radio-group formControlName="sync" color="accent"> 
+          <mat-radio-button value="Unsynced" style="padding-right:10px" [checked]="isUnsynced()">Unsynced</mat-radio-button>
+          <mat-radio-button value="Synced" [checked]="isSynced()">Synced</mat-radio-button>
+        </mat-radio-group>
+      </span>
+      <!-- <div *ngIf="submitted && f.sync.errors && f.sync.errors.required" class="invalid-form-entry">
+        <br>
+        Sync selection is required.
+      </div> -->
+      <br>
+      <br>
+      <!-- TODO: This section is particularly difficult to replicate, as slots that are already filled
+        by other users will need to be disabled.  Backend should also validate to make sure user didn't
+        enable the field to make changes. -->
+      <mat-grid-list cols="8" rowHeight="2:1">
+        <ng-container *ngFor="let slot of data.party.composition; let i = index">
+          <mat-grid-tile>
+            <mat-form-field color="accent" class="job-selector">
+              <ng-container *ngIf="slot.slotOccupied == true">
+                <select formControlName="slot{{ i }}" matNativeControl required disabled>
+                  <option *ngFor="let job of data.jobs" [value]="job">{{ job }}</option>
+                </select>
+              </ng-container>
+              <ng-container *ngIf="slot.slotOccupied == false">
+                <select formControlName="slot{{ i }}" matNativeControl required>
+                  <option *ngFor="let job of data.jobs" [value]="job">{{ job }}</option>
+                </select>
+              </ng-container>
+            </mat-form-field>
+          </mat-grid-tile>
+        </ng-container>
+      </mat-grid-list>
+      <!-- <div *ngIf="submitted && f.slot1.errors && f.slot1.errors.required" class="invalid-form-entry">
+          Job selection is required for all slots.
+      </div>
+      <br> -->
+      <mat-form-field color="accent">
+        <mat-label>Preferred Job</mat-label>
+        <select formControlName="prefj" matNativeControl required>
+          <option *ngFor="let job of data.jobs" [value]="job">{{ job }}</option>
+        </select>
+      </mat-form-field>
+      <!-- <div *ngIf="submitted && f.prefj.errors && f.prefj.errors.required" class="invalid-form-entry">
+          Job selection is required.
+      </div> -->
+      <br>
+      <mat-form-field color="accent">
+        <mat-label>Alternate Jobs</mat-label>
+        <mat-select formControlName="altj" multiple>
+          <mat-option *ngFor="let job of data.jobs" [value]="job">{{ job }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br>
+      <mat-checkbox formControlName="verf">Verified Users Only</mat-checkbox>
+      <br>
+      <br>
+      <mat-checkbox formControlName="pwcb" (change)="pwcb()">Change Password</mat-checkbox>
+      <br>
+      <mat-form-field color="accent">
+        <textarea formControlName="pw" matInput placeholder="Password" matTextareaAutosize matAutosizeMinRows=1
+          matAutosizeMaxRows=1></textarea>
+      </mat-form-field>
+      <br>
+      <mat-form-field color="accent">
+        <textarea formControlName="description" matInput placeholder="Description"></textarea>
+      </mat-form-field>
+      <br>
+    </mat-dialog-content>
+  </div>
+  <div mat-dialog-actions align="end">
+    <button mat-stroked-button color="warn" (click)="onCancel()">CANCEL</button>
+    <button mat-stroked-button (click)="onReset()">RESET</button>
+    <button mat-stroked-button color="accent" (click)="onUpdate()">UPDATE</button>
+  </div>
+</ng-container>

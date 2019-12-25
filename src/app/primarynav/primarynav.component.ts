@@ -8,8 +8,6 @@ import { apiref } from '../ref/str/apiref';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
 
-export interface MessagesDialogData {}
-
 @Component({
   selector: 'app-primarynav',
   templateUrl: './primarynav.component.html',
@@ -77,16 +75,6 @@ export class PrimarynavComponent implements OnInit {
       });
   }
 
-  showMessages() {
-    const dialogRef = this.dialog.open(PrimarynavMessagesDialog,
-      {
-        autoFocus: false,
-        width: '90vw',
-        maxWidth: '600px',
-        maxHeight: '85%'
-      });
-  }
-
   constructor(public dialog: MatDialog, private as: AuthService, private http: HttpClient, private apiurl: apiref, private swp: SwPush, private pns: PushNotificationService) {}
 
   ngOnInit()
@@ -104,18 +92,4 @@ export class PrimarynavComponent implements OnInit {
     this.authListenerSub.unsubscribe();
   }
 
-}
-
-@Component({
-  selector: 'primarynav-messages-dialog',
-  templateUrl: 'primarynav-messages-dialog.html',
-})
-export class PrimarynavMessagesDialog {
-  constructor(
-    public dialogRef: MatDialogRef<PrimarynavMessagesDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: MessagesDialogData) { }
-
-  onOk() {
-    this.dialogRef.close();
-  }
 }

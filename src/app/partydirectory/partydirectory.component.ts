@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';
-import { PageEvent, MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { PageEvent, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { PartyfilterService } from '../primarynav/partyfilter/partyfilter.service';
 import { Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -10,6 +10,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
+import { ErrorDialog } from '../dialog/error-dialog';
 
 export interface CreateDialogData {
   slotCount: number; // can change depending on instance, should fetch from slots
@@ -20,6 +21,10 @@ export interface CreateDialogData {
   characters: [string]; // should be object array
   currentPartyCount: number;
   maximumPartyCount: number;
+}
+
+export interface CreateSuccessDialogData {
+  shortID: string;
 }
 
 @Component({
@@ -71,7 +76,8 @@ export class PartydirectoryComponent implements OnInit {
     private pfs: PartyfilterService, 
     public dialog: MatDialog, 
     private as: AuthService,
-    private ar: ActivatedRoute) {
+    private ar: ActivatedRoute,
+    private sb: MatSnackBar) {
      
     this.getRouteParams();
 
@@ -226,9 +232,27 @@ export class PartydirectoryComponent implements OnInit {
         }
       });
 
-    dialogRef.afterClosed().subscribe(data => {
-      console.log(data);
-      // TODO: If there is a new party, navigate to partyDirectory and filter by parties owned
+    dialogRef.afterClosed().subscribe(response => {
+      if(response.data != "undefined" && response.data.party != "undefined"){ // TODO: Should be error case as well
+        var sbref = this.sb.open("Party Created", "View", {duration: 5000});
+        sbref.onAction().subscribe(() => {
+          var win = window.open("https://www.ffrecruiter.com/partydirectory/" + response.data.party.shortID, '_blank');
+          win.focus();
+        })
+      }
+      if(response.data.error){
+        const dialogRef = this.dialog.open(ErrorDialog,
+          {
+            autoFocus: false,
+            width: '90vw',
+            maxWidth: '600px',
+            maxHeight: '85%',
+            data: {
+              title: "Unable to Create Party",
+              text: response.data.error
+            }
+          });
+      }
     });
   }
 
