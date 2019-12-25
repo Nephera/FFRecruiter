@@ -26,7 +26,7 @@
 </div>
 <div class="parties-container" *ngIf="!isLoading">
   <mat-paginator *ngIf="!this.routeParams.id && parties != null && parties.length > 0" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
-  <app-partycard [partyDetails]="party" *ngFor="let party of parties"></app-partycard>
+  <app-partycard [partyDetails]="party" [characters]="characters" [purposes]="purposes" [jobs]="jobs" *ngFor="let party of parties"></app-partycard>
   <ng-container *ngIf="parties != null && parties.length == 0"><span style="margin-top: 20px; margin-bottom: 20px;">No parties found, try easing up on the filters or creating your own party.</span></ng-container>
   <mat-paginator *ngIf="!this.routeParams.id" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
 </div>

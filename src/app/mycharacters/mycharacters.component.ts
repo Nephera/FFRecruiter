@@ -119,6 +119,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
   characterValid = false;
   isLoading = false;
 
+  verifyDisabled = true;
   userCanFinish = false;
 
   get f() { return this.form.controls; }
@@ -149,6 +150,10 @@ export class MycharactersAddcharacterDialog implements OnInit {
 
   ngOnDestroy() {
     this.verfMsgListenerSub.unsubscribe();
+  }
+
+  firstStepDisabled() {
+    return (this.firstFormGroup.get('name').value == "") || (this.firstFormGroup.get('server').value.name == undefined);
   }
 
   stringIsSafe(input: string) {
@@ -212,6 +217,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
     if (window.getSelection) {
       window.getSelection().removeAllRanges();
     }
+    this.verifyDisabled = false;
     this.sb.open("Copied", "", {duration: 3000});
   }
 

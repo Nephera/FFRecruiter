@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation, Inject, Output, EventEmitter, ChangeDetectorRef} from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, Inject, Output, EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { partyIcons } from '../ref/img/partyIcons';
 import { HttpClient } from '@angular/common/http';
@@ -53,7 +53,7 @@ export interface BlankDialogData {}
   styleUrls: ['./partycomposition.component.scss'],
   providers: [partyIcons]
 })
-export class PartycompositionComponent implements OnInit {
+export class PartycompositionComponent implements OnInit, OnChanges {
 
   @Input() public partyDetails: any;
   slots: any[] = [];
@@ -106,10 +106,33 @@ export class PartycompositionComponent implements OnInit {
 
     this.slotFilled = this.icons.get("SlotFilled").icon;
     
+    this.slots = [];
     for(var i = 0; i < this.partyDetails.composition.length; i++)
       this.slots.push(this.partyDetails.composition[i])
 
     this.getCharacterList();
+  }
+
+  ngOnChanges(changes: SimpleChanges){
+    for(let property in changes){
+      if(property === "partyDetails"){
+        this.partyDetails = changes[property].currentValue;
+
+        // Timeout is to prevent ExpressionChangedAfterItHasBeenCheckedError
+        setTimeout(() => {
+          this.slots = [];
+          for(var i = 0; i < this.partyDetails.composition.length; i++){
+            this.slots.push(this.partyDetails.composition[i]);
+          }
+
+          // TODO: Unhackify this. Issue #31. To force an update on the position of the
+          // component after modification, we open a modal and immediately close it.
+          const dialogRef2 = this.dialog.open(PartyCompositionBlankDialog, {hasBackdrop: false})
+          dialogRef2.close();
+        })
+      }
+    }
+
   }
 
   onClick(index: number){
@@ -152,7 +175,7 @@ export class PartycompositionComponent implements OnInit {
           dialogRef.afterClosed().subscribe(result => {
             if(result != null && result.data != null){
               if(result.data.error != null){
-                const dialogRef = this.dialog.open(ErrorDialog,
+                const dialogRef2 = this.dialog.open(ErrorDialog,
                   {
                     autoFocus: false,
                     width: '90vw',
@@ -168,11 +191,7 @@ export class PartycompositionComponent implements OnInit {
               }
 
               if(result.data.party != null){
-                // TODO: Unhackify this. Issue #31. To force an update on the position of the
-                // component after modification, we open a modal and immediately close it.
                 this.slots[index] = result.data.party.composition[index];
-                const dialogRef2 = this.dialog.open(PartyCompositionBlankDialog, {})
-                dialogRef2.close();
               }
             }
           })
@@ -234,11 +253,7 @@ export class PartycompositionComponent implements OnInit {
               })
             dialogRef.afterClosed().subscribe(result => {
               if(result && result.data.party.composition){
-                // TODO: Unhackify this. Issue #31. To force an update on the position of the
-                // component after modification, we open a modal and immediately close it.
-                this.slots[index] = result.data.party.composition[index];
-                const dialogRef2 = this.dialog.open(PartyCompositionBlankDialog, {})
-                dialogRef2.close();              
+                this.slots[index] = result.data.party.composition[index];             
               }
             })
           }
@@ -646,7 +661,6 @@ export class PartycompositionPlayerDetailsDialog {
       partyID: this.data.id
     };
 
-    console.log("Disbanding");
     this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/disband", postData)
       .subscribe((responseData) => {
         this.dialogRef.close({data: responseData});
@@ -663,8 +677,6 @@ export class PartycompositionPlayerDetailsDialog {
 
     this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/kickplayer", postData)
     .subscribe(responseData => {
-      console.log("responseData");
-      console.log(responseData); 
       this.dialogRef.close({data: responseData});
     },
     error => {
