@@ -192,6 +192,20 @@ export class PartycardComponent implements OnInit {
     this.instanceIconGradient = this.icons.get("instanceIconGradient").icon;
   }
 
+  copyID(inputElement) {
+    var dummy = document.createElement('input'),
+    text = "https://www.ffrecruiter.com/partydirectory/" + this.shortID;
+
+    document.body.appendChild(dummy);
+    dummy.value = text;
+    dummy.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummy);
+
+    this.sb.open("Copied Party Link to Clipboard", "", {duration: 3000});
+  }
+
+
   constructor(public dialog: MatDialog, private icons: partyIcons, private http: HttpClient, private apiurl: apiref, private as: AuthService, private sb: MatSnackBar) {
   }
 
@@ -247,6 +261,7 @@ export class PartycardUpdateDialog {
     private http: HttpClient,
     private apiurl: apiref,
     public dialog: MatDialog,
+    private sb: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: UpdateDialogData) {
 
     this.form = fb.group({
