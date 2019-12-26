@@ -19,7 +19,7 @@
       <td class="partycard-icon-bg">
         <img src="{{ instanceIconGradient }}">
       </td>
-      <td class="partycard-id">
+      <td class="partycard-id" (click)="copyID(partyIDText)" #partyIDText>
         ID: {{ this.shortID }}
       </td>
       <ng-container *ngIf="isOwner() && isAuth">
