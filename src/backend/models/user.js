@@ -28,7 +28,10 @@ var userSchema = mongoose.Schema({
       partyOptions: { type: Boolean, default: true },
       partyReminder: { type: Boolean, default: true }
     }
-  }
+  },
+  verf: { type: Boolean, default: false },
+  verfToken: [ { type: String } ],
+  charToken: { type: String }
 });
 
 userSchema.plugin(uniqueValidator);

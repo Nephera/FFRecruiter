@@ -1,0 +1,17 @@
+<div *ngIf="state == 'verifying' && timeLeft > 0">
+  <p class="center">Verifying your email account, this may take a few moments...</p>
+  <mat-progress-spinner color="accent" mode="indeterminate" diameter="40" strokeWidth="7" class="center"></mat-progress-spinner>
+</div>
+
+<div *ngIf="state == 'verifying' && timeLeft == 0" class="center"><p>There was a problem reaching the server, try again?</p> 
+  <button mat-raised-button (click)="retryVerf()" color="primary">Try Again</button>
+</div>
+
+<div *ngIf="state == 'verified'" class="center">
+  <p>Your account has been verified; forwarding you to the character screen.</p>
+</div>
+
+<div *ngIf="state == 'error'" class="center">
+  <p>{{message}}</p>
+  <p style="color:red">{{error}}</p>
+</div>

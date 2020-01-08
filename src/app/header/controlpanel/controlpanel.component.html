@@ -1,17 +1,29 @@
 <section class="container">
-  <div class="avatar">
-    <ng-container *ngIf="!userIsAuthenticated">
-      <button mat-icon-button (click)="toggleSN()">
-        <mat-icon>account_box</mat-icon>
-      </button>
-    </ng-container>
-    <ng-container *ngIf="userIsAuthenticated">
+  <ng-container *ngIf="userIsAuthenticated">
+    <div class="avatar" *ngIf="!userIsVerified" matBadge="!" matBadgeColor="warn" >
       <button mat-icon-button (click)="toggleSN()">
         <img _ngcontent-avs-c28="" class="avatar" src="{{ avatar }}">
       </button>
-    </ng-container>
+      <div class="username" (click)="toggleSN()">
+        {{ name }}
+      </div>
+    </div>
+    <div class="avatar" *ngIf="userIsVerified">
+      <button mat-icon-button (click)="toggleSN()">
+        <img _ngcontent-avs-c28="" class="avatar" src="{{ avatar }}">
+      </button>
+      <div class="username" (click)="toggleSN()">
+        {{ name }}
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!userIsAuthenticated">
+    <button mat-icon-button (click)="toggleSN()">
+      <mat-icon style="font-size: 40px; display: block; margin-right: auto;">account_box</mat-icon>
+    </button>
     <div class="username" (click)="toggleSN()">
       {{ name }}
     </div>
-  </div>
+  </ng-container>
 </section>

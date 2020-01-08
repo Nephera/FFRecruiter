@@ -26,7 +26,6 @@ export class CharactercardComponent implements OnInit {
   nextRefresh: Date;
 
   refreshCharacter() { 
-    console.log(this.characterDetails);
     this.isRefreshing = true;
     this.http.patch<{message: string, characters: any[]}>(this.apiurl.hostname() + "/api/characters/refresh/", {id: this.characterDetails.lodestoneID})
       .subscribe((refreshData) => {
@@ -35,6 +34,7 @@ export class CharactercardComponent implements OnInit {
           this.parses = refreshData.characters[0].parses;
           this.nextRefresh = refreshData.characters[0].nextRefresh;
           this.timeLeft = ""; 
+          this.startRefreshTimer();
         }
         this.isRefreshing = false;
       });
@@ -87,24 +87,13 @@ export class CharactercardComponent implements OnInit {
     return false;
   }
 
-  constructor(private http: HttpClient, private apiurl: apiref) { }
-
-  ngOnInit() {
-    this.avatar = this.characterDetails.avatar;
-    this.name = this.characterDetails.name;
-    this.server = this.characterDetails.server;
-
-    for(var i = 0; i < this.characterDetails.jobs.length; i++)
-      this.jobLevels.push(this.characterDetails.jobs[i]);
-    
-    for(var i = 0; i < this.characterDetails.parses.length; i++)
-      this.parses.push(this.characterDetails.parses[i]);
-
+  startRefreshTimer(){
     // Set the date we're counting down to
-    this.nextRefresh = this.characterDetails.nextRefresh;
+    if(this.nextRefresh == undefined){
+      this.nextRefresh = this.characterDetails.nextRefresh;
+    }
     var countDownDate = new Date(this.nextRefresh).getTime();
 
-    // Update the count down every 1 second
     var x = setInterval(() => {
 
       // Get today's date and time
@@ -132,4 +121,19 @@ export class CharactercardComponent implements OnInit {
     }, 1000);
   }
 
+  constructor(private http: HttpClient, private apiurl: apiref) { }
+
+  ngOnInit() {
+    this.avatar = this.characterDetails.avatar;
+    this.name = this.characterDetails.name;
+    this.server = this.characterDetails.server;
+
+    for(var i = 0; i < this.characterDetails.jobs.length; i++)
+      this.jobLevels.push(this.characterDetails.jobs[i]);
+    
+    for(var i = 0; i < this.characterDetails.parses.length; i++)
+      this.parses.push(this.characterDetails.parses[i]);
+
+    this.startRefreshTimer();
+  }
 }

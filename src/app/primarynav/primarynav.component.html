@@ -12,7 +12,12 @@
         question_answer
       </mat-icon>
     </button>
-    <button *ngIf="isAuthenticated()" mat-icon-button>
+    <!-- <button *ngIf="isAuthenticated() && mcs.getCharacters().length == 0" mat-icon-button matBadge="!" matBadgeColor="warn" matBadgePosition="above after">
+      <mat-icon class="nav-button" matTooltip="Characters" routerLink="/mycharacters" routerLinkActive="gold">
+        face
+      </mat-icon>
+    </button> -->
+    <button *ngIf="isAuthenticated()" mat-icon-button> <!-- && mcs.getCharacters().length > 0 -->
       <mat-icon class="nav-button" matTooltip="Characters" routerLink="/mycharacters" routerLinkActive="gold">
         face
       </mat-icon>

@@ -210,7 +210,6 @@ export class PartycardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.as.autoAuthUser();
     this.isAuth = this.as.getIsAuth();
     this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
       this.isAuth = isAuthenticated;

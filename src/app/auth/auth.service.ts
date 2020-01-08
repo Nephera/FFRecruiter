@@ -5,6 +5,9 @@ import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { ControlpanelService } from '../header/controlpanel/controlpanel.service';
 import { apiref } from '../ref/str/apiref';
+import { MatDialog } from '@angular/material';
+import { ConfirmDialog } from '../dialog/confirm-dialog';
+import { MycharactersService } from '../mycharacters/mycharacters.service';
 
 @Injectable({ providedIn: "root"})
 export class AuthService {
@@ -13,6 +16,7 @@ export class AuthService {
   private avatar: string;
   private tokenTimer: any;
   private authStatusListener = new Subject<boolean>();
+  private verfStatusListener = new Subject<boolean>();
   private authUserListener = new Subject<string>();
   private authMsgListener = new Subject<string>();
   private authAvatarListener = new Subject<string>();
@@ -20,62 +24,50 @@ export class AuthService {
   private logging = false;
   private registering = false;
 
-  constructor(private http: HttpClient, private router: Router, private cps: ControlpanelService, private apiurl: apiref){}
+  constructor(
+    private http: HttpClient,
+    private apiurl: apiref, 
+    private router: Router, 
+    private cps: ControlpanelService, 
+    private mcs: MycharactersService,
+    private dialog: MatDialog){}
 
-  isLogging() {
-    return this.logging;
-  }
+  isLogging() { return this.logging; }
+  isRegistering() { return this.registering; }
+  getToken() { return this.token; }
+  getUsername() { return this.username; }
+  getAvatar() { return this.avatar; }
+  getIsAuth() { return this.isAuthenticated; }
 
-  isRegistering() {
-    return this.registering;
-  }
-
-  getToken() {
-    return this.token;
-  }
-
-  getUsername() {
-    return this.username;
-  }
-
-  getAvatar() {
-    return this.avatar;
-  }
-
-  getIsAuth() {
-    return this.isAuthenticated;
-  }
-
-  getAuthStatusListener()
-  {
-    return this.authStatusListener.asObservable();
-  }
-
-  getAuthUserListener()
-  {
-    return this.authUserListener.asObservable();
-  }
-
-  getAuthMsgListener()
-  {
-    return this.authMsgListener.asObservable();
-  }
-
-  getAuthAvatarListener()
-  {
-    return this.authAvatarListener.asObservable();
+  getAuthStatusListener() { return this.authStatusListener.asObservable(); }
+  getVerfStatusListener() { return this.verfStatusListener.asObservable(); }
+  getAuthUserListener() { return this.authUserListener.asObservable(); }
+  getAuthMsgListener() { return this.authMsgListener.asObservable(); }
+  getAuthAvatarListener() { return this.authAvatarListener.asObservable(); }
+  
+  setVerf(v: boolean){ 
+    this.verfStatusListener.next(v); 
   }
 
   createUser(username: string, email: string, password: string) {
     const authData: AuthData = {username: username, email: email, password: password};
     this.registering = true;
     this.http.post<{message: string, result: any}>(this.apiurl.hostname() + "/api/user/register", authData)
-      .subscribe(response => {
-        this.registering = false;
-        this.login(username, email, password);
-      }, error => {
-        this.authMsgListener.next(error.error.message);
-      });
+    .subscribe(() => {
+      this.registering = false;
+      this.dialog.open(ConfirmDialog, 
+        { 
+          autoFocus: false,
+          width: '90vw',
+          maxWidth: '700px',
+          maxHeight: '100vh',
+          data: { title: "Verify Your Account", text: "Welcome to FFR, the next step is to verify that you own this email address.  Please check your email for a link to verify your account with us.  Verification is required to take full advantage of the features that we offer." } 
+        }
+      )
+      .afterClosed().subscribe(() => {this.login(username, email, password);});        
+    }, error => {
+      this.authMsgListener.next(error.error.message);
+    });
   }
 
   autoAuthUser(){
@@ -95,39 +87,46 @@ export class AuthService {
       this.authStatusListener.next(true);
       this.authUserListener.next(authInfo.username);
       this.setAuthTimer(expiresIn / 1000);
+
+      this.http.get<{verf: boolean}>(this.apiurl.hostname() + "/api/user/register/verify/get/" + this.username)
+      .subscribe(verfResponse => {
+        this.verfStatusListener.next(verfResponse.verf);
+      })
     }
   }
 
   login(username: string, email: string, password: string) {
     const authData: AuthData = {username: username, email: email, password: password};
     this.logging = true;
-    this.http.post<{token: string, expiresIn: number, username: string}>(this.apiurl.hostname() + "/api/user/login", authData)
-      .subscribe(responseA => {
-        const token = responseA.token;
+    this.http.post<{token: string, expiresIn: number, username: string, verf: boolean}>(this.apiurl.hostname() + "/api/user/login", authData)
+      .subscribe(loginData => {
+        const token = loginData.token;
         this.token = token;
         if(token){
-          const expiresInDuration = responseA.expiresIn;
+          const expiresInDuration = loginData.expiresIn;
           this.setAuthTimer(expiresInDuration);
           this.authStatusListener.next(true);
-          this.authUserListener.next(responseA.username);
-          this.username = responseA.username;
+          this.authUserListener.next(loginData.username);
+          this.username = loginData.username;
           this.isAuthenticated = true;
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
           this.cps.setSNO(false);
           this.logging = false;
-          this.http.get<{characters: any}>(this.apiurl.hostname() + "/api/characters/get/all/" + this.username)
-          .subscribe(responseB => {
-            if(responseB.characters.length > 0){
-              this.avatar = responseB.characters[0].avatar;
-              this.authAvatarListener.next(this.avatar)
-            }else{
+          this.saveAuthData(loginData.token, expirationDate, loginData.username);
+          this.verfStatusListener.next(loginData.verf);
+          this.mcs.getCharactersListener().subscribe(characterData => {
+            (characterData.length > 0) ? 
+              this.avatar = characterData[0].avatar : 
               this.avatar = "../../../assets/icons/icon_default_avatar.png";
-              this.authAvatarListener.next(this.avatar);
-            }
-            this.saveAuthData(responseA.token, expirationDate, responseA.username, this.avatar);
-            this.router.navigate(['/partydirectory']);
+            
+            this.authAvatarListener.next(this.avatar);
+            localStorage.setItem('avatar', this.avatar);
           })
+
+          this.mcs.refreshCharacterList();
+
+          this.router.navigate(['/partydirectory']);
         }
       }, error => {
         this.authMsgListener.next(error.error.message);
@@ -145,11 +144,10 @@ export class AuthService {
     this.cps.setSNO(false);
   }
   
-  private saveAuthData(token: string, expirationDate: Date, username: string, avatar: string){
+  private saveAuthData(token: string, expirationDate: Date, username: string){
     localStorage.setItem('token', token);
     localStorage.setItem('expiration', expirationDate.toISOString());
     localStorage.setItem('username', username);
-    localStorage.setItem('avatar', avatar)
   }
 
   private clearAuthData() {
@@ -179,6 +177,5 @@ export class AuthService {
     this.tokenTimer = setTimeout(() => {
       this.logout();
     }, duration * 1000);
-
   }
 }

@@ -2,7 +2,7 @@
     <div class="secondary-nav">
       <mat-progress-spinner *ngIf="isLoading && !hasFetchedCharacters" class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
       <div class="progress-notifications">
-        <br *ngIf="!hasFetchedCharacters && timeLeft > 0"><span *ngIf="!hasFetchedCharacters && timeLeft > 0">Fetching Character Data...</span>
+        <br *ngIf="isLoading && !hasFetchedCharacters && timeLeft > 0"><span *ngIf="isLoading && !hasFetchedCharacters && timeLeft > 0">Fetching Character Data...</span>
         <br *ngIf="isLoading && timeLeft == 0"><span *ngIf="isLoading && timeLeft == 0">It looks like we've failed you...<br><br> <button mat-raised-button (click)="retryFetchData()">Try Again</button></span>
       </div>
       <button *ngIf="!isLoading && hasFetchedServers" mat-raised-button class="add-button" (click)="confirmAdd()" matTooltip="Add a New Character">
@@ -13,5 +13,5 @@
       </button>
     </div>
     <app-charactercard [characterDetails]="character" *ngFor="let character of characters"></app-charactercard>
-    <div class="empty-character-list" *ngIf="characters.length <= 0 && !isLoading && hasFetchedCharacters">You don't currently have any verified characters, select "New Character" above.</div>
+    <div class="empty-character-list" *ngIf="characters.length <= 0 && !isLoading && hasFetchedCharacters">You don't currently have any verified characters, select "New Character" above.  A character is required to participate in a party.</div>
   </div>

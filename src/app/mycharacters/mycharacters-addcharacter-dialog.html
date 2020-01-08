@@ -10,7 +10,7 @@
         <mat-form-field color="accent">
           <mat-label>Server</mat-label>
           <select formControlName="server" matNativeControl required>
-            <option *ngFor="let server of data.servers" [ngValue]="server">{{ server.name }}</option>
+            <option *ngFor="let server of data.servers" [ngValue]="server">{{ server }}</option>
           </select>
         </mat-form-field>
         <div align="end">
@@ -45,8 +45,9 @@
             <br>That character does not exist, please press back and re-enter your information.  If you have recently created this character or changed worlds, please allow 24 hours for SquareEnix's servers to update.
           </div>
         </ng-container>
-        <ng-container>
-          <mat-progress-spinner *ngIf="isLoading" class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
+        <ng-container *ngIf="isLoading">
+          <br>
+          <mat-progress-spinner class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
         </ng-container>
         <div align="end">
           <button mat-button matStepperPrevious>Back</button>
@@ -66,16 +67,16 @@
           <br>
           Copy this and paste it into your <a href="{{ lodestoneLink }}" target="_blank">Character Profile</a> located toward the bottom of your character's info, then press verify.  Do not close this dialog box or you will need to generate another token.
           <br><br>
-          <button mat-raised-button color="accent" (click)="verifyToken()" [disabled]="verifyDisabled">Verify</button>
-          <mat-progress-spinner *ngIf="isLoading" class="spinner" color="priamry" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner><br><br>
+          <button mat-raised-button color="accent" (click)="verifyToken()" [disabled]="verifyDisabled">Verify</button><br><br>
           <span [ngClass]="{verfSuccess: (pass == true), verfFailure: (pass == false)}">{{ message }}</span>
         </div><br>
       </ng-container>
-      <ng-container>
-        <mat-progress-spinner *ngIf="isLoading" class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
+      <ng-container *ngIf="isLoading">
+        <br>
+        <mat-progress-spinner class="spinner" color="primary" mode="indeterminate" diameter="40" strokeWidth="7"></mat-progress-spinner>
       </ng-container>
       <div align="end">
-        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperPrevious *ngIf="pass == false">Back</button>
       </div>
     </mat-step>
   </mat-vertical-stepper>

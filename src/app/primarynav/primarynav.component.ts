@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
+import { MycharactersService } from '../mycharacters/mycharacters.service';
 
 @Component({
   selector: 'app-primarynav',
@@ -75,7 +76,7 @@ export class PrimarynavComponent implements OnInit {
       });
   }
 
-  constructor(public dialog: MatDialog, private as: AuthService, private http: HttpClient, private apiurl: apiref, private swp: SwPush, private pns: PushNotificationService) {}
+  constructor(public dialog: MatDialog, private as: AuthService, private http: HttpClient, private apiurl: apiref, private swp: SwPush, private pns: PushNotificationService, private mcs: MycharactersService) {}
 
   ngOnInit()
   {

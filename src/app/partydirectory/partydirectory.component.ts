@@ -11,6 +11,7 @@ import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
 import { ErrorDialog } from '../dialog/error-dialog';
+import { MycharactersService } from '../mycharacters/mycharacters.service';
 
 export interface CreateDialogData {
   slotCount: number; // can change depending on instance, should fetch from slots
@@ -77,7 +78,8 @@ export class PartydirectoryComponent implements OnInit {
     public dialog: MatDialog, 
     private as: AuthService,
     private ar: ActivatedRoute,
-    private sb: MatSnackBar) {
+    private sb: MatSnackBar,
+    private mcs: MycharactersService) {
      
     this.getRouteParams();
 
@@ -170,6 +172,7 @@ export class PartydirectoryComponent implements OnInit {
     });
   }
 
+  // TODO: Should be handled by a service so that this is not done every time user navigates to partydirectory/staticdirectory
   getInstanceList() {
     this.isLoading = true;
     this.http.get<{ message: string, instances: any }>(this.apiurl.hostname() + "/api/instances").subscribe((instanceData) => {
@@ -180,18 +183,14 @@ export class PartydirectoryComponent implements OnInit {
   }
 
   getCharacterList() {
-    if(localStorage.getItem("username")){
-      this.isLoading = true;
-      this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/all/" + localStorage.getItem("username")).subscribe((characterData) => {
-        this.characters = characterData.characters;
-        this.isLoading = false;
-        this.hasFetchedCharacters = true;
-      });
+    this.characters = this.mcs.getCharacters();
+    this.mcs.getCharactersListener().subscribe(characterData => {
+      this.characters = characterData;
+    });
+    if(this.characters.length == 0){
+      this.mcs.refreshCharacterList();
     }
-    else{
-      this.isLoading = false;
-      this.hasFetchedCharacters = true;
-    }
+    this.hasFetchedCharacters = true;
   }
 
   getJobList() {
@@ -233,14 +232,14 @@ export class PartydirectoryComponent implements OnInit {
       });
 
     dialogRef.afterClosed().subscribe(response => {
-      if(response.data != "undefined" && response.data.party != "undefined"){ // TODO: Should be error case as well
+      if(response != undefined && response.data.party != undefined){ // TODO: Should be error case as well
         var sbref = this.sb.open("Party Created", "View", {duration: 5000});
         sbref.onAction().subscribe(() => {
           var win = window.open("https://www.ffrecruiter.com/partydirectory/" + response.data.party.shortID, '_blank');
           win.focus();
         })
       }
-      if(response.data.error){
+      if(response != undefined && response.data.error){
         const dialogRef = this.dialog.open(ErrorDialog,
           {
             autoFocus: false,
