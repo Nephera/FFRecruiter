@@ -16,16 +16,16 @@ export class ControlpanelComponent implements OnInit {
   authUserListenerSub: Subscription;
   authListenerSub: Subscription;
   authAvatarListenerSub: Subscription;
+  verfListenerSub: Subscription;
   userIsAuthenticated = false;
+  userIsVerified = true;
 
   constructor(private cps: ControlpanelService, private as: AuthService) {}
 
   ngOnInit() {
-    this.as.autoAuthUser();
     this.userIsAuthenticated = this.as.getIsAuth();
-    this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
-      this.userIsAuthenticated = isAuthenticated;
-    });
+    this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {this.userIsAuthenticated = isAuthenticated;});
+    this.verfListenerSub = this.as.getVerfStatusListener().subscribe(isVerified => {this.userIsVerified = isVerified;});
 
     const n = localStorage.getItem('username');
     var a = localStorage.getItem('avatar');

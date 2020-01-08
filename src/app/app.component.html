@@ -17,6 +17,10 @@
         <mat-icon routerLink="/settings" (click)="SNClose()" style="display:none;"></mat-icon>
         <p class="unselectable">Settings</p>
       </a>
+      <a *ngIf="userIsAuthenticated && !userIsVerified && !verfSent" mat-list-item unselectable="on" class="sidenav-caption" (click)="sendVerfEmail()">
+        <mat-icon (click)="sendVerfEmail()" style="display:none;"></mat-icon>
+        <p class="unselectable" matBadge="!" matBadgeColor="warn" matBadgeOverlap="false" matBadgePosition="above after">Verify</p>
+      </a>
       <a *ngIf="userIsAuthenticated" mat-list-item unselectable="on" class="sidenav-caption" (click)="toggleLogout()">
         <mat-icon (click)="toggleLogout()" style="display:none;"></mat-icon>
         <p class="unselectable">Logout</p>

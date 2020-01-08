@@ -28,7 +28,8 @@ import {
   MatSlideToggleModule,
   MatTooltipModule,
   MatSnackBarModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatBadgeModule
 } from '@angular/material';
 
 import { Routes, RouterModule } from '@angular/router';
@@ -91,6 +92,7 @@ import { PushNotificationService } from './push-notification.service';
 import { SettingsComponent } from './settings/settings.component';
 import { NotificationsDialog } from './dialog/notifications-dialog';
 import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.component';
+import { ActivationComponent } from './activation/activation.component';
 
 @NgModule({
   declarations: [
@@ -123,7 +125,8 @@ import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.comp
     NotificationsDialog,
     PartyCompositionBlankDialog,
     StaticdirectoryComponent,
-    PartycardUpdateDialog
+    PartycardUpdateDialog,
+    ActivationComponent
   ],
   imports: [
     BrowserModule,
@@ -155,6 +158,7 @@ import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.comp
     MatTooltipModule,
     MatSnackBarModule,
     MatProgressBarModule,
+    MatBadgeModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [

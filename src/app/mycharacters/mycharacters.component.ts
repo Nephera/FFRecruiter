@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/
 import { apiref } from '../ref/str/apiref';
 import { Subscription } from 'rxjs';
 import { MycharactersService } from './mycharacters.service';
+import { PartyfilterService } from '../primarynav/partyfilter/partyfilter.service';
 
 export interface AddCharDialogData {
   owner: string; 
@@ -26,12 +27,14 @@ export class MycharactersComponent implements OnInit {
   servers: any;
   hasFetchedServers: boolean = false;
 
-  constructor(public dialog: MatDialog, private http: HttpClient, private apiurl: apiref) { }
+  constructor(public dialog: MatDialog, private http: HttpClient, private apiurl: apiref, private mcs: MycharactersService, private pfs: PartyfilterService) { }
 
   ngOnInit() {
+    this.mcs.getCharactersListener().subscribe(characters => {this.characters = characters});
+    this.characters = this.mcs.getCharacters();
+    
     this.startTimer();
-    this.getCharacterList();
-    this.getServerList();
+    this.retryFetchData();
   }
   
   // Timer responsible for allowing the DOM to update if no response from server,
@@ -59,7 +62,7 @@ export class MycharactersComponent implements OnInit {
       });
 
     dialogRef.afterClosed().subscribe(data => {
-      if(data.verified){
+      if(data != undefined && data.verified){
         this.http.patch<{message: string, characters: any[]}>(this.apiurl.hostname() + "/api/characters/refresh/", {id: data.id})
         .subscribe(() => {
           this.getCharacterList();
@@ -69,25 +72,22 @@ export class MycharactersComponent implements OnInit {
   }
 
   getCharacterList() {
-    this.isLoading = true;
-    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/all/" + localStorage.username).subscribe((characterData) => {
-      this.characters = characterData.characters;
-      this.isLoading = false;
+    if(this.characters.length == 0){
+      this.mcs.refreshCharacterList();
+    }
+    else{
       this.hasFetchedCharacters = true;
-    });
+    }
   }
 
   getServerList() {
-    this.isLoading = true;
-    this.http.get<{ message: string, servers: any }>(this.apiurl.hostname() + "/api/servers/").subscribe((serverData) => {
-      this.servers = serverData.servers;
-      this.isLoading = false;
-      this.hasFetchedServers = true;
-    })
+    this.servers = this.pfs.getServers();
+    this.hasFetchedServers = true;
   }
 
   retryFetchData() {
     this.timeLeft = 10;
+    this.getServerList();
     this.getCharacterList();
   }
 }
@@ -153,7 +153,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
   }
 
   firstStepDisabled() {
-    return (this.firstFormGroup.get('name').value == "") || (this.firstFormGroup.get('server').value.name == undefined);
+    return (this.firstFormGroup.get('name').value == "") || (this.firstFormGroup.get('server').value == undefined);
   }
 
   stringIsSafe(input: string) {
@@ -175,7 +175,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
     {
       this.isLoading = true;
       this.charName = this.firstFormGroup.get("name").value;
-      this.charServer = this.firstFormGroup.get("server").value.name;
+      this.charServer = this.firstFormGroup.get("server").value;
 
       if(this.stringIsSafe(this.charName + this.charServer))
       {
@@ -217,7 +217,9 @@ export class MycharactersAddcharacterDialog implements OnInit {
     if (window.getSelection) {
       window.getSelection().removeAllRanges();
     }
-    this.verifyDisabled = false;
+    setTimeout(() => {
+      this.verifyDisabled = false;
+    }, 3000);
     this.sb.open("Copied", "", {duration: 3000});
   }
 
@@ -232,6 +234,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
           this.canFinish();
 
           const data = {
+            token: this.verfToken,
             owner: localStorage.username,
             avatar: this.charAvatar,
             ID: this.charID,
@@ -240,9 +243,9 @@ export class MycharactersAddcharacterDialog implements OnInit {
           }
 
           this.http.put<{response: any}>(this.apiurl.hostname() + "/api/characters/add", data)
-            .subscribe((responseData) => {
-              this.isLoading = false;
-            })
+          .subscribe((responseData) => {
+            this.isLoading = false;
+          })
         }
         else{
           this.isVerified = false;

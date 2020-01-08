@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewEncapsulation, Inject, Output, EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges} from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
 import { partyIcons } from '../ref/img/partyIcons';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';
@@ -10,6 +10,7 @@ import { ErrorDialog } from '../dialog/error-dialog';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
+import { MycharactersService } from '../mycharacters/mycharacters.service';
 
 export interface JoinDialogData {
   instance: string,
@@ -72,12 +73,15 @@ export class PartycompositionComponent implements OnInit, OnChanges {
     if(!this.isAuth)
       return;
 
+    this.characters = this.mcs.getCharacters().filter(character => (character.datacenter == this.partyDetails.ownerDC));
+
+    this.mcs.getCharactersListener().subscribe(characterData => {
+      this.characters = characterData.filter(character => (character.datacenter == this.partyDetails.ownerDC));
+    })
+
+
+    this.hasFetchedCharacters = true;
     this.isLoading = true;
-    this.http.get<{ message: string, characters: any }>(this.apiurl.hostname() + "/api/characters/get/dc/" + localStorage.getItem("username") + "/" + this.partyDetails.ownerDC).subscribe((characterData) => {
-      this.characters = characterData.characters;
-      this.isLoading = false;
-      this.hasFetchedCharacters = true;
-    });
   }
 
   getTableHeight(){
@@ -95,10 +99,10 @@ export class PartycompositionComponent implements OnInit, OnChanges {
     private http: HttpClient,
     private apiurl: apiref,
     private as: AuthService,
-    private CDR: ChangeDetectorRef) { }
+    private CDR: ChangeDetectorRef,
+    private mcs: MycharactersService) { }
 
   ngOnInit() {
-    this.as.autoAuthUser();
     this.isAuth = this.as.getIsAuth();
     this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
       this.isAuth = isAuthenticated;
@@ -645,7 +649,7 @@ export class PartycompositionPlayerDetailsDialog {
   constructor(
     private http: HttpClient, private apiurl: apiref, private dialog: MatDialog,
     public dialogRef: MatDialogRef<PartycompositionPlayerDetailsDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DetailsDialogData) { }
+    @Inject(MAT_DIALOG_DATA) public data: DetailsDialogData, private sb: MatSnackBar) { }
 
   userOwns(n: string){
     return (localStorage.getItem("username") == n);
@@ -664,6 +668,7 @@ export class PartycompositionPlayerDetailsDialog {
     this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/disband", postData)
       .subscribe((responseData) => {
         this.dialogRef.close({data: responseData});
+        this.sb.open("Party Disbanded", "", {duration: 3000});
     });
   }
 
