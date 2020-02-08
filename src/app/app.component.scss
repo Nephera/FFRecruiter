@@ -62,10 +62,6 @@ div {
   background-color: $dgrybg;
   color: $fontwt;
   outline: 1px solid $brdclr;
-
-  #parties-container {
-    outline: none;
-  }
 }
 
 .header-container {
@@ -79,9 +75,14 @@ div {
   outline: 1px solid $brdclr;
 }
 
-.parties-container {
-  background-color: $bluebg;
-  outline: none;
+// .parties-container {
+//   background-color: $bluebg;
+//   outline: none;
+// }
+
+.mat-paginator-container {
+  background-color: black;
+  margin: -10px;
 }
 
 .nav-button {

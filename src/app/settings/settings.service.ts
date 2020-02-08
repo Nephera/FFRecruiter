@@ -19,10 +19,16 @@ export class SettingsService {
     partyReminder: false
   }
 
+  rewards = {};
+
   private notificationListener = new Subject<any>();
 
   getNotificationListener(){
     return this.notificationListener.asObservable();
+  }
+
+  getNotifications(){
+    return this.notifications;
   }
 
   updateNotifications(){
@@ -75,17 +81,44 @@ export class SettingsService {
     this.http.put<{message: string}>(this.apiurl.hostname() + "/api/user/settings/", putData).subscribe((settingsData) =>{})
   }
 
+  
+
+  private rewardsListener = new Subject<any>();
+
+  getRewardsListener(){
+    return this.rewardsListener.asObservable();
+  }
+
+  updateRewards(){
+    this.rewardsListener.next(this.rewards);
+  }
+
+  getRewards(){
+    return this.rewards;
+  }
+
+  refreshRewards(){
+    const postData = {user: localStorage.getItem('username')};
+    this.http.post<{rewards: any}>(this.apiurl.hostname() + "/api/patreon/rewards/refresh", postData).subscribe(refreshData => {
+      this.rewards = refreshData.rewards;
+      this.updateRewards();
+    })
+  }
+
   constructor(private as: AuthService, private http: HttpClient, private apiurl: apiref) {
-    http.get<{message: string, settings: any}>(apiurl.hostname() + "/api/user/settings/" + localStorage.getItem('username')).subscribe((settingsData) => {
+    this.http.get<{message: string, settings: any}>(this.apiurl.hostname() + "/api/user/settings/" + localStorage.getItem('username')).subscribe((settingsData) => {
       if(settingsData.settings){
-        this.notifications.partyFill = settingsData.settings.notifications.partyFill;
-        this.notifications.partyJoin = settingsData.settings.notifications.partyJoin;
-        this.notifications.partyLeave = settingsData.settings.notifications.partyLeave;
-        this.notifications.partyKick = settingsData.settings.notifications.partyKick;
-        this.notifications.partyReady = settingsData.settings.notifications.partyReady;
-        this.notifications.partyOptions = settingsData.settings.notifications.partyOptions;
-        this.notifications.partyReminder = settingsData.settings.notifications.partyReminder;
+        this.notifications = settingsData.settings.notifications;
         this.updateNotifications();
+      }
+      else {
+      }
+    });
+
+    this.http.get<{result: any}>(this.apiurl.hostname() + "/api/user/rewards/get/" + localStorage.getItem('username')).subscribe( rewardsData => {
+      if(rewardsData.result.rewards){
+        this.rewards = rewardsData.result.rewards;
+        this.updateRewards();
       }
       else {
       }

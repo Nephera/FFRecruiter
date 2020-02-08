@@ -1,4 +1,4 @@
-<mat-card class="party-card" *ngIf="!hidden">
+<mat-card [ngClass]="{partycard: !highlight, partycardhighlight: highlight}" *ngIf="!hidden">
   <table class="partycard-icon-container" style="outline: #FFF;">
     <tr height="64px">
       <td class="partycard-instance-background">
@@ -53,14 +53,14 @@
       </td>
     </tr>
   </table>
-  <div>
+  <div style="background-color: transparent;">
     <mat-card-actions>
-      <div style="float:left;" fxHide.gt-sm="true">
+      <div style="float:left; background-color: transparent;" fxHide.gt-sm="true">
         <button mat-icon-button *ngIf="isDescription(this.description)">
           <mat-icon class="description-button" (click)="toggleDescription()" matTooltip="Description">description</mat-icon>
         </button>
       </div>
-      <div style="float:right">
+      <div style="float:right; background-color: transparent;">
         <button mat-icon-button>
           <mat-icon class="hide-button" (click)="toggleHidden()" matTooltip="Hide Party">
             visibility_off

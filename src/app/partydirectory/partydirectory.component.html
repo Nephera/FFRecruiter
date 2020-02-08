@@ -8,6 +8,10 @@
     <span *ngIf="!hasFetchedParties && timeLeft > 0">Fetching Parties...</span>
     <span *ngIf="isLoading && timeLeft == 0">Failed to Retrieve Data.<br><br> <button mat-raised-button (click)="retryFetchData()">Try Again</button></span>
   </div>
+  <!-- Mobile Leaderboard 320x100 Ad Space -->
+  <div class="content-container" fxHide.gt-sm="true" *ngIf="!isLoading" style="outline: 1px solid #666; margin-bottom: 10px; width: 100%; height: 100px;">
+    <p> Mobile Ad Space </p>
+  </div>
   <button mat-raised-button class="create-button" *ngIf="isAuth && !isLoading && hasFetchedInstances && hasFetchedCharacters && hasFetchedPurposes && hasFetchedJobs && !this.routeParams.id" (click)="confirmCreate()" matTooltip="Create a New Party">
     <mat-icon>
       create
@@ -24,9 +28,36 @@
 <div *ngIf="displayFilters" class="search-filters">
   <app-partyfilter></app-partyfilter>
 </div>
-<div class="parties-container" *ngIf="!isLoading">
-  <mat-paginator *ngIf="!this.routeParams.id && parties != null && parties.length > 0" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
-  <app-partycard [partyDetails]="party" [characters]="characters" [purposes]="purposes" [jobs]="jobs" *ngFor="let party of parties"></app-partycard>
-  <ng-container *ngIf="parties != null && parties.length == 0"><span style="margin-top: 20px; margin-bottom: 20px;">No parties found, try easing up on the filters or creating your own party.</span></ng-container>
-  <mat-paginator *ngIf="!this.routeParams.id" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
+<!-- Mobile -->
+<div class="content-container" fxHide.gt-sm="true" *ngIf="!isLoading" style="margin-top: -10px">
+  <div class="parties-container">
+    <mat-paginator *ngIf="!this.routeParams.id && parties != null && parties.length > 0" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
+    <app-partycard [partyDetails]="party" [characters]="characters" [purposes]="purposes" [jobs]="jobs" *ngFor="let party of parties"></app-partycard>
+    <ng-container *ngIf="parties != null && parties.length == 0"><span style="margin-top: 20px; margin-bottom: 20px;">No parties found, try easing up on the filters or creating your own party.</span></ng-container>
+    <div style="margin-top: 10px">
+      <mat-paginator *ngIf="!this.routeParams.id" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
+    </div>
+  </div>
+</div>
+<!-- Desktop -->
+<div class="content-container" fxHide.lt-md="true" *ngIf="!isLoading" style="margin-top: -10px">
+  <table style="width:100%; background-color: #001020; border-top: 1px solid #666; border-bottom: 1px solid #666">
+    <tr>
+      <td style="border-right: 1px solid #666">    
+        <div class="parties-container">
+          <mat-paginator *ngIf="!this.routeParams.id && parties != null && parties.length > 0" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
+          <app-partycard [partyDetails]="party" [characters]="characters" [purposes]="purposes" [jobs]="jobs" *ngFor="let party of parties"></app-partycard>
+          <ng-container *ngIf="parties != null && parties.length == 0"><span style="margin-top: 20px; margin-bottom: 20px;">No parties found, try easing up on the filters or creating your own party.</span></ng-container>
+          <div style="margin-top: 10px">
+            <mat-paginator *ngIf="!this.routeParams.id" [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" [pageIndex]="currentPage-1" (page)="onChangePage($event)"></mat-paginator>
+          </div>
+        </div>
+      </td>
+      <td style="width:300px; height: 100%; padding: 10px; background-color: #0b0b0b">
+        <div>
+          <p>Desktop Ad Space</p>
+        </div>
+      </td>
+    </tr>
+  </table>
 </div>

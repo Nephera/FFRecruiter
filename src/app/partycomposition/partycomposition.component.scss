@@ -101,6 +101,17 @@ div {
 
 }
 
+.party-slot-flair {
+  position: relative;
+  float: left;
+  left: 2px;
+  top: -82px;
+  width: 32px;
+  height: 16px;
+  text-align: center;
+  z-index: 5 !important;
+}
+
 .slot-tooltip-overlay {
   position: relative;
   cursor: pointer;

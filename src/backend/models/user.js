@@ -31,7 +31,27 @@ var userSchema = mongoose.Schema({
   },
   verf: { type: Boolean, default: false },
   verfToken: [ { type: String } ],
-  charToken: { type: String }
+  charToken: { type: String },
+  patreon: {
+    userID: { type: Number },
+    issued: { type: Date },
+    access_token: { type: String },
+    expires_in: { type: Number },
+    token_type: { type: String },
+    scope: { type: String },
+    refresh_token: { type: String },
+    version: { type: String }
+  },
+  rewards: {
+    tier: { type: String, required: true, default: "Unverified" }, // Unverified, Verified, Adventurer, Raider, Legend
+    topSortCount: { type: Number, required: true, default: 0 },
+    topSortMax: { type: Number, required: true, default: 0 },
+    highlightCount: { type: Number, required: true, default: 0 },
+    highlightMax: { type: Number, required: true, default: 0 },
+    maxPartyCount: { type: Number, required: true, default: 1 },
+    unlimitedSortHighlight: { type: Boolean, required: true, default: false },
+    refillDate: { type: Date, default: null }
+  }
 });
 
 userSchema.plugin(uniqueValidator);

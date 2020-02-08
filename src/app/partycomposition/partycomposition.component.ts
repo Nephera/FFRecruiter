@@ -274,6 +274,10 @@ export class PartycompositionComponent implements OnInit, OnChanges {
     return i == j;
   }
 
+  slotFlair(index: number){
+    return this.icons.get(this.slots[index].userOccupying.tier + " Slot Flair").icon;
+  }
+
   slotOverlay(){
     return this.icons.get("empty").icon;
   }

@@ -7,12 +7,20 @@ div {
   margin-top: 10px;
 }
 
-.notificationsShow {
-  margin-top: 0px;
-  display: visible;
+.tierCard {
+  height: 90%;
+  width: 90%;
+  text-align: center;
 }
 
-.notificationsHide {
+.show{
+  margin-top: 0px;
+  display: visible;
+  outline: none;
+  border-bottom: 1px solid $brdclr;
+}
+
+.hide {
   margin-top: 0px;
   display: none;
 }
@@ -30,9 +38,26 @@ div {
 .save {
   position: relative;
   outline: none;
+  right: 0px;
+  height: 50px;
+  border-top: 1px solid $brdclr;
+  margin: 0px;
 }
 
 .canSave {
-  background-color: #9c27b0;
-  color: #FFFFFF; 
+  position: relative;
+  float: right;
+  right: 10px;
+  top: 8px;
+  width: 100px;
+  background-color: #0485f8;
+  color: #FFFFFF;
+}
+
+.cannotSave {
+  position: relative;
+  float: right;
+  width: 100px;
+  right: 10px;
+  top: 8px;
 }

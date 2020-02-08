@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
-import {HttpClient } from '@angular/common/http';
-import {AuthData} from './auth-data.model';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { AuthData } from './auth-data.model';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { ControlpanelService } from '../header/controlpanel/controlpanel.service';
@@ -20,9 +20,12 @@ export class AuthService {
   private authUserListener = new Subject<string>();
   private authMsgListener = new Subject<string>();
   private authAvatarListener = new Subject<string>();
+  private patreonAuthListener = new Subject<boolean>();
   private isAuthenticated = false;
   private logging = false;
   private registering = false;
+  private isVerified = false;
+  private isPatreonAuth = false;
 
   constructor(
     private http: HttpClient,
@@ -34,6 +37,7 @@ export class AuthService {
 
   isLogging() { return this.logging; }
   isRegistering() { return this.registering; }
+
   getToken() { return this.token; }
   getUsername() { return this.username; }
   getAvatar() { return this.avatar; }
@@ -44,10 +48,12 @@ export class AuthService {
   getAuthUserListener() { return this.authUserListener.asObservable(); }
   getAuthMsgListener() { return this.authMsgListener.asObservable(); }
   getAuthAvatarListener() { return this.authAvatarListener.asObservable(); }
+  getPatreonAuthListener() { return this.patreonAuthListener.asObservable(); }
   
-  setVerf(v: boolean){ 
-    this.verfStatusListener.next(v); 
-  }
+  getIsVerf(){ return this.isVerified; }
+  setVerf(v: boolean){ this.verfStatusListener.next(v); }
+
+  getIsPatreonAuth(){ return this.isPatreonAuth; }
 
   createUser(username: string, email: string, password: string) {
     const authData: AuthData = {username: username, email: email, password: password};
@@ -90,7 +96,14 @@ export class AuthService {
 
       this.http.get<{verf: boolean}>(this.apiurl.hostname() + "/api/user/register/verify/get/" + this.username)
       .subscribe(verfResponse => {
+        this.isVerified = verfResponse.verf;
         this.verfStatusListener.next(verfResponse.verf);
+      })
+
+      this.http.get<{auth: boolean}>(this.apiurl.hostname() + "/api/user/patreon/checkAuth/" + this.username)
+      .subscribe(authResponse => {
+        this.isPatreonAuth = authResponse.auth;
+        this.patreonAuthListener.next(authResponse.auth);
       })
     }
   }
