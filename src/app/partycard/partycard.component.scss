@@ -9,7 +9,23 @@ div {
   text-align: center;
 }
 
-.party-card {
+.partycardhighlight {
+  margin: 10px 10px 0px 10px;
+  background: #0b0b0b;
+  outline: 3px dotted #0485f8;
+  color: $fontwt;
+  object-fit: scale-down;
+
+  img.mat-card-image {
+    object-fit: scale-down;
+  }
+
+  .mat-card-title {
+    vertical-align: text-top;
+  }
+}
+
+.partycard {
   margin: 10px 10px 0px 10px;
   background: $dgrybg;
   outline: 1px solid $brdclr;

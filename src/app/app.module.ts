@@ -93,6 +93,7 @@ import { SettingsComponent } from './settings/settings.component';
 import { NotificationsDialog } from './dialog/notifications-dialog';
 import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.component';
 import { ActivationComponent } from './activation/activation.component';
+import { PatreonComponent } from './patreon/patreon.component';
 
 @NgModule({
   declarations: [
@@ -126,7 +127,8 @@ import { ActivationComponent } from './activation/activation.component';
     PartyCompositionBlankDialog,
     StaticdirectoryComponent,
     PartycardUpdateDialog,
-    ActivationComponent
+    ActivationComponent,
+    PatreonComponent
   ],
   imports: [
     BrowserModule,

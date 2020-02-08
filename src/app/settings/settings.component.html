@@ -1,10 +1,22 @@
 <div>
   <mat-nav-list flex>
+    <a mat-list-item unselectable="on" (click)="toggleSecurity()">
+      <mat-icon (click)="toggleSecurity()" style="display:none;"></mat-icon>
+      <mat-icon class="unselectable" style="margin-right: 10px;">security</mat-icon><p class="unselectable">Security</p>
+    </a>
+    <div [ngClass]="{hide: !securityOpen, show: securityOpen}"> 
+      <!-- [formGroup]="securityForm"> -->
+      <p> Security section is a work in progress.</p>
+      <p> Two-Factor Authentication Form </p>
+      <p> Email Change Form </p>
+      <p> Password Change Form </p>
+      <p> Account Deletion Form </p>
+    </div>
     <a mat-list-item unselectable="on" (click)="toggleNotifications()">
       <mat-icon (click)="toggleNotifications()" style="display:none;"></mat-icon>
-      <mat-icon class="unselectable">notifications</mat-icon><p class="unselectable">Notifications</p>
+      <mat-icon class="unselectable" style="margin-right: 10px;">notifications</mat-icon><p class="unselectable">Notifications</p>
     </a>
-    <div [ngClass]="{notificationsHide: notificationsSectionClosed(), notificationsShow: notificationsSectionOpen()}" [formGroup]="notificationForm">
+    <div [ngClass]="{hide: !notificationsOpen, show: notificationsOpen}" [formGroup]="notificationForm">
       <button mat-raised-button ([formControlName])="notificationFormGroup.get('fullPartyNotification')" 
         (click)="toggleFullPartyNotification()" 
         [ngClass]="{isClicked: getFullPartyNotification(), isNotClicked: !getFullPartyNotification()}">
@@ -41,10 +53,211 @@
         Reminders: {{ getReminderNotification() ? 'ON' : 'OFF' }}
       </button><br>
     </div>
+
+    <a mat-list-item unselectable="on" (click)="togglePatreon()">
+      <mat-icon (click)="togglePatreon()" style="display:none;"></mat-icon>
+      <mat-icon class="unselectable" style="margin-right: 10px;">attach_money</mat-icon><p class="unselectable">Upgrade</p>
+    </a>
+    <div fxHide.gt-md="true" style="margin: 0px; padding: 10px; height: 750px; background-color: #001020;" [ngClass]="{hide: !patreonOpen, show: patreonOpen}">
+      <div style="width: 300px; display: block; margin-left: auto; margin-right: auto; height: 185px; text-align: center;">
+        <p style="text-align: center; padding-top: 10px">You are currently: {{userTier}} Tier
+        <br>Top Sorts Available: {{topSortCount}} / {{topSortMax}}
+        <br>Highlights Available: {{highlightCount}} / {{highlightMax}}
+        <br>Maximum Simultaneous Parties: {{maxPartyCount}}
+        <br>Next Refill Date: {{refillDate}}</p>
+        <button mat-raised-button color="accent" (click)="refreshRewards()" [ngClass]="{hide: refreshed(), show: notRefreshed()}">Refresh</button>
+        <button mat-raised-button disabled [ngClass]="{show: refreshed(), hide: notRefreshed()}">Refreshed</button>
+      </div>
+      <mat-tab-group mat-align-tabs="center">
+        <mat-tab label="Verified (Free)">
+          <div style="width: 300px; display: block; margin-left: auto; margin-right: auto; height: 500px; border-bottom: 1px solid #555;">
+            <p style="text-align: center; padding-top: 12px;">Verified (Free)</p><hr>
+            <p style="text-align: left; margin: 10px; padding-top: 10px">• Verified-level Site Flair</p>
+            <p style="text-align: left; margin: 10px">• 3 Maximum Simultaneous Parties</p>
+            <p style="text-align: left; margin: 10px">• Access to Verified-only Parties</p>
+            <p style="text-align: left; margin: 10px">• Prevent Character Fraud</p>
+            <div *ngIf="!isVerified" style="outline: none; margin: 0px; height: 40px; text-align: center;">
+              <button mat-raised-button color="accent" (click)="verifyLink()">Verify</button>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Adventurer ($1.99USD / mo)">
+          <div style="width: 300px; display: block; margin-left: auto; margin-right: auto; height: 500px; border-bottom: 1px solid #555;">
+            <p style="text-align: center; padding-top: 12px; color: #a79f6d;">Adventurer ($1.99USD / mo)</p><hr>
+            <p style="text-align: left; margin: 10px; padding-top: 10px">• No Advertisements</p>
+            <p style="text-align: left; margin: 10px">• Adventurer-level Site Flair</p>
+            <p style="text-align: left; margin: 10px">• 5 Monthly Top Sorts and Highlights</p>
+            <p style="text-align: left; margin: 10px">• 5 Maximum Simultaneous Parties</p>
+            <p style="text-align: left; margin: 10px">• Adventurer Discord Role</p>
+            <div style="outline: none; margin: 0px; height: 40px; text-align: center;">
+              <button *ngIf="!isPatreonOAuth" mat-raised-button color="accent" (click)="patreonLogin()" style="margin-bottom: 5px;">Link Your Patreon</button><br>
+              <button *ngIf="userTier != 'Adventurer'" mat-raised-button color="accent" (click)="patreonLink('adventurer')">Become an Adventurer</button>
+            </div>
+          </div>
+        </mat-tab>
+        <!-- <mat-tab label="Raider ($4.99USD / mo)">
+          <div style="width: 300px; display: block; margin-left: auto; margin-right: auto; height: 500px; border-bottom: 1px solid #555;">
+            <p style="text-align: center; padding-top: 12px; color: #ff8000;">Raider ($4.99USD / mo)</p><hr>
+            <p style="text-align: left; margin: 10px; padding-top: 10px">• No Advertisements</p>
+            <p style="text-align: left; margin: 10px">• Raider-level Site Flair</p>
+            <p style="text-align: left; margin: 10px">• 10 Monthly Top Sorts and Highlights</p>
+            <p style="text-align: left; margin: 10px">• 10 Maximum Simultaneous Parties</p>
+            <p style="text-align: left; margin: 10px">• Raider Discord Role</p>
+            <p style="text-align: left; margin: 10px">• Easy FFLogs Links</p>
+            <p style="text-align: left; margin: 10px">• Pre-Party Groups</p>
+            <p style="text-align: left; margin: 10px">• Recurring Parties</p>
+            <p style="text-align: left; margin: 10px">• Social Media Integration</p>
+            <div style="outline: none; margin: 0px; height: 40px; text-align: center;">
+              <button *ngIf="!isPatreonOAuth" mat-raised-button color="accent" (click)="patreonLogin()" style="margin-bottom: 5px;">Link Your Patreon</button><br>
+              <button *ngIf="userTier != 'Raider'" mat-raised-button color="accent" (click)="patreonLink('raider')">Become a Raider</button>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab label="Legend ($19.99USD / mo)">
+          <div style="width: 300px; display: block; margin-left: auto; margin-right: auto; height: 500px; border-bottom: 1px solid #555;">
+            <p style="text-align: center; padding-top: 12px; color: #e5cc80;">Legend ($19.99USD / mo)</p><hr>
+            <p style="text-align: left; margin: 10px; padding-top: 10px">• No Advertisements</p>
+            <p style="text-align: left; margin: 10px">• Legend-level Site Flair</p>
+            <p style="text-align: left; margin: 10px">• UNLIMITED Top Sorts and Highlights</p>
+            <p style="text-align: left; margin: 10px">• 10 Maximum Simultaneous Parties</p>
+            <p style="text-align: left; margin: 10px">• Legend Discord Role</p>
+            <p style="text-align: left; margin: 10px">• Easy FFLogs Links</p>
+            <p style="text-align: left; margin: 10px">• Pre-Party Groups</p>
+            <p style="text-align: left; margin: 10px">• Recurring Parties</p>
+            <p style="text-align: left; margin: 10px">• Social Media Integration</p>
+            <p style="text-align: left; margin: 10px">• Recruitment Matchmaking</p>
+            <p style="text-align: left; margin: 10px">• Monthly Merchandise</p>
+            <div style="outline: none; margin: 0px; height: 40px; text-align: center;">
+              <button *ngIf="!isPatreonOAuth" mat-raised-button color="accent" (click)="patreonLogin()" style="margin-bottom: 5px;">Link Your Patreon</button><br>
+              <button *ngIf="userTier != 'Legend'" mat-raised-button color="accent" (click)="patreonLink('legend')">Become a Legend</button>
+            </div>
+          </div>
+          
+        </mat-tab> -->
+      </mat-tab-group>
+    </div>
+
+    <div fxHide.lt-lg="true" style="margin: 0px; padding: 10px; height: 710px; background-color: #001020;" [ngClass]="{hide: !patreonOpen, show: patreonOpen}">
+      <div style="width: 300px; display: block; margin-left: auto; margin-right: auto; height: 185px; text-align: center;">
+        <p style="text-align: center; padding-top: 10px">You are currently: {{userTier}} Tier
+        <br>Top Sorts Available: {{topSortCount}} / {{topSortMax}}
+        <br>Highlights Available: {{highlightCount}} / {{highlightMax}}
+        <br>Maximum Simultaneous Parties: {{maxPartyCount}}
+        <br>Next Refill Date: {{refillDate}}</p>
+        <button mat-raised-button color="accent" (click)="refreshRewards()" [ngClass]="{hide: refreshed(), show: notRefreshed()}">Refresh</button>
+        <button mat-raised-button disabled [ngClass]="{show: refreshed(), hide: notRefreshed()}">Refreshed</button>
+      </div>
+      <mat-grid-list cols="2" rowHeight="550px">
+        <mat-grid-tile>
+          <div class="tierCard">
+            <p>Verified (Free)</p><hr>
+            <div style="outline: none; margin: 0px; height: 330px">
+              <p style="text-align: left; margin: 10px">• Verified-level Site Flair</p>
+              <p style="text-align: left; margin: 10px">• 3 Maximum Simultaneous Parties</p>
+              <p style="text-align: left; margin: 10px">• Access to Verified-only Parties</p>
+              <p style="text-align: left; margin: 10px">• Prevent Character Fraud</p>
+            </div>
+            <div *ngIf="!isVerified" style="outline: none; margin: 0px; height: 40px; text-align: center;">
+              <button mat-raised-button color="accent" (click)="verifyLink()">Verify</button>
+            </div>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <div class="tierCard">
+            <p style="color: #a79f6d;">Adventurer ($1.99USD / mo)</p><hr>
+            <div style="outline: none; margin: 0px; height: 330px">
+              <p style="text-align: left; margin: 10px">• No Advertisements</p>
+              <p style="text-align: left; margin: 10px">• Adventurer-level Site Flair</p>
+              <p style="text-align: left; margin: 10px">• 5 Monthly Top Sorts and Highlights</p>
+              <p style="text-align: left; margin: 10px">• 5 Maximum Simultaneous Parties</p>
+              <p style="text-align: left; margin: 10px">• Adventurer Discord Role</p>
+            </div>
+            <div style="outline: none; margin: 0px; height: 80px">
+              <button *ngIf="!isPatreonOAuth" mat-raised-button color="accent" (click)="patreonLogin()" style="margin-bottom: 5px;">Link Your Patreon</button><br>
+              <button *ngIf="userTier != 'Adventurer'" mat-raised-button color="accent" (click)="patreonLink('adventurer')">Become an Adventurer</button>
+            </div>
+          </div>
+        </mat-grid-tile>
+        <!-- <mat-grid-tile>
+          <div class="tierCard">
+            <p style="color: #ff8000;">Raider ($4.99USD / mo)</p><hr>
+            <div style="outline: none; margin: 0px; height: 330px">
+              <p style="text-align: left; margin: 10px">• No Advertisements</p>
+              <p style="text-align: left; margin: 10px">• Raider-level Site Flair</p>
+              <p style="text-align: left; margin: 10px">• 10 Monthly Top Sorts and Highlights</p>
+              <p style="text-align: left; margin: 10px">• 10 Maximum Simultaneous Parties</p>
+              <p style="text-align: left; margin: 10px">• Raider Discord Role</p>
+              <p style="text-align: left; margin: 10px">• Easy FFLogs Links</p>
+              <p style="text-align: left; margin: 10px">• Pre-Party Groups</p>
+              <p style="text-align: left; margin: 10px">• Recurring Parties</p>
+              <p style="text-align: left; margin: 10px">• Social Media Integration</p>
+            </div>
+            <div style="outline: none; margin: 0px; height: 80px">
+              <button *ngIf="!isPatreonOAuth" mat-raised-button color="accent" (click)="patreonLogin()" style="margin-bottom: 5px;">Link Your Patreon</button><br>
+              <button *ngIf="userTier != 'Raider'" mat-raised-button color="accent" (click)="patreonLink('raider')">Become a Raider</button>
+            </div>
+          </div>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <div class="tierCard">
+            <p style="color: #e5cc80;">Legend ($19.99USD / mo)</p><hr>
+            <div style="outline: none; margin: 0px; height: 330px">
+              <p style="text-align: left; margin: 10px">• No Advertisements</p>
+              <p style="text-align: left; margin: 10px">• Legend-level Site Flair</p>
+              <p style="text-align: left; margin: 10px">• UNLIMITED Top Sorts and Highlights</p>
+              <p style="text-align: left; margin: 10px">• 10 Maximum Simultaneous Parties</p>
+              <p style="text-align: left; margin: 10px">• Legend Discord Role</p>
+              <p style="text-align: left; margin: 10px">• Easy FFLogs Links</p>
+              <p style="text-align: left; margin: 10px">• Pre-Party Groups</p>
+              <p style="text-align: left; margin: 10px">• Recurring Parties</p>
+              <p style="text-align: left; margin: 10px">• Social Media Integration</p>
+              <p style="text-align: left; margin: 10px">• Recruitment Matchmaking</p>
+              <p style="text-align: left; margin: 10px">• Monthly Merchandise</p>
+            </div>  
+            <div style="outline: none; margin: 0px; height: 80px">
+              <button *ngIf="!isPatreonOAuth" mat-raised-button color="accent" (click)="patreonLogin()" style="margin-bottom: 5px;">Link Your Patreon</button><br>
+              <button *ngIf="userTier != 'Legend'" mat-raised-button color="accent" (click)="patreonLink('legend')">Become a Legend</button>
+            </div>
+          </div>
+        </mat-grid-tile> -->
+      </mat-grid-list>
+    </div>
+    <a mat-list-item unselectable="on" (click)="toggleSocialMedia()">
+      <mat-icon (click)="toggleSocialMedia()" style="display:none;"></mat-icon>
+      <mat-icon class="unselectable" style="margin-right: 10px;">thumb_up_alt</mat-icon><p class="unselectable">Social Media</p>
+    </a>
+    <div [ngClass]="{hide: !socialMediaOpen, show: socialMediaOpen}">
+      <!-- [formGroup]="socialMediaForm"> -->
+      <p> Social media section is a work in progress.</p>
+      <p> Twitch Verification Form </p>
+      <p> Steam Verification Form </p>
+      <p> Discord Verification Form </p>
+    </div>
+    <a mat-list-item unselectable="on" (click)="toggleConnections()">
+      <mat-icon (click)="toggleConnections()" style="display:none;"></mat-icon>
+      <mat-icon class="unselectable" style="margin-right: 10px;">people</mat-icon><p class="unselectable">Connections</p>
+    </a>
+    <div [ngClass]="{hide: !connectionsOpen, show: connectionsOpen}">
+      <!-- [formGroup]="connectionForm"> -->
+      <p> Connection section is a work in progress.</p>
+      <p> Friend List Form </p>
+      <p> Blacklist Form </p>
+    </div>
+    <a mat-list-item unselectable="on" (click)="toggleReferrals()">
+      <mat-icon (click)="toggleReferrals()" style="display:none;"></mat-icon>
+      <mat-icon class="unselectable" style="margin-right: 10px;">group_add</mat-icon><p class="unselectable">Referrals</p>
+    </a>
+    <div [ngClass]="{hide: !referralsOpen, show: referralsOpen}">
+      <!-- [formGroup]="referralForm"> -->
+      <p> Referrals section is a work in progress.</p>
+      <p> Referrals Form </p>
+    </div>
     <div mat-dialog-actions class="save">
       <button mat-stroked-button [disabled]="!dataIsDirty" 
         (click)="saveSettings()"
-        [ngClass]="{canSave: dataIsDirty}">Save</button>
+        [ngClass]="{canSave: dataIsDirty, cannotSave: !dataIsDirty}">
+        Save</button>
     </div>
+    
   </mat-nav-list>
 </div>

@@ -8,7 +8,8 @@ var partyslotSchema = mongoose.Schema({
     cServer: { type: String, required: true },  
     cDC: { type: String, required: true },  
     cJob: { type: String, required: true },  
-    cBUJobs: [ { type: String } ]
+    cBUJobs: [ { type: String } ],
+    tier: { type: String, required: true, default: "Unverified" }
   },
   slotJobs: [ { type: String, required: true } ],
   slotLocked: { type: Boolean, required: true },
@@ -35,12 +36,16 @@ var userNotificationSubscriptionSchema = mongoose.Schema({
 
 const partySchema = mongoose.Schema({
   shortID: { type: String, required: true, unique: true },
+
   ownerName: { type: String, required: true },
   ownerCharName: { type: String, required: true },
   ownerServer: { type: String, required: true},
   ownerDC: {type: String, required: true},
 
-  composition: [ partyslotSchema ], 
+  composition: [ partyslotSchema ],
+
+  topSort: { type: Boolean },
+  highlight: { type: Boolean },
 
   instanceName: { type: String },
   instanceID: { type: String },
@@ -50,9 +55,10 @@ const partySchema = mongoose.Schema({
   purpose: { type: String, required: true },
   sync: { type: String, required: true},
   verf: { type: Boolean },
+  description: { type: String, default: 'None' },
+
   pw: { type: String },
   private: { type: Boolean },
-  description: { type: String, default: 'None' },
 });
 
 partySchema.plugin(uniqueValidator);

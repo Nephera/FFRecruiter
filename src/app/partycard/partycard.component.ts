@@ -57,6 +57,7 @@ export class PartycardComponent implements OnInit {
   pw: string;
   isPrivate: boolean = false;
   slots: any[];
+  highlight: boolean = false;
 
   privatePartyIcon: string;
   purposeIcon: string;
@@ -70,6 +71,10 @@ export class PartycardComponent implements OnInit {
 
   hasPassword(): boolean {
     return this.isPrivate;
+  }
+
+  isHighlighted(): boolean {
+    return this.highlight;
   }
 
   toggleDescription(): void {
@@ -169,6 +174,7 @@ export class PartycardComponent implements OnInit {
     this.isPrivate = this.partyDetails.private;
     this.purpose = this.partyDetails.purpose;
     this.slots = [];
+    this.highlight = this.partyDetails.highlight;
 
     this.privatePartyIcon = this.icons.privateParty.icon;
     this.purposeIconObj = this.icons.get(this.purpose);

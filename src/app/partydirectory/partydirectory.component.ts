@@ -404,7 +404,9 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
         pw: "",
         description: "",
         currentPartyCount: 0,
-        maximumPartyCount: 5
+        maximumPartyCount: 5,
+        topSort: false,
+        highlight: false
       }); 
     }
 
@@ -450,6 +452,7 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
       }
     }
     
+    // Adding to form for easier backend processing
     this.form.addControl('ownerSlot', new FormControl(ownerIndex));
     this.form.addControl('composition', new FormControl(composition));
     this.form.addControl('ownerName', new FormControl(this.selectedCharacter.owner));
@@ -462,6 +465,7 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
 
     // Handle Notification Dialog
     if(!this.swp.isEnabled || Notification.permission == "denied"){
+      console.log("Notifications Denied");
       var postData = {
         form: this.form.value,
         sub: null
@@ -479,16 +483,22 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
     }
 
     else if(this.swp.isEnabled && Notification.permission == "granted"){
+      console.log("Notifications Granted");
       this.swp.requestSubscription({
         serverPublicKey: this.pns.key()
       }) // Returns unique subscription for user
       .then(pnsub => {
-
+        console.log("form");
+        console.log(this.form.value);
+        console.log("sub");
+        console.log(pnsub);
         var postData = {
           form: this.form.value,
           sub: pnsub
         }
 
+        console.log("making call to: ");
+        console.log(this.apiurl.hostname() + "/api/parties/add");
         this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
         .subscribe((responseData) => {
           if(responseData){
@@ -502,6 +512,7 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
     }
 
     else if(this.swp.isEnabled && Notification.permission == "default"){
+      console.log("Notifications Default");
       if(localStorage.getItem("disableNotificationDialogReminder") != "true"){ // If not explicitly denied a reminder
         const dialogRef = this.dialog.open(NotificationsDialog,
         {
@@ -591,6 +602,8 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
         });
       }
     }
+
+    console.log("Notifications End");
   }
 
   canFit(job, slot){

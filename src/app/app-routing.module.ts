@@ -7,6 +7,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { StaticdirectoryComponent} from './staticdirectory/staticdirectory.component';
 import { ActivationComponent } from './activation/activation.component';
+import { PatreonComponent } from './patreon/patreon.component';
 
 const routes: Routes = [
   { path: 'partydirectory', component: PartydirectoryComponent },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'mycharacters', component: MycharactersComponent, canActivate: [AuthGuard] },
   { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
   { path: 'activation', component: ActivationComponent },
+  { path: 'patreon', component: PatreonComponent},
   { path: '', redirectTo: '/welcome', pathMatch: 'full' }
 ];
 

@@ -33,6 +33,26 @@ export class partyIcons {
     background: ""
   }
 
+  unverifiedSlotFlair = {
+    icon: "https://imagizer.imageshack.com/img921/1092/gfROWT.png"
+  }
+
+  verifiedSlotFlair = {
+    icon: "https://imagizer.imageshack.com/img924/4162/mivYCy.png"
+  }
+
+  adventurerSlotFlair = {
+    icon: "https://imagizer.imageshack.com/img923/1896/ovu7k5.png"
+  }
+
+  raiderSlotFlair = {
+    icon: "https://imagizer.imageshack.com/img921/1092/gfROWT.png"
+  }
+
+  legendSlotFlair = {
+    icon: "https://imagizer.imageshack.com/img921/1092/gfROWT.png"
+  }
+
   // Lock Icons
   privateParty = {
     icon: "https://imagizer.imageshack.com/img921/636/gkm7eF.png",
@@ -366,6 +386,12 @@ export class partyIcons {
     // TODO: Map this
     switch(str)
     {
+      case "Unverified Slot Flair": { return this.unverifiedSlotFlair; }
+      case "Verified Slot Flair": { return this.verifiedSlotFlair; }
+      case "Adventurer Slot Flair": { return this.adventurerSlotFlair; }
+      case "Raider Slot Flair": { return this.raiderSlotFlair; }
+      case "Legend Slot Flair": { return this.legendSlotFlair; }
+
       case "Slot Highlight": { return this.slotHighlight; }
       case "Party Leader": { return this.partyLeader; }
       case "Verified Users Only": { return this.verifiedParty; }
@@ -414,6 +440,7 @@ export class partyIcons {
       case "HEAL": { return this.jobHEAL; }
       case "SlotFilled": { return this.slotFilled; }
       case "instanceIconGradient": { return this.instanceIconGradient; }
+      default: { return this.empty; }
     }
   };
 }
