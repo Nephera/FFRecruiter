@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ViewEncapsulation, Inject, Output, EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges} from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';t { MatSnackBar } from '@angular/material/snack-bar';
 import { partyIcons } from '../ref/img/partyIcons';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';

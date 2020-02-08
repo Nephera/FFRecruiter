@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewEncapsulation, Inject} from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';ialog';
 import { SwPush } from '@angular/service-worker';
 import { apiref } from '../ref/str/apiref';
 import { PushNotificationService } from '../push-notification.service';

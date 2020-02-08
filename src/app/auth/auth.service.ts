@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { ControlpanelService } from '../header/controlpanel/controlpanel.service';
 import { apiref } from '../ref/str/apiref';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';ialog';
 import { ConfirmDialog } from '../dialog/confirm-dialog';
 import { MycharactersService } from '../mycharacters/mycharacters.service';
 
