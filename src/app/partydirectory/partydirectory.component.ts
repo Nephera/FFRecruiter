@@ -1,7 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';
-import { PageEvent, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
+import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';nt } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { PartyfilterService } from '../primarynav/partyfilter/partyfilter.service';
 import { Subscription } from 'rxjs';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';ialog';
 import { ConfirmDialog } from './dialog/confirm-dialog';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from './ref/str/apiref';

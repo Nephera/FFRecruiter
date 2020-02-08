@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { ConfirmDialog } from '../dialog/confirm-dialog';
 import { apiref } from '../ref/str/apiref';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';ialog';
 import { HttpClient } from '@angular/common/http';
 
 @Component({

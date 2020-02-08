@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';ialog';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
