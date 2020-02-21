@@ -1,12 +1,13 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';t { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { apiref } from '../ref/str/apiref';
 import { Subscription } from 'rxjs';
 import { MycharactersService } from './mycharacters.service';
 import { PartyfilterService } from '../primarynav/partyfilter/partyfilter.service';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 export interface AddCharDialogData {
   owner: string; 
@@ -132,7 +133,8 @@ export class MycharactersAddcharacterDialog implements OnInit {
     private apiurl: apiref,
     private mcService: MycharactersService,
     private sb: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: AddCharDialogData) {    
+    @Inject(MAT_DIALOG_DATA) public data: AddCharDialogData,
+    @Inject(PLATFORM_ID) private platformId: Object) {    
       this.form = fb.group({
       owner: ""
     }); }
@@ -196,37 +198,42 @@ export class MycharactersAddcharacterDialog implements OnInit {
   }
 
   getToken() {
-    this.isLoading = true;
+    if (isPlatformBrowser(this.platformId)) {
+      this.isLoading = true;
 
-    var data = {
-      username: localStorage.getItem("username"),
-      charName: this.charName,
-      server: this.charServer
-    };
+      var data = {
+        username: localStorage.getItem("username"),
+        charName: this.charName,
+        server: this.charServer
+      };
 
-    this.http.post<{token: string, expiresIn: string}>(this.apiurl.hostname() + "/api/characters/generate_token", data)
-    .subscribe((tokenData) => {
-      this.verfToken = tokenData.token,
-      this.isLoading = false;
-    });
+      this.http.post<{token: string, expiresIn: string}>(this.apiurl.hostname() + "/api/characters/generate_token", data)
+      .subscribe((tokenData) => {
+        this.verfToken = tokenData.token,
+        this.isLoading = false;
+      });
+    }
   }
 
   copyToken(inputElement) {
-    inputElement.select();
-    document.execCommand("copy");
-    inputElement.setSelectionRange(0, 0);
-    if (window.getSelection) {
-      window.getSelection().removeAllRanges();
+    if (isPlatformBrowser(this.platformId)) {
+      inputElement.select();
+      document.execCommand("copy");
+      inputElement.setSelectionRange(0, 0);
+      if (window.getSelection) {
+        window.getSelection().removeAllRanges();
+      }
+      setTimeout(() => {
+        this.verifyDisabled = false;
+      }, 3000);
+      this.sb.open("Copied", "", {duration: 3000});
     }
-    setTimeout(() => {
-      this.verifyDisabled = false;
-    }, 3000);
-    this.sb.open("Copied", "", {duration: 3000});
   }
 
   verifyToken() {
-    this.isLoading = true;
-    this.http.get<{Pass: boolean, msg: string}>(this.apiurl.hostname() + "/api/characters/verify/" + this.charID + "/" + this.verfToken)
+    if (isPlatformBrowser(this.platformId)) {
+      this.isLoading = true;
+      this.http.get<{Pass: boolean, msg: string}>(this.apiurl.hostname() + "/api/characters/verify/" + this.charID + "/" + this.verfToken)
       .subscribe((tokenData) => {
         this.mcService.updateVerfMsg(tokenData.Pass, tokenData.msg);
         if(tokenData.Pass)
@@ -243,7 +250,8 @@ export class MycharactersAddcharacterDialog implements OnInit {
             server: this.charServer
           }
 
-          this.http.put<{response: any}>(this.apiurl.hostname() + "/api/characters/add", data)
+          console.log("Adding character");
+          this.http.post<{response: any}>(this.apiurl.hostname() + "/api/characters/add", data)
           .subscribe((responseData) => {
             this.isLoading = false;
           })
@@ -253,6 +261,7 @@ export class MycharactersAddcharacterDialog implements OnInit {
           this.isLoading = false;
         }
       })
+    }
   }
 
   onCancel() {

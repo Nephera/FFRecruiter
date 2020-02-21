@@ -1,9 +1,8 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
-import { MatSnackBar } from '@angular/material/snack-bar';nt } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { PartyfilterService } from '../primarynav/partyfilter/partyfilter.service';
 import { Subscription } from 'rxjs';
@@ -15,6 +14,8 @@ import { PushNotificationService } from '../push-notification.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
 import { ErrorDialog } from '../dialog/error-dialog';
 import { MycharactersService } from '../mycharacters/mycharacters.service';
+import { Meta } from '@angular/platform-browser';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 export interface CreateDialogData {
   slotCount: number; // can change depending on instance, should fetch from slots
@@ -82,7 +83,9 @@ export class PartydirectoryComponent implements OnInit {
     private as: AuthService,
     private ar: ActivatedRoute,
     private sb: MatSnackBar,
-    private mcs: MycharactersService) {
+    private mcs: MycharactersService,
+    private meta: Meta,
+    @Inject(PLATFORM_ID) private platformId: Object) {
      
     this.getRouteParams();
 
@@ -113,11 +116,13 @@ export class PartydirectoryComponent implements OnInit {
   }
 
   onChangePage(pageData: PageEvent){
-    this.isLoading = true;
-    this.currentPage = pageData.pageIndex + 1;
-    localStorage.setItem("pageSize", pageData.pageSize.toString());
-    this.pageSize = pageData.pageSize;
-    this.getParties(this.pageSize, this.currentPage);
+    if (isPlatformBrowser(this.platformId)) {
+      this.isLoading = true;
+      this.currentPage = pageData.pageIndex + 1;
+      localStorage.setItem("pageSize", pageData.pageSize.toString());
+      this.pageSize = pageData.pageSize;
+      this.getParties(this.pageSize, this.currentPage);
+    }
   }
 
   startTimer() {
@@ -160,11 +165,15 @@ export class PartydirectoryComponent implements OnInit {
     const job = this.pfs.getJob();                       
     const itype = this.pfs.getIType();
     const purpose = this.pfs.getPurpose();
-    const id = this.routeParams.id;
+    const id = this.routeParams.id; // Responsible for showing single party w/o pagination components
     const sync = this.pfs.getSync();
     const owned = this.pfs.getOwned();
     const verf = this.pfs.getVerf();
-    const owner = localStorage.username;
+    var owner = "";
+
+    if (isPlatformBrowser(this.platformId)) {
+      owner = localStorage.username;
+    }
 
     const queryParams = `?id=${id}&pagesize=${partiesPerPage}&page=${currentPage}&shortID=${shortID}&user=${user}&datacenter=${datacenter}&server=${server}&instance=${instance}&difficulty=${difficulty}&job=${job}&itype=${itype}&purpose=${purpose}&sync=${sync}&owned=${owned}&verf=${verf}&owner=${owner}`;
     this.http.get<{ message: string, parties: any[], totalParties: number }>(this.apiurl.hostname() + "/api/parties/" + queryParams).subscribe((partyData) => {
@@ -173,6 +182,20 @@ export class PartydirectoryComponent implements OnInit {
       this.isLoading = false;
       this.hasFetchedParties = true;
     });
+
+    if(this.routeParams.id != undefined){
+      // Edit meta tags
+
+      this.meta.addTags([
+        {property: 'og:site_name', content: 'FFR'},
+        {property: 'og:title', content: 'FFRecruiter: Final Fantasy XIV Recruiting Tool'},
+        {property: 'og:description', content: "FFRecruiter is a mobile-friendly web application designed for FFXIV adventurers looking for a group to play with.  Whether you're just learning the basics or you're tackling ultimates, FFR has something for you.  Join today and take advantage of our superior features and reach."},
+        {property: 'og:image', content: 'https://imagizer.imageshack.com/img924/3685/sQUzot.png'},
+        {property: 'og:image:width', content: '400'},
+        {property: 'og:image:height', content: '400'},
+        {name: 'theme-color', content: '#0485f8'}
+      ]);
+    }
   }
 
   // TODO: Should be handled by a service so that this is not done every time user navigates to partydirectory/staticdirectory
@@ -260,7 +283,7 @@ export class PartydirectoryComponent implements OnInit {
 
   ngOnInit() {
     this.length = 100;
-    (localStorage.pageSize != null) ? this.pageSize = +localStorage.pageSize : this.pageSize = 5;
+    (isPlatformBrowser(this.platformId) && localStorage.pageSize != null) ? this.pageSize = +localStorage.pageSize : this.pageSize = 5;
     this.currentPage = 1;
     this.startTimer();
     this.parties = this.getParties(this.pageSize, this.currentPage);
@@ -337,7 +360,8 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
     private fb: FormBuilder,
     private apiurl: apiref,
     public dialogRef: MatDialogRef<PartyDirectoryCreatepartyDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: CreateDialogData){   
+    @Inject(MAT_DIALOG_DATA) public data: CreateDialogData,
+    @Inject(PLATFORM_ID) private platformId: Object){   
       this.form = fb.group({
         character: [Object, Validators.required],
         instance: [Object, Validators.required],
@@ -434,161 +458,42 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
   }
 
   onCreate() {
-    this.submitted = true;
+    if (isPlatformBrowser(this.platformId)) {
+      this.submitted = true;
 
-    if (this.form.invalid) {
-      return;
-    }
-
-    var composition = [];
-    for(var i = 0; i < this.selectedInstance.playerCount; i++){
-      composition.push(this.form.get('slot' + i).value);
-    }
-
-    var ownerIndex = 0;
-
-    // Stick owner in first applicable slot, or 0 if none found
-    for(var i = 0; i < composition.length; i++){
-      if(this.canFit(this.form.get("prefj").value, composition[i])){
-        ownerIndex = i;
-        break;
-      }
-    }
-    
-    // Adding to form for easier backend processing
-    this.form.addControl('ownerSlot', new FormControl(ownerIndex));
-    this.form.addControl('composition', new FormControl(composition));
-    this.form.addControl('ownerName', new FormControl(this.selectedCharacter.owner));
-    this.form.addControl('ownerCharName', new FormControl(this.selectedCharacter.name));
-    this.form.addControl('ownerServer', new FormControl(this.selectedCharacter.server));
-    this.form.addControl('ownerDC', new FormControl(this.selectedCharacter.datacenter));
-    this.form.addControl('instanceID', new FormControl(this.selectedInstance.id));
-    this.form.addControl('instanceimg', new FormControl(this.selectedInstance.img));
-    this.form.addControl('instanceName', new FormControl(this.selectedInstance.name));
-
-    // Handle Notification Dialog
-    if(!this.swp.isEnabled || Notification.permission == "denied"){
-      console.log("Notifications Denied");
-      var postData = {
-        form: this.form.value,
-        sub: null
+      if (this.form.invalid) {
+        return;
       }
 
-      this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
-      .subscribe((responseData) => {
-        if(responseData){
-          this.dialogRef.close({data: responseData});
-        }
-        else{
-          this.dialogRef.close({});
-        }
-      });
-    }
+      var composition = [];
+      for(var i = 0; i < this.selectedInstance.playerCount; i++){
+        composition.push(this.form.get('slot' + i).value);
+      }
 
-    else if(this.swp.isEnabled && Notification.permission == "granted"){
-      console.log("Notifications Granted");
-      this.swp.requestSubscription({
-        serverPublicKey: this.pns.key()
-      }) // Returns unique subscription for user
-      .then(pnsub => {
-        console.log("form");
-        console.log(this.form.value);
-        console.log("sub");
-        console.log(pnsub);
-        var postData = {
-          form: this.form.value,
-          sub: pnsub
+      var ownerIndex = 0;
+
+      // Stick owner in first applicable slot, or 0 if none found
+      for(var i = 0; i < composition.length; i++){
+        if(this.canFit(this.form.get("prefj").value, composition[i])){
+          ownerIndex = i;
+          break;
         }
-
-        console.log("making call to: ");
-        console.log(this.apiurl.hostname() + "/api/parties/add");
-        this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
-        .subscribe((responseData) => {
-          if(responseData){
-            this.dialogRef.close({data: responseData});
-          }
-          else{
-            this.dialogRef.close({});
-          }
-        });
-      })
-    }
-
-    else if(this.swp.isEnabled && Notification.permission == "default"){
-      console.log("Notifications Default");
-      if(localStorage.getItem("disableNotificationDialogReminder") != "true"){ // If not explicitly denied a reminder
-        const dialogRef = this.dialog.open(NotificationsDialog,
-        {
-          autoFocus: false,
-          width: '90vw',
-          maxWidth: '600px',
-          maxHeight: '85%'
-        })
-        .afterClosed().subscribe(result => {
-          if(!result.data.cancelled){ // Assume player wants notifications
-            Notification.requestPermission()
-            .then(async permission => {
-              if(Notification.permission == "granted"){
-                this.swp.requestSubscription({
-                  serverPublicKey: this.pns.key()
-                }) // Returns unique subscription for user
-                .then(pnsub => {
-                  var postData = {
-                    form: this.form.value,
-                    sub: pnsub
-                  }
-          
-                  this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
-                  .subscribe((responseData) => {
-                    if(responseData){
-                      this.dialogRef.close({data: responseData});
-                    }
-                    else{
-                      this.dialogRef.close({});
-                    }
-                  });
-                })
-                .catch(err => {
-                  console.log(err.err.message);
-                })
-              }
-              else{ // Notification.permission == denied/default
-                var postData = {
-                  form: this.form.value,
-                  sub: null
-                }
-          
-                this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
-                .subscribe((responseData) => {
-                  if(responseData){
-                    this.dialogRef.close({data: responseData});
-                  }
-                  else{
-                    this.dialogRef.close({});
-                  }
-                });
-              }
-            });
-          }
-          else{ // User doesn't want notifications
-            var postData = {
-              form: this.form.value,
-              sub: null
-            }
+      }
       
-            this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
-            .subscribe((responseData) => {
-              if(responseData){
-                this.dialogRef.close({data: responseData});
-              }
-              else{
-                this.dialogRef.close({});
-              }
-            });
-          }
-        })
-      }
-      else{ // Explicitly denied reminders
+      // Adding to form for easier backend processing
+      this.form.addControl('ownerSlot', new FormControl(ownerIndex));
+      this.form.addControl('composition', new FormControl(composition));
+      this.form.addControl('ownerName', new FormControl(this.selectedCharacter.owner));
+      this.form.addControl('ownerCharName', new FormControl(this.selectedCharacter.name));
+      this.form.addControl('ownerServer', new FormControl(this.selectedCharacter.server));
+      this.form.addControl('ownerDC', new FormControl(this.selectedCharacter.datacenter));
+      this.form.addControl('instanceID', new FormControl(this.selectedInstance.id));
+      this.form.addControl('instanceimg', new FormControl(this.selectedInstance.img));
+      this.form.addControl('instanceName', new FormControl(this.selectedInstance.name));
+
+      // Handle Notification Dialog
+      if(!this.swp.isEnabled || Notification.permission == "denied"){
+        console.log("Notifications Denied");
         var postData = {
           form: this.form.value,
           sub: null
@@ -604,9 +509,130 @@ export class PartyDirectoryCreatepartyDialog implements OnInit {
           }
         });
       }
-    }
 
-    console.log("Notifications End");
+      else if(this.swp.isEnabled && Notification.permission == "granted"){
+        console.log("Notifications Granted");
+        this.swp.requestSubscription({
+          serverPublicKey: this.pns.key()
+        }) // Returns unique subscription for user
+        .then(pnsub => {
+          console.log("form");
+          console.log(this.form.value);
+          console.log("sub");
+          console.log(pnsub);
+          var postData = {
+            form: this.form.value,
+            sub: pnsub
+          }
+
+          console.log("making call to: ");
+          console.log(this.apiurl.hostname() + "/api/parties/add");
+          this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+          .subscribe((responseData) => {
+            if(responseData){
+              this.dialogRef.close({data: responseData});
+            }
+            else{
+              this.dialogRef.close({});
+            }
+          });
+        })
+      }
+
+      else if(this.swp.isEnabled && Notification.permission == "default"){
+        console.log("Notifications Default");
+        if(localStorage.getItem("disableNotificationDialogReminder") != "true"){ // If not explicitly denied a reminder
+          const dialogRef = this.dialog.open(NotificationsDialog,
+          {
+            autoFocus: false,
+            width: '90vw',
+            maxWidth: '600px',
+            maxHeight: '85%'
+          })
+          .afterClosed().subscribe(result => {
+            if(!result.data.cancelled){ // Assume player wants notifications
+              Notification.requestPermission()
+              .then(async permission => {
+                if(Notification.permission == "granted"){
+                  this.swp.requestSubscription({
+                    serverPublicKey: this.pns.key()
+                  }) // Returns unique subscription for user
+                  .then(pnsub => {
+                    var postData = {
+                      form: this.form.value,
+                      sub: pnsub
+                    }
+            
+                    this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+                    .subscribe((responseData) => {
+                      if(responseData){
+                        this.dialogRef.close({data: responseData});
+                      }
+                      else{
+                        this.dialogRef.close({});
+                      }
+                    });
+                  })
+                  .catch(err => {
+                    console.log(err.err.message);
+                  })
+                }
+                else{ // Notification.permission == denied/default
+                  var postData = {
+                    form: this.form.value,
+                    sub: null
+                  }
+            
+                  this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+                  .subscribe((responseData) => {
+                    if(responseData){
+                      this.dialogRef.close({data: responseData});
+                    }
+                    else{
+                      this.dialogRef.close({});
+                    }
+                  });
+                }
+              });
+            }
+            else{ // User doesn't want notifications
+              var postData = {
+                form: this.form.value,
+                sub: null
+              }
+        
+              this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+              .subscribe((responseData) => {
+                if(responseData){
+                  this.dialogRef.close({data: responseData});
+                }
+                else{
+                  this.dialogRef.close({});
+                }
+              });
+            }
+          })
+        }
+        else{ // Explicitly denied reminders
+          var postData = {
+            form: this.form.value,
+            sub: null
+          }
+
+          this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/add", postData)
+          .subscribe((responseData) => {
+            if(responseData){
+              this.dialogRef.close({data: responseData});
+            }
+            else{
+              this.dialogRef.close({});
+            }
+          });
+        }
+      }
+
+      console.log("Notifications End");
+    }
   }
 
   canFit(job, slot){

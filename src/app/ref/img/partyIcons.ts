@@ -60,7 +60,7 @@ export class partyIcons {
   }
   
   verifiedParty = {
-    icon: "https://imagizer.imageshack.com/img924/3685/sQUzot.png",
+    icon: "http://imageshack.com/a/img922/41/nHqTVQ.png",
     title: "Verified Users Only"
   }
 

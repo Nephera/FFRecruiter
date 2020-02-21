@@ -1,13 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthData } from './auth-data.model';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { ControlpanelService } from '../header/controlpanel/controlpanel.service';
 import { apiref } from '../ref/str/apiref';
-import { MatDialog } from '@angular/material/dialog';ialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from '../dialog/confirm-dialog';
 import { MycharactersService } from '../mycharacters/mycharacters.service';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 @Injectable({ providedIn: "root"})
 export class AuthService {
@@ -28,6 +29,7 @@ export class AuthService {
   private isPatreonAuth = false;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient,
     private apiurl: apiref, 
     private router: Router, 
@@ -55,10 +57,14 @@ export class AuthService {
 
   getIsPatreonAuth(){ return this.isPatreonAuth; }
 
-  createUser(username: string, email: string, password: string) {
+  createUser(username: string, email: string, password: string, referral: any) {
     const authData: AuthData = {username: username, email: email, password: password};
+    const postData = {
+      authData: authData,
+      referralData: referral
+    }
     this.registering = true;
-    this.http.post<{message: string, result: any}>(this.apiurl.hostname() + "/api/user/register", authData)
+    this.http.post<{message: string, result: any}>(this.apiurl.hostname() + "/api/user/register", postData)
     .subscribe(() => {
       this.registering = false;
       this.dialog.open(ConfirmDialog, 
@@ -77,34 +83,36 @@ export class AuthService {
   }
 
   autoAuthUser(){
-    const authInfo = this.getAuthData();
+    if (isPlatformBrowser(this.platformId)) {
+      const authInfo = this.getAuthData();
 
-    if(!authInfo) {
-      localStorage.removeItem("username");
-      return;
-    }
+      if(!authInfo) {
+        localStorage.removeItem("username");
+        return;
+      }
 
-    const now = new Date();
-    const expiresIn = authInfo.expiration.getTime() - now.getTime();
-    if(expiresIn > 0){
-      this.token = authInfo.token;
-      this.username = authInfo.username;
-      this.isAuthenticated = true;
-      this.authStatusListener.next(true);
-      this.authUserListener.next(authInfo.username);
-      this.setAuthTimer(expiresIn / 1000);
+      const now = new Date();
+      const expiresIn = authInfo.expiration.getTime() - now.getTime();
+      if(expiresIn > 0){
+        this.token = authInfo.token;
+        this.username = authInfo.username;
+        this.isAuthenticated = true;
+        this.authStatusListener.next(true);
+        this.authUserListener.next(authInfo.username);
+        this.setAuthTimer(expiresIn / 1000);
 
-      this.http.get<{verf: boolean}>(this.apiurl.hostname() + "/api/user/register/verify/get/" + this.username)
-      .subscribe(verfResponse => {
-        this.isVerified = verfResponse.verf;
-        this.verfStatusListener.next(verfResponse.verf);
-      })
+        this.http.get<{verf: boolean}>(this.apiurl.hostname() + "/api/user/register/verify/get/" + this.username)
+        .subscribe(verfResponse => {
+          this.isVerified = verfResponse.verf;
+          this.verfStatusListener.next(verfResponse.verf);
+        })
 
-      this.http.get<{auth: boolean}>(this.apiurl.hostname() + "/api/user/patreon/checkAuth/" + this.username)
-      .subscribe(authResponse => {
-        this.isPatreonAuth = authResponse.auth;
-        this.patreonAuthListener.next(authResponse.auth);
-      })
+        this.http.get<{auth: boolean}>(this.apiurl.hostname() + "/api/user/patreon/checkAuth/" + this.username)
+        .subscribe(authResponse => {
+          this.isPatreonAuth = authResponse.auth;
+          this.patreonAuthListener.next(authResponse.auth);
+        })
+      }
     }
   }
 
@@ -134,7 +142,10 @@ export class AuthService {
               this.avatar = "../../../assets/icons/icon_default_avatar.png";
             
             this.authAvatarListener.next(this.avatar);
-            localStorage.setItem('avatar', this.avatar);
+
+            if (isPlatformBrowser(this.platformId)) {
+              localStorage.setItem('avatar', this.avatar);
+            }
           })
 
           this.mcs.refreshCharacterList();
@@ -158,30 +169,45 @@ export class AuthService {
   }
   
   private saveAuthData(token: string, expirationDate: Date, username: string){
-    localStorage.setItem('token', token);
-    localStorage.setItem('expiration', expirationDate.toISOString());
-    localStorage.setItem('username', username);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('token', token);
+      localStorage.setItem('expiration', expirationDate.toISOString());
+      localStorage.setItem('username', username);
+    }
   }
 
   private clearAuthData() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('expiration');
-    localStorage.removeItem('username');
-    localStorage.removeItem('avatar');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('expiration');
+      localStorage.removeItem('username');
+      localStorage.removeItem('avatar');
+    }
   }
 
   private getAuthData(){
-    const authToken = localStorage.getItem('token');
-    const authExpiration = localStorage.getItem('expiration');
-    const authUsername = localStorage.getItem('username');
-    const authAvatar = localStorage.getItem('avatar');
+    var authToken = "";
+    var authExpiration;
+    var authUsername = "";
+    var authAvatar = "";
+
+    if (isPlatformBrowser(this.platformId)) {
+      authToken = localStorage.getItem('token');
+      authExpiration = new Date(localStorage.getItem('expiration'));
+      authUsername = localStorage.getItem('username');
+      authAvatar = localStorage.getItem('avatar');
+    }
+    else {
+      authExpiration = new Date();
+    }
     if(!authToken || !authExpiration || !authUsername || !authAvatar){
       return;
     }
+
     return {
       token: authToken,
       username: authUsername,
-      expiration: new Date(authExpiration),
+      expiration: authExpiration,
       avatar: authAvatar
     }
   }

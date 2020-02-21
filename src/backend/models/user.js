@@ -51,7 +51,22 @@ var userSchema = mongoose.Schema({
     maxPartyCount: { type: Number, required: true, default: 1 },
     unlimitedSortHighlight: { type: Boolean, required: true, default: false },
     refillDate: { type: Date, default: null }
-  }
+  },
+  referrer: {
+    username: { type: String, default: null },
+
+    // Analytics
+    referralDate: { type: Date, default: null },
+    referralSrc: { type: String, default: null }
+  },
+  referrals: [{
+    username: { type: String, default: null },
+    action: { type: String, default: null },
+
+    // Analytics
+    referralDate: { type: Date, default: null },
+    referralSrc: { type: String, default: null }
+  }]
 });
 
 userSchema.plugin(uniqueValidator);
