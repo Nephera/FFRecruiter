@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { apiref } from '../ref/str/apiref';
 import { HttpClient } from '@angular/common/http';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 @Component({
   selector: 'app-patreon',
@@ -19,7 +20,8 @@ export class PatreonComponent implements OnInit {
     private ar: ActivatedRoute,
     private http: HttpClient,
     private apiurl: apiref,
-    private router: Router) { 
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object) { 
     this.getRouteParams();
   }
 
@@ -37,7 +39,7 @@ export class PatreonComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.queryParams.code != undefined){
+    if(isPlatformBrowser(this.platformId) && this.queryParams.code != undefined){
       const postData = {
         username: localStorage.getItem("username"),
         code: this.queryParams.code,

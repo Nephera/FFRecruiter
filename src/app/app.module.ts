@@ -28,19 +28,6 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';nputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { Routes, RouterModule } from '@angular/router';
@@ -106,6 +93,8 @@ import { StaticdirectoryComponent } from './staticdirectory/staticdirectory.comp
 import { ActivationComponent } from './activation/activation.component';
 import { PatreonComponent } from './patreon/patreon.component';
 
+import { BrowserTransferStateModule, TransferState } from '@angular/platform-browser';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -142,7 +131,7 @@ import { PatreonComponent } from './patreon/patreon.component';
     PatreonComponent
   ],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
@@ -172,7 +161,8 @@ import { PatreonComponent } from './patreon/patreon.component';
     MatSnackBarModule,
     MatProgressBarModule,
     MatBadgeModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    BrowserTransferStateModule
   ],
   providers: [
     ControlpanelService,

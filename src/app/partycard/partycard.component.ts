@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Inject, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Inject, ViewEncapsulation, PLATFORM_ID } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';t { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
 import { partyIcons } from '../ref/img/partyIcons';
 import { PartyPurpose } from '../../backend/models/partypurpose';
@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { ConfirmDialog } from '../dialog/confirm-dialog';
 import { ErrorDialog } from '../dialog/error-dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 export interface DescriptionDialogData {
   instance: string;
@@ -95,7 +96,12 @@ export class PartycardComponent implements OnInit {
   }
 
   isOwner(){
-    return this.owner == localStorage.username;
+    if (isPlatformBrowser(this.platformId)) {
+      return this.owner == localStorage.username;
+    }
+    else {
+      return false;
+    }
   }
 
   isDescription(str: string): boolean {
@@ -129,32 +135,34 @@ export class PartycardComponent implements OnInit {
   }
 
   confirmLeave() {
-    this.http.post<{ message: string }>(this.apiurl.hostname() + "/api/user/parties/leave", { id: this.id, username: localStorage.getItem("username") })
-    .subscribe(response => {
-      const dialogRef = this.dialog.open(ConfirmDialog,
-        {
-          autoFocus: false,
-          width: '90vw',
-          maxWidth: '600px',
-          maxHeight: '85%',
-          data: {
-            title: "Left Party",
-            text: response.message
-          }
-        });
-    }, error => {
-      const dialogRef = this.dialog.open(ErrorDialog,
-        {
-          autoFocus: false,
-          width: '90vw',
-          maxWidth: '600px',
-          maxHeight: '85%',
-          data: {
-            title: error.error.title,
-            text: error.error.message
-          }
-        });
-    });
+    if (isPlatformBrowser(this.platformId)) {
+      this.http.post<{ message: string }>(this.apiurl.hostname() + "/api/user/parties/leave", { id: this.id, username: localStorage.getItem("username") })
+      .subscribe(response => {
+        const dialogRef = this.dialog.open(ConfirmDialog,
+          {
+            autoFocus: false,
+            width: '90vw',
+            maxWidth: '600px',
+            maxHeight: '85%',
+            data: {
+              title: "Left Party",
+              text: response.message
+            }
+          });
+      }, error => {
+        const dialogRef = this.dialog.open(ErrorDialog,
+          {
+            autoFocus: false,
+            width: '90vw',
+            maxWidth: '600px',
+            maxHeight: '85%',
+            data: {
+              title: error.error.title,
+              text: error.error.message
+            }
+          });
+      });
+    }
   }
 
   toggleHidden(): void {
@@ -200,20 +208,23 @@ export class PartycardComponent implements OnInit {
   }
 
   copyID(inputElement) {
-    var dummy = document.createElement('input'),
-    text = "https://www.ffrecruiter.com/partydirectory/" + this.shortID;
+    if (isPlatformBrowser(this.platformId)) {
+      var dummy = document.createElement('input'),
+      text = "https://www.ffrecruiter.com/partydirectory/" + this.shortID + "?refu=" + 
+        localStorage.getItem("username") + "&refs=partylink";
 
-    document.body.appendChild(dummy);
-    dummy.value = text;
-    dummy.select();
-    document.execCommand('copy');
-    document.body.removeChild(dummy);
+      document.body.appendChild(dummy);
+      dummy.value = text;
+      dummy.select();
+      document.execCommand('copy');
+      document.body.removeChild(dummy);
 
-    this.sb.open("Copied Party Link to Clipboard", "", {duration: 3000});
+      this.sb.open("Copied Party Link to Clipboard", "", {duration: 3000});
+    }
   }
 
 
-  constructor(public dialog: MatDialog, private icons: partyIcons, private http: HttpClient, private apiurl: apiref, private as: AuthService, private sb: MatSnackBar) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, public dialog: MatDialog, private icons: partyIcons, private http: HttpClient, private apiurl: apiref, private as: AuthService, private sb: MatSnackBar) {
   }
 
   ngOnInit() {
@@ -268,7 +279,8 @@ export class PartycardUpdateDialog {
     private apiurl: apiref,
     public dialog: MatDialog,
     private sb: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) public data: UpdateDialogData) {
+    @Inject(MAT_DIALOG_DATA) public data: UpdateDialogData,
+    @Inject(PLATFORM_ID) private platformId: Object) {
 
     this.form = fb.group({
       character: [Object, Validators.required],
@@ -407,36 +419,38 @@ export class PartycardUpdateDialog {
   }
 
   onUpdate(){
-    var composition = [];
-    for(var i = 0; i < this.data.party.composition.length; i++){
-      composition.push(this.form.get('slot' + i).value);
-    }
-
-    const postData = {
-      party: this.data.party,
-      username: localStorage.username,
-      form: this.form.value,
-      composition: composition
-    }
-    
-    this.http.post<{ message: string, error: string, party: any }>(this.apiurl.hostname() + "/api/parties/updateOptions", postData)
-    .subscribe(response => {
-      if(response.error != null){
-        const dialogRef = this.dialog.open(ErrorDialog,
-          {
-            autoFocus: false,
-            width: '90vw',
-            maxWidth: '600px',
-            maxHeight: '85%',
-            data: {
-              title: "Unable to Update Party",
-              text: response.error
-            }
-          });
+    if (isPlatformBrowser(this.platformId)) {
+      var composition = [];
+      for(var i = 0; i < this.data.party.composition.length; i++){
+        composition.push(this.form.get('slot' + i).value);
       }
-      else{
-        this.dialogRef.close({party: response.party}); 
-      }      
-    });    
+
+      const postData = {
+        party: this.data.party,
+        username: localStorage.username,
+        form: this.form.value,
+        composition: composition
+      }
+      
+      this.http.post<{ message: string, error: string, party: any }>(this.apiurl.hostname() + "/api/parties/updateOptions", postData)
+      .subscribe(response => {
+        if(response.error != null){
+          const dialogRef = this.dialog.open(ErrorDialog,
+            {
+              autoFocus: false,
+              width: '90vw',
+              maxWidth: '600px',
+              maxHeight: '85%',
+              data: {
+                title: "Unable to Update Party",
+                text: response.error
+              }
+            });
+        }
+        else{
+          this.dialogRef.close({party: response.party}); 
+        }      
+      });    
+    }
   }
 }

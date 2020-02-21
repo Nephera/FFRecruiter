@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, ViewEncapsulation, Inject, Output, EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges} from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, Inject, Output, EventEmitter, ChangeDetectorRef, OnChanges, SimpleChanges, PLATFORM_ID} from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';t { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { partyIcons } from '../ref/img/partyIcons';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';
@@ -12,6 +12,7 @@ import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
 import { MycharactersService } from '../mycharacters/mycharacters.service';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 export interface JoinDialogData {
   instance: string,
@@ -101,7 +102,8 @@ export class PartycompositionComponent implements OnInit, OnChanges {
     private apiurl: apiref,
     private as: AuthService,
     private CDR: ChangeDetectorRef,
-    private mcs: MycharactersService) { }
+    private mcs: MycharactersService,
+    @Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit() {
     this.isAuth = this.as.getIsAuth();
@@ -141,128 +143,130 @@ export class PartycompositionComponent implements OnInit, OnChanges {
   }
 
   onClick(index: number){
-    if(this.isPopulated(index)) {
-      // Get Details for Player using Name/Server
-      this.http.get<{ message: string, character: any}>(this.apiurl.hostname() + 
-        "/api/characters/get/name/" + 
-        this.slots[index].userOccupying.cServer + "/" + 
-        this.slots[index].userOccupying.cName + "/" +
-        this.slots[index].userOccupying.name).subscribe((characterData) => {
+    if (isPlatformBrowser(this.platformId)) {
+      if(this.isPopulated(index)) {
+        // Get Details for Player using Name/Server
+        this.http.get<{ message: string, character: any}>(this.apiurl.hostname() + 
+          "/api/characters/get/name/" + 
+          this.slots[index].userOccupying.cServer + "/" + 
+          this.slots[index].userOccupying.cName + "/" +
+          this.slots[index].userOccupying.name).subscribe((characterData) => {
 
-          // Display Details
-          const dialogRef = this.dialog.open(PartycompositionPlayerDetailsDialog,
+            // Display Details
+            const dialogRef = this.dialog.open(PartycompositionPlayerDetailsDialog,
+              {
+                autoFocus: false,
+                width: '90vw',
+                maxWidth: '600px',
+                maxHeight: '85%',
+                data: {
+                  id: this.partyDetails._id,
+                  instance: this.partyDetails.instanceName,
+                  owner: this.partyDetails.ownerCharName,
+                  ownerUN: this.partyDetails.ownerName,
+                  ownerServer: this.partyDetails.ownerServer,
+                  slotAvatar: characterData.character.avatar,
+                  slotFFLogs: "https://www.fflogs.com/character/na/" + characterData.character.server + "/" + characterData.character.name,
+                  slotLodestone: "https://na.finalfantasyxiv.com/lodestone/character/" + characterData.character.lodestoneID,
+                  slotProfile: "Profile",
+                  slotUsername: this.slots[index].userOccupying.name,
+                  slotCharacterName: this.slots[index].userOccupying.cName,
+                  slotServerName: this.slots[index].userOccupying.cServer,
+                  slotDatacenterName: this.slots[index].userOccupying.cDC,
+                  slotJob: this.slots[index].userOccupying.cJob,
+                  slotAltJobs: this.slots[index].userOccupying.cBUJobs,
+                  slotNum: index//,
+                  //discordID: 147578085569593344, // TODO:
+                  //discordTag: "Neph#3398" // TODO:
+                }
+              });
+            dialogRef.afterClosed().subscribe(result => {
+              if(result != null && result.data != null){
+                if(result.data.error != null){
+                  const dialogRef2 = this.dialog.open(ErrorDialog,
+                    {
+                      autoFocus: false,
+                      width: '90vw',
+                      maxWidth: '600px',
+                      maxHeight: '85%',
+                      data: {
+                        title: result.data.title,
+                        text: result.data.message
+                      }
+                    })
+
+                  return;
+                }
+
+                if(result.data.party != null){
+                  this.slots[index] = result.data.party.composition[index];
+                }
+              }
+            })
+        });
+      }
+      else {
+        if(!this.isAuth) {
+          const dialogRef = this.dialog.open(ErrorDialog,
             {
               autoFocus: false,
               width: '90vw',
               maxWidth: '600px',
               maxHeight: '85%',
               data: {
-                id: this.partyDetails._id,
-                instance: this.partyDetails.instanceName,
-                owner: this.partyDetails.ownerCharName,
-                ownerUN: this.partyDetails.ownerName,
-                ownerServer: this.partyDetails.ownerServer,
-                slotAvatar: characterData.character.avatar,
-                slotFFLogs: "https://www.fflogs.com/character/na/" + characterData.character.server + "/" + characterData.character.name,
-                slotLodestone: "https://na.finalfantasyxiv.com/lodestone/character/" + characterData.character.lodestoneID,
-                slotProfile: "Profile",
-                slotUsername: this.slots[index].userOccupying.name,
-                slotCharacterName: this.slots[index].userOccupying.cName,
-                slotServerName: this.slots[index].userOccupying.cServer,
-                slotDatacenterName: this.slots[index].userOccupying.cDC,
-                slotJob: this.slots[index].userOccupying.cJob,
-                slotAltJobs: this.slots[index].userOccupying.cBUJobs,
-                slotNum: index//,
-                //discordID: 147578085569593344, // TODO:
-                //discordTag: "Neph#3398" // TODO:
-              }
-            });
-          dialogRef.afterClosed().subscribe(result => {
-            if(result != null && result.data != null){
-              if(result.data.error != null){
-                const dialogRef2 = this.dialog.open(ErrorDialog,
-                  {
-                    autoFocus: false,
-                    width: '90vw',
-                    maxWidth: '600px',
-                    maxHeight: '85%',
-                    data: {
-                      title: result.data.title,
-                      text: result.data.message
-                    }
-                  })
-
-                return;
-              }
-
-              if(result.data.party != null){
-                this.slots[index] = result.data.party.composition[index];
-              }
-            }
-          })
-      });
-    }
-    else {
-      if(!this.isAuth) {
-        const dialogRef = this.dialog.open(ErrorDialog,
-          {
-            autoFocus: false,
-            width: '90vw',
-            maxWidth: '600px',
-            maxHeight: '85%',
-            data: {
-              title: "Unable to Join: Authenticate",
-              text: "You must first log into FF Recruiter"
-            }
-          })
-      }
-      else { // User is logged in
-        // Make sure not already part of this party
-        this.http.get<{ message: string, parties: any}>(this.apiurl.hostname() + 
-        "/api/user/get/parties/" + 
-        localStorage.getItem("username")).subscribe((partiesData) => {
-          // If the ID is contained in the parties already joined, throw error
-          var partyIDs = partiesData.parties.map(party => { return party.id; })
-          if(partyIDs.indexOf(this.partyDetails._id) > -1)
-          {
-            const dialogRef = this.dialog.open(ErrorDialog,
-              {
-                autoFocus: false,
-                width: '90vw',
-                maxWidth: '600px',
-                maxHeight: '85%',
-                data: {
-                  title: "Unable to Join: Already Joined",
-                  text: "You are already part of this party, you cannot fill more than one slot."
-                }
-              })
-          }
-          else { // Otherwise pull up dialog for user to enter character info to join
-            const dialogRef = this.dialog.open(PartycompositionJoinDialog,
-              {
-                autoFocus: false,
-                width: '90vw',
-                maxWidth: '600px',
-                maxHeight: '85%',
-                data: {
-                  partyID: this.partyDetails._id,
-                  instance: this.partyDetails.instanceName,
-                  owner: this.partyDetails.ownerCharName,
-                  ownerServer: this.partyDetails.ownerServer,
-                  slotNum: index,
-                  characters: this.characters,
-                  isAuth: this.isAuth,
-                  jobsWanted: [this.getSlotTitle(index)],
-                  private: this.partyDetails.private
-                }
-              })
-            dialogRef.afterClosed().subscribe(result => {
-              if(result && result.data.party.composition){
-                this.slots[index] = result.data.party.composition[index];             
+                title: "Unable to Join: Authenticate",
+                text: "You must first log into FF Recruiter"
               }
             })
-          }
-        })
+        }
+        else { // User is logged in
+          // Make sure not already part of this party
+          this.http.get<{ message: string, parties: any}>(this.apiurl.hostname() + 
+          "/api/user/get/parties/" + 
+          localStorage.getItem("username")).subscribe((partiesData) => {
+            // If the ID is contained in the parties already joined, throw error
+            var partyIDs = partiesData.parties.map(party => { return party.id; })
+            if(partyIDs.indexOf(this.partyDetails._id) > -1)
+            {
+              const dialogRef = this.dialog.open(ErrorDialog,
+                {
+                  autoFocus: false,
+                  width: '90vw',
+                  maxWidth: '600px',
+                  maxHeight: '85%',
+                  data: {
+                    title: "Unable to Join: Already Joined",
+                    text: "You are already part of this party, you cannot fill more than one slot."
+                  }
+                })
+            }
+            else { // Otherwise pull up dialog for user to enter character info to join
+              const dialogRef = this.dialog.open(PartycompositionJoinDialog,
+                {
+                  autoFocus: false,
+                  width: '90vw',
+                  maxWidth: '600px',
+                  maxHeight: '85%',
+                  data: {
+                    partyID: this.partyDetails._id,
+                    instance: this.partyDetails.instanceName,
+                    owner: this.partyDetails.ownerCharName,
+                    ownerServer: this.partyDetails.ownerServer,
+                    slotNum: index,
+                    characters: this.characters,
+                    isAuth: this.isAuth,
+                    jobsWanted: [this.getSlotTitle(index)],
+                    private: this.partyDetails.private
+                  }
+                })
+              dialogRef.afterClosed().subscribe(result => {
+                if(result && result.data.party.composition){
+                  this.slots[index] = result.data.party.composition[index];             
+                }
+              })
+            }
+          })
+        }
       }
     }
   }
@@ -298,8 +302,10 @@ export class PartycompositionComponent implements OnInit, OnChanges {
   }
 
   getSlotHighlight(index: number){
-    if(this.slots[index].userOccupying.name == localStorage.getItem("username")){return this.icons.get("Slot Highlight").icon}
-    else{return this.icons.get("empty").icon;}
+    if(isPlatformBrowser(this.platformId) && this.slots[index].userOccupying.name == localStorage.getItem("username")){
+      return this.icons.get("Slot Highlight").icon
+    }
+    else{ return this.icons.get("empty").icon; }
   }
 
   getSlotImage(index: number){
@@ -368,6 +374,7 @@ export class PartycompositionJoinDialog {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<PartycompositionJoinDialog>,
     @Inject(MAT_DIALOG_DATA) public data: JoinDialogData,
+    @Inject(PLATFORM_ID) private platformId: Object,
     private fb: FormBuilder,
     private http: HttpClient,
     private apiurl: apiref) {
@@ -573,7 +580,7 @@ export class PartycompositionJoinDialog {
     }
 
     else if(this.swp.isEnabled && Notification.permission == "default"){
-      if(localStorage.getItem("disableNotificationDialogReminder") != "true"){ // If not explicitly denied a reminder
+      if(isPlatformBrowser(this.platformId) && localStorage.getItem("disableNotificationDialogReminder") != "true"){ // If not explicitly denied a reminder
         const dialogRef = this.dialog.open(NotificationsDialog,
         {
           autoFocus: false,
@@ -654,44 +661,53 @@ export class PartycompositionPlayerDetailsDialog {
   constructor(
     private http: HttpClient, private apiurl: apiref, private dialog: MatDialog,
     public dialogRef: MatDialogRef<PartycompositionPlayerDetailsDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DetailsDialogData, private sb: MatSnackBar) { }
+    @Inject(MAT_DIALOG_DATA) public data: DetailsDialogData, private sb: MatSnackBar,
+    @Inject(PLATFORM_ID) private platformId: Object) { }
 
   userOwns(n: string){
-    return (localStorage.getItem("username") == n);
+    if (isPlatformBrowser(this.platformId)) {
+      return (localStorage.getItem("username") == n);
+    }
   }
 
   userIsPartyOwner(){
-    return (localStorage.getItem("username") == this.data.ownerUN);
+    if (isPlatformBrowser(this.platformId)) {
+      return (localStorage.getItem("username") == this.data.ownerUN);
+    }
   }
 
   onDisband(){
-    var postData = {
-      username: localStorage.getItem("username"),
-      partyID: this.data.id
-    };
+    if (isPlatformBrowser(this.platformId)) {
+      var postData = {
+        username: localStorage.getItem("username"),
+        partyID: this.data.id
+      };
 
-    this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/disband", postData)
-      .subscribe((responseData) => {
-        this.dialogRef.close({data: responseData});
-        this.sb.open("Party Disbanded", "", {duration: 3000});
-    });
+      this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/disband", postData)
+        .subscribe((responseData) => {
+          this.dialogRef.close({data: responseData});
+          this.sb.open("Party Disbanded", "", {duration: 3000});
+      });
+    }
   }
 
   onKick(){
-    const postData = {
-      username: localStorage.getItem("username"),
-      partyID: this.data.id,
-      kickUser: this.data.slotUsername,
-      slotNum: this.data.slotNum
-    }
+    if (isPlatformBrowser(this.platformId)) {
+      const postData = {
+        username: localStorage.getItem("username"),
+        partyID: this.data.id,
+        kickUser: this.data.slotUsername,
+        slotNum: this.data.slotNum
+      }
 
-    this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/kickplayer", postData)
-    .subscribe(responseData => {
-      this.dialogRef.close({data: responseData});
-    },
-    error => {
-      this.dialogRef.close();
-    })
+      this.http.post<{message: string, party: any}>(this.apiurl.hostname() + "/api/parties/kickplayer", postData)
+      .subscribe(responseData => {
+        this.dialogRef.close({data: responseData});
+      },
+      error => {
+        this.dialogRef.close();
+      })
+    }
   }
 
   onLeave(){
