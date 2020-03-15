@@ -57,3 +57,4 @@ frontend
 host
 host
 src/app/ref/str/apiref.ts
+server.ts
