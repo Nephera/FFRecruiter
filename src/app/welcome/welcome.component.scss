@@ -1,13 +1,29 @@
 @import "/../app.component";
 
-p,
+p {
+  padding: 1em 1em 0em 1em;
+}
+
+ul, ol {
+  padding-left: 4em;
+}
+
 li {
-  padding: 20px;
+  padding: .5em 0em .25em .25em;
 }
 
 .welcome-container {
   min-height: 500px;
   height: 100%;
-  max-height: 800px;
   margin: 10px;
+}
+
+h2 {
+  padding-top: 1em;
+  text-align: center;
+}
+
+h3 {
+  padding-top: .25em;
+  text-align: center;
 }
