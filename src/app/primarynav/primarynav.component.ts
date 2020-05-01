@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { NotificationsDialog } from '../dialog/notifications-dialog';
@@ -8,6 +8,7 @@ import { apiref } from '../ref/str/apiref';
 import { SwPush } from '@angular/service-worker';
 import { PushNotificationService } from '../push-notification.service';
 import { MycharactersService } from '../mycharacters/mycharacters.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-primarynav',
@@ -36,21 +37,23 @@ export class PrimarynavComponent implements OnInit {
   }
 
   setNotifications(v: boolean){
-    if(this.canUpdate()){
-      // Send information to backend
-      const putData = {
-        username: localStorage.getItem("username"),
-        allowNotifications: v
+    if (isPlatformBrowser(this.platformId)) {
+      if(this.canUpdate()){
+        // Send information to backend
+        const putData = {
+          username: localStorage.getItem("username"),
+          allowNotifications: v
+        }
+
+        this.http.put<{message: string}>(this.apiurl.hostname() + "/api/user/settings/set/notifications", putData)
+          .subscribe((responseData) => { console.log(responseData.message); })
+
+        // Toggle button functionality
+        this.canNotify = v;
+
+        // Disable for short time
+        this.timeLeft = 3;
       }
-
-      this.http.put<{message: string}>(this.apiurl.hostname() + "/api/user/settings/set/notifications", putData)
-        .subscribe((responseData) => { console.log(responseData.message); })
-
-      // Toggle button functionality
-      this.canNotify = v;
-
-      // Disable for short time
-      this.timeLeft = 3;
     }
   }
 
@@ -76,21 +79,31 @@ export class PrimarynavComponent implements OnInit {
       });
   }
 
-  constructor(public dialog: MatDialog, private as: AuthService, private http: HttpClient, private apiurl: apiref, private swp: SwPush, private pns: PushNotificationService, private mcs: MycharactersService) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    public dialog: MatDialog, 
+    private as: AuthService, 
+    private http: HttpClient, 
+    private apiurl: apiref//,
+    //private mcs: MycharactersService
+    ) {}
 
   ngOnInit()
   {
-    this.startTimer();
+    if (isPlatformBrowser(this.platformId)) {
+      this.startTimer();
 
-    this.userIsAuthenticated = this.as.getIsAuth();
-    this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
-      this.userIsAuthenticated = isAuthenticated;
-    });
+      this.userIsAuthenticated = this.as.getIsAuth();
+      this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {
+        this.userIsAuthenticated = isAuthenticated;
+      });
+    }
   }
 
   ngOnDestroy()
   {
-    this.authListenerSub.unsubscribe();
+    if (isPlatformBrowser(this.platformId)) {
+      this.authListenerSub.unsubscribe();
+    }
   }
-
 }

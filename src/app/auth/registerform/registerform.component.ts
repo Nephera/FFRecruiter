@@ -4,6 +4,7 @@ import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from 'src/app/ref/str/apiref';
+import { ReferralService } from 'src/app/referral.service';
 
 
 @Component({
@@ -17,7 +18,7 @@ export class RegisterformComponent implements OnInit {
   errorMsg = "";
   isHidden = false;
 
-  constructor(public authService: AuthService, private http: HttpClient, private apiurl: apiref) { }
+  constructor(public authService: AuthService, private http: HttpClient, private apiurl: apiref, private rs: ReferralService) { }
 
   isRegistering(){
     return this.authService.isRegistering();
@@ -36,7 +37,7 @@ export class RegisterformComponent implements OnInit {
 
     this.errorMsg = "";
 
-    this.authService.createUser(form.value.username, form.value.email, form.value.password);
+    this.authService.createUser(form.value.username, form.value.email, form.value.password, this.rs.getReferral());
 
     this.isHidden = true;
   }
