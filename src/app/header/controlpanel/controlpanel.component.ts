@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID  } from '@angular/core';
 import { ControlpanelService } from './controlpanel.service';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Subscription } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
+
 
 @Component({
   selector: 'app-controlpanel',
@@ -20,15 +22,23 @@ export class ControlpanelComponent implements OnInit {
   userIsAuthenticated = false;
   userIsVerified = true;
 
-  constructor(private cps: ControlpanelService, private as: AuthService) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private cps: ControlpanelService, 
+    private as: AuthService) {}
 
   ngOnInit() {
     this.userIsAuthenticated = this.as.getIsAuth();
     this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {this.userIsAuthenticated = isAuthenticated;});
     this.verfListenerSub = this.as.getVerfStatusListener().subscribe(isVerified => {this.userIsVerified = isVerified;});
 
-    const n = localStorage.getItem('username');
-    var a = localStorage.getItem('avatar');
+    var n = "";
+    var a = "";
+
+    if (isPlatformBrowser(this.platformId)) {
+      n = localStorage.getItem('username');
+      a = localStorage.getItem('avatar');
+    }
 
     if(n && this.userIsAuthenticated){
       this.name = n;

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { StateAst } from '@angular/animations/browser/src/dsl/animation_ast';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';
 import { AuthService } from '../auth/auth.service';

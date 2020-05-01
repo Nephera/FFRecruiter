@@ -1,8 +1,9 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from '../ref/str/apiref';
 import { Subject } from 'rxjs';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -71,14 +72,16 @@ export class SettingsService {
   }
 
   saveNotifications(){
-    var config = {
-      notifications: this.notifications
+    if (isPlatformBrowser(this.platformId)) {
+      var config = {
+        notifications: this.notifications
+      }
+      var putData = {
+        username: localStorage.getItem('username'),
+        config: config
+      } 
+      this.http.put<{message: string}>(this.apiurl.hostname() + "/api/user/settings/", putData).subscribe((settingsData) =>{})
     }
-    var putData = {
-      username: localStorage.getItem('username'),
-      config: config
-    } 
-    this.http.put<{message: string}>(this.apiurl.hostname() + "/api/user/settings/", putData).subscribe((settingsData) =>{})
   }
 
   
@@ -98,30 +101,36 @@ export class SettingsService {
   }
 
   refreshRewards(){
-    const postData = {user: localStorage.getItem('username')};
-    this.http.post<{rewards: any}>(this.apiurl.hostname() + "/api/patreon/rewards/refresh", postData).subscribe(refreshData => {
-      this.rewards = refreshData.rewards;
-      this.updateRewards();
-    })
+    if (isPlatformBrowser(this.platformId)) {
+      const postData = {user: localStorage.getItem('username')};
+      this.http.post<{rewards: any}>(this.apiurl.hostname() + "/api/patreon/rewards/refresh", postData).subscribe(refreshData => {
+        this.rewards = refreshData.rewards;
+        this.updateRewards();
+      })
+    }
   }
 
-  constructor(private as: AuthService, private http: HttpClient, private apiurl: apiref) {
-    this.http.get<{message: string, settings: any}>(this.apiurl.hostname() + "/api/user/settings/" + localStorage.getItem('username')).subscribe((settingsData) => {
-      if(settingsData.settings){
-        this.notifications = settingsData.settings.notifications;
-        this.updateNotifications();
-      }
-      else {
-      }
-    });
+  constructor(private as: AuthService, private http: HttpClient, private apiurl: apiref, @Inject(PLATFORM_ID) private platformId: Object) {}
 
-    this.http.get<{result: any}>(this.apiurl.hostname() + "/api/user/rewards/get/" + localStorage.getItem('username')).subscribe( rewardsData => {
-      if(rewardsData.result.rewards){
-        this.rewards = rewardsData.result.rewards;
-        this.updateRewards();
-      }
-      else {
-      }
-    });
+  ngOnInit(){
+    if (isPlatformBrowser(this.platformId)) {
+      this.http.get<{message: string, settings: any}>(this.apiurl.hostname() + "/api/user/settings/" + localStorage.getItem('username')).subscribe((settingsData) => {
+        if(settingsData.settings){
+          this.notifications = settingsData.settings.notifications;
+          this.updateNotifications();
+        }
+        else {
+        }
+      });
+  
+      this.http.get<{result: any}>(this.apiurl.hostname() + "/api/user/rewards/get/" + localStorage.getItem('username')).subscribe( rewardsData => {
+        if(rewardsData.result.rewards){
+          this.rewards = rewardsData.result.rewards;
+          this.updateRewards();
+        }
+        else {
+        }
+      });
+    }
   }
 }

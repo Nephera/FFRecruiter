@@ -1,15 +1,17 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { ControlpanelService } from './header/controlpanel/controlpanel.service';
 import { AuthService } from './auth/auth.service';
 import { Subscription } from 'rxjs';
 import { environment } from '../environments/environment';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialog } from './dialog/confirm-dialog';
 import { HttpClient } from '@angular/common/http';
 import { apiref } from './ref/str/apiref';
 import { Meta } from '@angular/platform-browser';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { ReferralService } from './referral.service';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +34,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // Initialize Service Providers
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private cps: ControlpanelService, 
     private as: AuthService,
     private matIconRegistry: MatIconRegistry,
@@ -39,9 +42,16 @@ export class AppComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private apiurl: apiref,
     private domSanitizer: DomSanitizer,
-    private meta: Meta){
-      this.matIconRegistry.addSvgIcon("nav_static", this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/Icon_NavStatic.svg"));
-      this.matIconRegistry.addSvgIcon("nav_party", this.domSanitizer.bypassSecurityTrustResourceUrl("../assets/icons/Icon_NavParty.svg"));
+    private meta: Meta,
+    private rs: ReferralService){
+      // Must use absolute path for Angular Universal (Server Side Rendering)
+      const svgStaticURL = "assets/icons/Icon_NavStatic.svg";
+      const svgPartyURL = "assets/icons/Icon_NavParty.svg";
+      //const domain = (isPlatformBrowser(platformId)) ? '' : ''; 
+      const domain = (isPlatformServer(platformId)) ? 'http://localhost:4000/' : ''; 
+      this.matIconRegistry.addSvgIcon("nav_static", this.domSanitizer.bypassSecurityTrustResourceUrl(domain + svgStaticURL));
+      this.matIconRegistry.addSvgIcon("nav_party", this.domSanitizer.bypassSecurityTrustResourceUrl(domain + svgPartyURL));
+
     }
 
   ngOnInit()
@@ -49,21 +59,13 @@ export class AppComponent implements OnInit, OnDestroy {
     this.userIsAuthenticated = this.as.getIsAuth();
     this.authListenerSub = this.as.getAuthStatusListener().subscribe(isAuthenticated => {this.userIsAuthenticated = isAuthenticated;});
     this.verfListenerSub = this.as.getVerfStatusListener().subscribe(isVerified => {this.userIsVerified = isVerified;});
+    
     this.as.autoAuthUser();
-
-    // <meta content="FFRecruiter: FFXIV Recruiting" property="og:title">
-    // <meta content="FFRecruiter is a mobile-friendly web application designed for FFXIV adventurers looking for a group to play with.  Whether you're just learning the basics or you're tackling ultimates, FFR has something for you.  Join today and take advantage of our superior features and reach." property="og:description">
-    // <meta content="FFR" property="og:site_name">
-    // <meta content='https://imagizer.imageshack.com/img924/3685/sQUzot.png' property='og:image'>
-  
-    // <meta property="og:image:width" content="400">
-    // <meta property="og:image:height" content="400">
-    // <link href="https://imagizer.imageshack.com/img924/3685/sQUzot.png" rel="image_src">
-    // <meta name="theme-color" content="#0485f8">
+    this.rs.getParams();
 
     this.meta.addTags([
       {property: 'og:site_name', content: 'FFR'},
-      {property: 'og:title', content: 'FFRecruiter: FFXIV Recruiting'},
+      {property: 'og:title', content: 'FFRecruiter: Final Fantasy XIV Recruiting Tool'},
       {property: 'og:description', content: "FFRecruiter is a mobile-friendly web application designed for FFXIV adventurers looking for a group to play with.  Whether you're just learning the basics or you're tackling ultimates, FFR has something for you.  Join today and take advantage of our superior features and reach."},
       {property: 'og:image', content: 'https://imagizer.imageshack.com/img924/3685/sQUzot.png'},
       {property: 'og:image:width', content: '400'},
